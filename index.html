@@ -1260,6 +1260,11 @@ function renderPage(page) {
     html += '<div class="g2">' + buildPomodoro() + buildContadorLivre() + '</div>';
     html += '</div>';
 
+  } else if (page === 'gen-video') {
+    html = '<div class="page on"><div class="page-title">Gerar V\u00EDdeo com IA</div><div class="page-sub">Crie v\u00EDdeos de apresenta\u00E7\u00E3o do projeto a partir de imagens e texto.</div>';
+    html += mkCard('Configurar v\u00EDdeo', 'video', buildGenVideo());
+    html += '</div>';
+
   } else if (page === 'gen-render') {
     html = '<div class="page on"><div class="page-title">Render / Imagem com IA</div><div class="page-sub">Renders conceituais via API Replicate (Flux).</div>';
     html += mkCard('Configurar render', 'image', buildGenRender());
@@ -2221,6 +2226,75 @@ function buildTimer(label, color, icon) {
 function buildPomodoro() { return buildTimer('Pomodoro', 'var(--accent)', 'clock'); }
 function buildContadorLivre() { return buildTimer('Contador livre', 'var(--blue)', 'timer'); }
 
+function buildGenVideo() {
+  var html = '';
+
+  // Tipo de vídeo
+  html += '<div style="font-size:12px;font-weight:600;margin-bottom:10px">Tipo de v\u00EDdeo</div>';
+  html += '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">';
+  var tipos = [
+    {id:'tour', icon:'video', label:'Tour pelo ambiente', desc:'C\u00e2mera passeia pelo espa\u00e7o'},
+    {id:'zoom', icon:'zoom-in', label:'Zoom in', desc:'Aproxima\u00e7\u00e3o progressiva'},
+    {id:'before-after', icon:'sliders', label:'Antes e Depois', desc:'Transi\u00e7\u00e3o entre dois ambientes'},
+    {id:'reel', icon:'play-circle', label:'Reel de apresenta\u00e7\u00e3o', desc:'V\u00eddeo curto para redes sociais'}
+  ];
+  tipos.forEach(function(t, i) {
+    html += '<div onclick="selectVideoTipo(this)" style="flex:1;min-width:130px;border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:border .15s' + (i===0?';border-color:var(--accent)':'') + '">';
+    html += '<div style="color:var(--accent);margin-bottom:6px">' + ic(t.icon,18) + '</div>';
+    html += '<div style="font-size:12px;font-weight:600;margin-bottom:2px">' + t.label + '</div>';
+    html += '<div style="font-size:10px;color:var(--muted)">' + t.desc + '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Imagens de entrada
+  html += '<div class="fg"><label class="fl">Imagens do ambiente (renders ou fotos)</label>';
+  html += '<div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;padding:16px;text-align:center;margin-bottom:12px">';
+  html += '<div style="color:var(--muted);margin-bottom:8px">' + ic('image',24) + '</div>';
+  html += '<div style="font-size:12px;color:var(--muted);margin-bottom:10px">Arraste renders ou fotos do ambiente</div>';
+  html += '<label style="cursor:pointer"><input type="file" accept="image/*" multiple style="display:none"><button class="btn btn-sm" onclick="this.previousElementSibling.click()">' + ic('upload',13) + ' Selecionar imagens</button></label>';
+  html += '</div></div>';
+
+  // Configurações
+  html += '<div class="g2">';
+  html += '<div class="fg"><label class="fl">Dura\u00e7\u00e3o</label>';
+  html += '<select class="fs"><option>15 segundos (Reels)</option><option>30 segundos</option><option>60 segundos</option><option>90 segundos</option></select></div>';
+  html += '<div class="fg"><label class="fl">Propor\u00e7\u00e3o</label>';
+  html += '<select class="fs"><option>9:16 (Vertical — Reels)</option><option>16:9 (Horizontal)</option><option>1:1 (Quadrado)</option></select></div>';
+  html += '<div class="fg"><label class="fl">Trilha sonora</label>';
+  html += '<select class="fs"><option>Ambiente calmo</option><option>Moderno e dinâmico</option><option>Cl\u00e1ssico elegante</option><option>Sem m\u00fasica</option></select></div>';
+  html += '<div class="fg"><label class="fl">Velocidade de transi\u00e7\u00e3o</label>';
+  html += '<select class="fs"><option>Suave</option><option>Moderada</option><option>Din\u00e2mica</option></select></div>';
+  html += '</div>';
+
+  // Texto/legenda
+  html += '<div class="fg"><label class="fl">Texto de abertura (opcional)</label>';
+  html += '<input class="fi" placeholder="Ex: Projeto Residencial \u2014 Bel\u00e9m, PA"></div>';
+  html += '<div class="fg"><label class="fl">Texto de encerramento (opcional)</label>';
+  html += '<input class="fi" placeholder="Ex: Sibelle Moura Arquitetura \u2014 @sibellemoura.arq"></div>';
+
+  // Status / aviso
+  html += '<div style="background:var(--bg2);border:1px solid var(--amber);border-radius:8px;padding:12px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start">';
+  html += '<span style="color:var(--amber);flex-shrink:0">' + ic('alert-triangle',16) + '</span>';
+  html += '<div><div style="font-size:12px;font-weight:600;color:var(--amber);margin-bottom:2px">Integra\u00e7\u00e3o de IA pendente</div>';
+  html += '<div style="font-size:11px;color:var(--muted)">Gera\u00e7\u00e3o de v\u00eddeo ser\u00e1 ativada via API (Runway ML ou Kling AI) em etapa futura. Configure as prefer\u00eancias agora e ative quando a integra\u00e7\u00e3o estiver pronta.</div>';
+  html += '</div></div>';
+
+  html += '<div style="display:flex;gap:8px">';
+  html += '<button class="btn btn-accent" style="opacity:.6;cursor:not-allowed">' + ic('video',14) + ' Gerar v\u00eddeo (em breve)</button>';
+  html += '<button class="btn">' + ic('save',14) + ' Salvar configura\u00e7\u00f5es</button>';
+  html += '</div>';
+
+  return html;
+}
+
+function selectVideoTipo(el) {
+  el.parentElement.querySelectorAll('div[onclick]').forEach(function(d) {
+    d.style.borderColor = 'var(--border)';
+  });
+  el.style.borderColor = 'var(--accent)';
+}
+
 function buildGenRender() {
   return '<div class="fg"><label class="fl">Prompt \u2014 descreva o ambiente</label><textarea class="fi" style="min-height:80px" placeholder="Ex: sala de estar contempor\u00E2nea biof\u00EDlica, luz natural, madeira freij\u00F3..."></textarea></div>'
     + '<div class="g2"><div class="fg"><label class="fl">Estilo</label>' + buildSelect(['Fotografia realista','Render 3D','Aquarela']) + '</div>'
@@ -2658,10 +2732,10 @@ function buildCalculadora() {
   ];
   var defaults = [1, 10, 0, 0];
   linhasValor.forEach(function(l, i) {
-    html += '<div style="display:grid;grid-template-columns:1fr 50px 70px;gap:6px;align-items:center;margin-bottom:6px">';
-    html += '<span style="font-size:11px">' + l[0] + '</span>';
-    html += '<div style="display:flex;align-items:center;gap:2px"><input id="' + l[1] + '" ' + s.inp.replace('width:60px','width:40px') + ' type="number" value="' + defaults[i] + '" onchange="calcOrc()"><span style="font-size:10px">%</span></div>';
-    html += '<span style="font-size:12px;font-weight:600;color:var(--text)" id="' + l[2] + '">R$ \u2014</span>';
+    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap">';
+    html += '<span style="font-size:11px;flex:1;min-width:80px">' + l[0] + '</span>';
+    html += '<div style="display:flex;align-items:center;gap:2px;flex-shrink:0"><input id="' + l[1] + '" ' + s.inp.replace('width:60px','width:44px') + ' type="number" value="' + defaults[i] + '" onchange="calcOrc()"><span style="font-size:10px">%</span></div>';
+    html += '<span style="font-size:11px;font-weight:600;color:var(--accent);flex-shrink:0;min-width:70px;text-align:right;white-space:nowrap" id="' + l[2] + '">R$ \u2014</span>';
     html += '</div>';
   });
   html += '<div style="font-size:10px;color:var(--muted);text-align:right;margin-top:6px">Taxas e impostos totais do projeto: <strong id="c-tx-tot">1%</strong> \u00B7 R$ <span id="c-tx-val">\u2014</span></div>';
