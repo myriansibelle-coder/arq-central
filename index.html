@@ -59,6 +59,8 @@ html,body{height:100%;background:var(--bg);font-family:ui-sans-serif,system-ui,-
 .stat-trend{font-size:10px;color:var(--green);margin-top:4px;font-weight:500}
 .fl{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-bottom:5px}
 .fi{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border .15s,background .2s;margin-bottom:12px}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
 .fi:focus{border-color:var(--accent)}
 .fi::placeholder{color:var(--muted2)}
 textarea.fi{min-height:80px;resize:vertical}
@@ -231,7 +233,8 @@ textarea.fi{min-height:80px;resize:vertical}
   .login-box { padding: 24px 18px; }
 
   /* Topbar right — esconde menos importantes */
-  .topbar-right .icon-btn:not(:last-of-type) { display: none; }
+  .topbar-right .icon-btn { display: none; }
+  .topbar-right .icon-btn:first-child { display: flex; }
 }
 
 @media (max-width: 480px) {
@@ -337,6 +340,7 @@ var ICONS = {
   "check-circle": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M9 12l2 2l4 -4"/>',
   "info": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 8l.01 0"/><path d="M11 12l1 0l0 4l1 0"/>',
   "menu": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6l16 0"/><path d="M4 12l16 0"/><path d="M4 18l16 0"/>',
+  "pencil": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"/><path d="M13.5 6.5l4 4"/>',
   "chart-bar-2": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12h4l3 8l4 -16l3 8h4"/>',
   "layout-grid-2": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M14 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M4 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M14 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/>'
 };
@@ -707,13 +711,17 @@ function renderIcons() {
       <button onclick="closeNovoProj()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1">&times;</button>
     </div>
 
-    <div class="g2">
-      <div class="fg"><label class="fl">Nome do Cliente</label><input class="fi" id="np-cliente" placeholder="Ex: Fam&#237;lia Silva"></div>
-      <div class="fg"><label class="fl">C&#243;digo do Projeto</label><input class="fi" id="np-codigo" placeholder="Ex: 001_06_26_SILVA"></div>
+    <div class="fg">
+      <label class="fl">Nome do Cliente</label>
+      <input class="fi" id="np-cliente" placeholder="Ex: Fam&#237;lia Silva" oninput="previewCodigoProjeto()">
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+      <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">C&#243;digo gerado automaticamente:</span>
+      <span id="np-codigo-preview" style="font-size:12px;font-weight:700;color:var(--accent);font-family:monospace;letter-spacing:1px">—</span>
     </div>
     <div class="fg">
       <label class="fl">Categoria</label>
-      <select class="fs" id="np-categoria" onchange="atualizarCapasSugeridas()">
+      <select class="fs" id="np-categoria" onchange="atualizarCapasSugeridas();previewCodigoProjeto()">
         <option value="residencial">Residencial</option>
         <option value="comercial">Comercial</option>
         <option value="corporativo">Corporativo</option>
@@ -773,7 +781,7 @@ function renderIcons() {
     </div>
 
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn btn-accent" style="flex:1;justify-content:center" onclick="closeNovoProj()">
+      <button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarNovoProjeto()">
         <i data-lucide="plus" style="width:14px;height:14px"></i> Criar Projeto
       </button>
       <button class="btn" onclick="closeNovoProj()">Cancelar</button>
@@ -867,6 +875,7 @@ function showArqLogin() { hideAll(); document.getElementById('scr-arq').classLis
 function showCliChoice() { hideAll(); document.getElementById('scr-cli-choice').classList.remove('hidden'); renderIcons(); }
 function showCliLogin() { hideAll(); document.getElementById('scr-cli').classList.remove('hidden'); renderIcons(); }
 function showVitrine() { hideAll(); document.getElementById('portal-vitrine').classList.remove('hidden'); renderIcons(); }
+function showCheckout() { hideAll(); document.getElementById('portal-checkout').classList.remove('hidden'); renderIcons(); }
 function showMeuProjeto() { hideAll(); document.getElementById('portal-projeto').classList.remove('hidden'); renderIcons(); }
 function showDash() {
   hideAll();
@@ -1070,7 +1079,7 @@ function renderPage(page) {
     html += buildKbCol('LEADS \u00B7 2', [['Maria Fernanda','Instagram \u00B7 Sala+Quarto'],['Roberto Alves','Indica\u00E7\u00E3o \u00B7 Home Office']]);
     html += buildKbCol('PROPOSTA \u00B7 1', [['Juliana Pires','Projeto Completo \u00B7 R$ 3.500']]);
     html += buildKbCol('FECHADO \u00B7 3', [['Fam\u00EDlia Silva','Sala Estar \u00B7 R$ 2.800'],['Ap. Moura','Cozinha \u00B7 R$ 4.200'],['Dr. Carvalho','Home Office \u00B7 R$ 2.100']]);
-    html += '</div><div style="margin-top:12px"><button class="btn btn-accent">' + ic('plus', 14) + ' Nova proposta</button></div>';
+    html += '</div><div style="margin-top:12px"><button class="btn btn-accent" onclick="abrirModalNovaPropostaOuLead(\'proposta\')">' + ic('plus', 14) + ' Nova proposta</button><button class="btn btn-sm" onclick="abrirModalNovaPropostaOuLead(\'lead\')" style="margin-left:8px">' + ic('plus', 13) + ' Novo lead</button></div>';
     html += '</div>';
 
   } else if (page === 'metas') {
@@ -1259,6 +1268,8 @@ function renderPage(page) {
     html += '<div data-card="cad-ativ">' + mkCard('Atividades', 'timer', buildCadAtividade()) + '</div>';
     html += '<div class="g2">' + buildPomodoro() + buildContadorLivre() + '</div>';
     html += '</div>';
+    // Popula selects após HTML ser injetado no DOM
+    setTimeout(function() { initTimerSelects(); }, 50);
 
   } else if (page === 'gen-video') {
     html = '<div class="page on"><div class="page-title">Gerar V\u00EDdeo com IA</div><div class="page-sub">Crie v\u00EDdeos de apresenta\u00E7\u00E3o do projeto a partir de imagens e texto.</div>';
@@ -1332,32 +1343,103 @@ function buildSelect(options) {
 
 function buildProjectCards() {
   var projects = [
-    {i:'SE', n:'Sala Estar \u2014 Fam\u00EDlia Silva', c:'001_05_26', p:65, bg:'linear-gradient(135deg,#1a3a5c,#0a1a2e)', tc:'#60a5fa'},
-    {i:'CI', n:'Cozinha Integrada \u2014 Ap. Moura', c:'002_05_26', p:30, bg:'linear-gradient(135deg,#2d1a3a,#150d1f)', tc:'#a78bfa'},
-    {i:'HO', n:'Home Office \u2014 Dr. Carvalho', c:'003_05_26', p:90, bg:'linear-gradient(135deg,#1a3a1a,#0a1f0a)', tc:'#4ade80'}
+    {i:'SE', n:'Sala Estar \u2014 Fam\u00EDlia Silva', c:'001_05_26', p:65, bg:'linear-gradient(135deg,#1a3a5c,#0a1a2e)', tc:'#60a5fa', capa:null},
+    {i:'CI', n:'Cozinha Integrada \u2014 Ap. Moura',   c:'002_05_26', p:30, bg:'linear-gradient(135deg,#2d1a3a,#150d1f)', tc:'#a78bfa', capa:null},
+    {i:'HO', n:'Home Office \u2014 Dr. Carvalho',      c:'003_05_26', p:90, bg:'linear-gradient(135deg,#1a3a1a,#0a1f0a)', tc:'#4ade80', capa:null}
   ];
+
+  var salvos = lerDados('projetos', []);
+  salvos.forEach(function(p) {
+    if (!p.codigo) return;
+    var existe = projects.find(function(x) { return x.c === p.codigo; });
+    if (existe) {
+      if (p.capa) existe.capa = p.capa;
+    } else {
+      projects.push({
+        i:    (p.cliente||'').substring(0,2).toUpperCase(),
+        n:    p.cliente + (p.categoria ? ' \u2014 ' + p.categoria : ''),
+        c:    p.codigo, p: 0,
+        bg:   'linear-gradient(135deg,#3a2a1a,#1f150a)',
+        tc:   '#d4956a',
+        capa: p.capa || null
+      });
+    }
+  });
+
   return projects.map(function(pr) {
-    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
-      + '<div style="height:80px;background:' + pr.bg + ';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;letter-spacing:2px;color:' + pr.tc + ';position:relative">' + pr.i
-      + '<div style="position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;background:rgba(0,0,0,0.5);color:#fff;padding:2px 7px;border-radius:10px">' + pr.p + '%</div></div>'
-      + '<div style="padding:11px"><div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + pr.n + '</div>'
-      + '<div style="font-size:10px;color:var(--muted);margin-top:2px">' + pr.c + '</div></div></div>';
+    var horas = lerHorasDoProjeto(pr.c);
+    var totalSeg = horas.reduce(function(s,h){ return s + (h.totalSeg||0); }, 0);
+    var porAtiv = {};
+    horas.forEach(function(h) {
+      var k = h.ativ || 'Outra';
+      if (!porAtiv[k]) porAtiv[k] = 0;
+      porAtiv[k] += (h.totalSeg||0);
+    });
+
+    var cId = pr.c.replace(/[^a-zA-Z0-9]/g,'_');
+    var temCapa = pr.capa && pr.capa.length > 10;
+    var capaBg = temCapa
+      ? 'background:url(\'' + pr.capa + '\') center/cover no-repeat'
+      : 'background:' + pr.bg;
+
+    var cardHtml = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border .15s;cursor:pointer"'
+      + ' onclick="abrirDetalheProjeto(\'' + cId + '\',\'' + pr.n.replace(/'/g,"\\'") + '\',\'' + pr.c + '\')"'
+      + ' onmouseover="this.style.borderColor=\'var(--accent)\'"'
+      + ' onmouseout="this.style.borderColor=\'var(--border)\'">';
+
+    cardHtml += '<div style="height:90px;' + capaBg + ';position:relative">';
+    if (!temCapa) {
+      cardHtml += '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;letter-spacing:2px;color:' + pr.tc + '">' + pr.i + '</div>';
+    } else {
+      cardHtml += '<div style="position:absolute;inset:0;background:rgba(0,0,0,0.28)"></div>';
+      cardHtml += '<div style="position:absolute;bottom:6px;left:10px;font-size:12px;font-weight:700;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.7)">' + pr.i + '</div>';
+    }
+    cardHtml += '<div style="position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;background:rgba(0,0,0,0.55);color:#fff;padding:2px 7px;border-radius:10px">' + pr.p + '%</div>';
+    cardHtml += '</div>';
+
+    cardHtml += '<div style="padding:11px 12px">';
+    cardHtml += '<div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + pr.n + '</div>';
+    cardHtml += '<div style="font-size:10px;color:var(--muted);margin-top:2px;margin-bottom:8px">' + pr.c + '</div>';
+
+    if (totalSeg > 0) {
+      cardHtml += '<div style="border-top:1px solid var(--border2);padding-top:8px">';
+      cardHtml += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+      cardHtml += '<span style="font-size:10px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:1px">Horas registradas</span>';
+      cardHtml += '<span style="font-size:11px;font-weight:700;color:var(--accent)">' + fmtHorasTotal(totalSeg) + '</span>';
+      cardHtml += '</div>';
+      Object.keys(porAtiv).forEach(function(ativ) {
+        var pct = Math.round((porAtiv[ativ] / totalSeg) * 100);
+        cardHtml += '<div style="margin-bottom:5px"><div style="display:flex;justify-content:space-between;margin-bottom:2px">';
+        cardHtml += '<span style="font-size:10px;color:var(--text2)">' + ativ + '</span>';
+        cardHtml += '<span style="font-size:10px;color:var(--muted)">' + fmtHorasTotal(porAtiv[ativ]) + '</span>';
+        cardHtml += '</div><div style="height:3px;background:var(--bg3);border-radius:2px"><div style="height:100%;width:' + pct + '%;background:var(--accent);border-radius:2px"></div></div></div>';
+      });
+      cardHtml += '</div>';
+    } else {
+      cardHtml += '<div style="font-size:10px;color:var(--muted2);border-top:1px solid var(--border2);padding-top:6px">' + ic('clock',11) + ' Nenhuma hora registrada</div>';
+    }
+
+    cardHtml += '</div></div>';
+    return cardHtml;
   }).join('');
 }
 
 function buildSWOT() {
   var items = [
-    {color:'var(--green)', emoji:'\u1F4AA', label:'For\u00E7as', val:'Identidade visual forte \u00B7 Expertise em biofilia \u00B7 Uso de IA nos projetos'},
-    {color:'var(--red)', emoji:'\u26A0\uFE0F', label:'Fraquezas', val:'Equipe pequena \u00B7 Processos ainda manuais \u00B7 Pouca presen\u00E7a digital'},
-    {color:'var(--blue)', emoji:'\u1F680', label:'Oportunidades', val:'Mercado imobili\u00E1rio aquecido em Bel\u00E9m \u00B7 Crescimento de home office'},
-    {color:'var(--amber)', emoji:'\u26A1', label:'Amea\u00E7as', val:'Concorr\u00EAncia crescente \u00B7 Infla\u00E7\u00E3o nos materiais'}
+    {color:'var(--green)',  icon:'trending-up',   label:'For\u00E7as',    id:'swot-f',  val:'Identidade visual forte \u00B7 Expertise em biofilia \u00B7 Uso de IA nos projetos'},
+    {color:'var(--red)',    icon:'info',           label:'Fraquezas',      id:'swot-fr', val:'Equipe pequena \u00B7 Processos ainda manuais \u00B7 Pouca presen\u00E7a digital'},
+    {color:'var(--blue)',   icon:'layout-grid',    label:'Oportunidades',  id:'swot-o',  val:'Mercado imobili\u00E1rio aquecido em Bel\u00E9m \u00B7 Crescimento de home office'},
+    {color:'var(--amber)',  icon:'alert-triangle', label:'Amea\u00E7as',   id:'swot-a',  val:'Concorr\u00EAncia crescente \u00B7 Infla\u00E7\u00E3o nos materiais'}
   ];
   var html = '<div class="swot-grid">';
   items.forEach(function(it) {
-    html += '<div class="swot-cell"><div class="swot-label" style="color:' + it.color + '">' + it.emoji + ' ' + it.label + '</div>';
-    html += '<textarea class="fi" style="min-height:80px;margin:0">' + it.val + '</textarea></div>';
+    html += '<div class="swot-cell">';
+    html += '<div class="swot-label" style="color:' + it.color + '">' + ic(it.icon,14) + ' ' + it.label + '</div>';
+    html += '<textarea class="fi" id="' + it.id + '" style="min-height:80px;margin:0">' + it.val + '</textarea>';
+    html += '</div>';
   });
-  html += '</div><div style="margin-top:14px"><button class="btn btn-accent">' + ic('save', 14) + ' Salvar</button></div>';
+  html += '</div>';
+  html += '<div style="margin-top:14px"><button class="btn btn-accent" onclick="salvarSWOT(this)">' + ic('save',14) + ' Salvar</button></div>';
   return html;
 }
 
@@ -1372,7 +1454,7 @@ function buildLancamentos() {
   var html = mkTblWrap('480px');
   html += mkTblRow(['Descri\u00E7\u00E3o','Tipo','Valor','Vencimento','Status'], grid, true);
   rows.forEach(function(r) { html += mkTblRow(r, grid, false); });
-  html += mkTblWrapEnd + '<div style="margin-top:12px;display:flex;gap:8px"><button class="btn btn-accent">' + ic('plus',14) + ' Novo lan\u00E7amento</button><button class="btn">' + ic('external-link',14) + ' Google Sheets</button></div>';
+  html += mkTblWrapEnd + '<div style="margin-top:12px;display:flex;gap:8px"><button class="btn btn-accent" onclick="abrirModalNovoLancamento()">' + ic('plus',14) + ' Novo lan\u00E7amento</button><button class="btn" onclick="window.open(\'https://sheets.google.com\',\'_blank\')">' + ic('external-link',14) + ' Google Sheets</button></div>';
   return html;
 }
 
@@ -1382,9 +1464,26 @@ function buildReceitasDespesas() {
 }
 
 function buildValorHora() {
-  return '<div class="fg"><label class="fl">Horas trabalhadas/m\u00EAs</label><input class="fi" value="160" type="number"></div>'
-    + '<div class="fg"><label class="fl">Meta de faturamento/m\u00EAs</label><input class="fi" value="12000" type="number"></div>'
-    + '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:12px;text-align:center"><div style="font-size:24px;font-weight:700;color:var(--accent)">R$ 75,00/h</div><div style="font-size:11px;color:var(--muted);margin-top:3px">Valor ideal por hora</div></div>';
+  return '<div class="fg"><label class="fl">Horas trabalhadas/m\u00EAs</label>'
+    + '<input class="fi" id="vh-horas" value="160" type="number" oninput="calcVH()">'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Meta de faturamento/m\u00EAs (R$)</label>'
+    + '<input class="fi" id="vh-meta" value="12000" type="number" oninput="calcVH()">'
+    + '</div>'
+    + '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:14px;text-align:center">'
+    + '<div id="vh-result" style="font-size:28px;font-weight:700;color:var(--accent)">R$ 75,00/h</div>'
+    + '<div style="font-size:11px;color:var(--muted);margin-top:3px">Valor ideal por hora</div>'
+    + '</div>';
+}
+
+function calcVH() {
+  var horas = parseFloat((document.getElementById('vh-horas')||{value:160}).value) || 0;
+  var meta  = parseFloat((document.getElementById('vh-meta') ||{value:12000}).value) || 0;
+  var result = document.getElementById('vh-result');
+  if (!result) return;
+  if (horas <= 0) { result.textContent = '\u2014'; return; }
+  var vh = meta / horas;
+  result.textContent = 'R$ ' + vh.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) + '/h';
 }
 
 function buildDadosEmpresa() {
@@ -1404,25 +1503,130 @@ function buildDadosSocios() {
 }
 
 function buildAnexos() {
-  var html = '<div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn btn-accent">' + ic('upload',14) + ' Enviar arquivo</button><button class="btn">' + ic('folder-plus',14) + ' Nova pasta</button></div>';
+  var html = '<div style="display:flex;gap:8px;margin-bottom:14px">';
+  html += '<label style="cursor:pointer"><input type="file" multiple accept=".pdf,.doc,.docx,.jpg,.png,.zip" style="display:none" onchange="anexarArquivo(this)"><span class="btn btn-accent">' + ic('upload',14) + ' Enviar arquivo</span></label>';
+  html += '<button class="btn" onclick="criarPastaAnexo()">' + ic('folder-plus',14) + ' Nova pasta</button>';
+  html += '</div>';
+  html += '<div id="anexos-lista">';
   html += mkTblWrap('400px');
   html += mkTblRow(['Nome','Tipo','Data'], '1fr 80px 90px', true);
-  html += mkTblRow(['<span style="color:var(--accent);cursor:pointer">' + ic('file-text',13) + ' Contrato Padr\u00E3o v3</span>', pill('Contrato','p-blue'), '01/06/26'], '1fr 80px 90px', false);
+  html += mkTblRow(['<span style="color:var(--accent);cursor:pointer">' + ic('file-text',13) + ' Contrato Padr\u00e3o v3</span>', pill('Contrato','p-blue'), '01/06/26'], '1fr 80px 90px', false);
   html += mkTblRow(['<span style="color:var(--accent);cursor:pointer">' + ic('file-text',13) + ' ART \u2014 Carvalho</span>', pill('ART','p-muted'), '02/04/26'], '1fr 80px 90px', false);
   html += mkTblWrapEnd;
+  html += '</div>';
   return html;
 }
 
+function anexarArquivo(input) {
+  if (!input.files || !input.files.length) return;
+  var lista = document.getElementById('anexos-lista');
+  Array.from(input.files).forEach(function(file) {
+    var ext = file.name.split('.').pop().toUpperCase();
+    var hoje = new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border2)';
+    row.innerHTML = '<span style="color:var(--accent);flex:1">' + ic('file-text',13) + ' ' + file.name + '</span>'
+      + '<span>' + pill(ext,'p-muted') + '</span>'
+      + '<span style="font-size:11px;color:var(--muted);width:60px">' + hoje + '</span>'
+      + '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px">\u00d7</button>';
+    if (lista) lista.appendChild(row);
+  });
+  mostrarFeedback(input.files.length + ' arquivo(s) adicionado(s)');
+  input.value = '';
+}
+
+function criarPastaAnexo() {
+  var lista = document.getElementById('anexos-lista');
+  if (!lista) return;
+  // Cria um input inline para digitar o nome
+  var formDiv = document.createElement('div');
+  formDiv.style.cssText = 'display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid var(--border2)';
+  formDiv.innerHTML = '<span style="color:var(--amber)">' + ic('folder',13) + '</span>'
+    + '<input id="pasta-nome-inp" class="fi" placeholder="Nome da pasta..." style="flex:1;margin-bottom:0;padding:5px 8px;font-size:12px">'
+    + '<button class="btn btn-accent btn-sm" onclick="confirmarPasta(this)">OK</button>'
+    + '<button class="btn btn-sm" onclick="this.parentElement.remove()">Cancelar</button>';
+  lista.insertBefore(formDiv, lista.firstChild);
+  var inp = document.getElementById('pasta-nome-inp');
+  if (inp) { inp.focus(); inp.addEventListener('keydown', function(e){ if (e.key==='Enter') confirmarPasta(this); }); }
+}
+
+function confirmarPasta(btn) {
+  var inp = document.getElementById('pasta-nome-inp');
+  var nome = inp ? inp.value.trim() : '';
+  if (!nome) { mostrarFeedback('Digite o nome da pasta'); return; }
+  var formDiv = btn.parentElement;
+  var lista = formDiv.parentElement;
+  // Substitui o form por uma linha de pasta
+  var row = document.createElement('div');
+  row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border2)';
+  row.innerHTML = '<span style="color:var(--amber);flex:1">' + ic('folder',13) + ' ' + nome + '</span>'
+    + '<span>' + pill('Pasta','p-amber') + '</span>'
+    + '<span style="font-size:11px;color:var(--muted);width:60px">\u2014</span>'
+    + '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px">\u00d7</button>';
+  lista.replaceChild(row, formDiv);
+  mostrarFeedback('Pasta "' + nome + '" criada');
+}
+
 function buildVault() {
-  var html = '<div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn btn-accent">' + ic('plus',14) + ' Novo acesso</button></div>';
+  var html = '<div style="display:flex;gap:8px;margin-bottom:14px">';
+  html += '<button class="btn btn-accent" onclick="abrirModalNovoAcesso()">' + ic('plus',14) + ' Novo acesso</button>';
+  html += '</div>';
+  html += '<div id="vault-lista">';
   html += mkTblWrap('560px');
   html += mkTblRow(['Plataforma','Login','Senha','Funcionalidade',''], '120px 1fr 100px 1fr 30px', true);
-  var rows = [['Airtable','sibelle@...','\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022','Banco de dados'],['Claude PRO','sibelle@...','\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022','IA e automa\u00E7\u00E3o'],['Canva PRO','sibelle@...','\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022','Design gr\u00E1fico'],['Vercel','sibelle@...','\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022','Hospedagem']];
+  var rows = [
+    ['Airtable','sibelle@...','\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022','Banco de dados'],
+    ['Claude PRO','sibelle@...','\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022','IA e automa\u00e7\u00e3o'],
+    ['Canva PRO','sibelle@...','\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022','Design gr\u00e1fico'],
+    ['Vercel','sibelle@...','\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022','Hospedagem']
+  ];
   rows.forEach(function(r) {
-    html += mkTblRow(['<span style="font-weight:500">'+r[0]+'</span>','<span style="color:var(--muted)">'+r[1]+'</span>','<span style="color:var(--muted)">'+r[2]+'</span>','<span style="color:var(--muted)">'+r[3]+'</span>','<span style="cursor:pointer;color:var(--muted)">'+ic('eye',13)+'</span>'], '120px 1fr 100px 1fr 30px', false);
+    html += mkTblRow([
+      '<span style="font-weight:500">'+r[0]+'</span>',
+      '<span style="color:var(--muted)">'+r[1]+'</span>',
+      '<span style="color:var(--muted)">'+r[2]+'</span>',
+      '<span style="color:var(--muted)">'+r[3]+'</span>',
+      '<span style="cursor:pointer;color:var(--muted)">'+ic('eye',13)+'</span>'
+    ], '120px 1fr 100px 1fr 30px', false);
   });
   html += '</div>';
   return html;
+}
+
+function abrirModalNovoAcesso() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-acesso-temp';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:420px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Novo acesso</div>'
+    + '<button onclick="document.getElementById(\'modal-acesso-temp\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Plataforma</label><input class="fi" id="ac-plat" placeholder="Ex: Notion, Figma..."></div>'
+    + '<div class="fg"><label class="fl">Login / E-mail</label><input class="fi" id="ac-login" placeholder="usuario@email.com"></div>'
+    + '<div class="fg"><label class="fl">Senha</label><input class="fi" id="ac-senha" type="password" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"></div>'
+    + '<div class="fg"><label class="fl">Funcionalidade</label><input class="fi" id="ac-func" placeholder="Ex: Gest\u00e3o de tarefas"></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarNovoAcesso()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-acesso-temp\').remove()">Cancelar</button>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function salvarNovoAcesso() {
+  var plat  = (document.getElementById('ac-plat') ||{value:''}).value.trim();
+  if (!plat) { mostrarFeedback('Informe a plataforma'); return; }
+  var login = (document.getElementById('ac-login')||{value:''}).value;
+  var func  = (document.getElementById('ac-func') ||{value:''}).value;
+  // Salva no localStorage
+  var lista = lerDados('vault_acessos', []);
+  lista.push({plat:plat, login:login, func:func, data: new Date().toLocaleDateString('pt-BR')});
+  salvarDados('vault_acessos', lista);
+  var modal = document.getElementById('modal-acesso-temp');
+  if (modal) modal.remove();
+  mostrarFeedback('Acesso de ' + plat + ' salvo!');
 }
 
 function buildPersonCard(initials, bg, name, sub, status, statusCls) {
@@ -1537,17 +1741,21 @@ function buildReunioes() {
   html += '<div class="fg"><label class="fl">Transcri\u00E7\u00E3o</label>';
   html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px">';
   html += '<div id="mr-transcricao" style="font-size:12px;color:var(--muted);min-height:36px;white-space:pre-wrap;margin-bottom:8px"></div>';
-  html += '<div style="display:flex;gap:6px"><button class="btn btn-sm">' + ic('mic',12) + ' Gravar</button><button class="btn btn-sm">' + ic('upload',12) + ' Importar \u00E1udio</button></div>';
+  html += '<div style="display:flex;gap:6px">';
+  html += '<button class="btn btn-sm" onclick="gravarTranscricao()">' + ic('mic',12) + ' Gravar</button>';
+  html += '<label style="cursor:pointer"><input type="file" accept="audio/*" style="display:none" onchange="importarAudio(this)"><span class="btn btn-sm">' + ic('upload',12) + ' Importar \u00e1udio</span></label>';
+  html += '</div>';
   html += '</div></div>';
 
   html += '<div class="fg"><label class="fl">Anexos</label>';
   html += '<div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;padding:12px;margin-bottom:12px">';
-  html += '<div id="mr-anexos" style="font-size:12px;color:var(--text2);margin-bottom:8px"></div>';
-  html += '<button class="btn btn-sm">' + ic('paperclip',12) + ' Adicionar anexo</button>';
+  html += '<div id="mr-anexos" style="font-size:12px;color:var(--text2);margin-bottom:8px">Nenhum anexo.</div>';
+  html += '<label style="cursor:pointer"><input type="file" multiple style="display:none" onchange="anexarReuniao(this)"><span class="btn btn-sm">' + ic('paperclip',12) + ' Adicionar anexo</span></label>';
   html += '</div></div>';
 
   html += '<div style="display:flex;gap:8px;margin-top:4px">';
-  html += '<button class="btn btn-accent" style="flex:1;justify-content:center">' + ic('save',14) + ' Salvar</button>';
+  html += '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarReuniao()">' + ic('save',14) + ' Salvar</button>';
+  html += '<button class="btn" onclick="exportarPDF(\'reuniao\')">' + ic('download',14) + ' PDF</button>';
   html += '<button class="btn" onclick="closeReuniao()">Fechar</button>';
   html += '</div>';
   html += '</div></div>';
@@ -1587,19 +1795,116 @@ function openNovaReuniao() {
 }
 
 function mkAcaoItem(txt) {
-  return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border2)">'
-    + '<div style="width:16px;height:16px;border-radius:4px;border:1px solid var(--border);flex-shrink:0;cursor:pointer"></div>'
-    + '<span style="font-size:12px;flex:1">' + txt + '</span>'
-    + '<span style="font-size:18px;color:var(--muted);cursor:pointer;line-height:1" onclick="this.parentElement.remove()">\u00D7</span>'
-    + '</div>';
+  var div = document.createElement('div');
+  div.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border2)';
+  div.setAttribute('data-acao', txt);
+  var check = document.createElement('div');
+  check.style.cssText = 'width:16px;height:16px;border-radius:4px;border:1px solid var(--border);flex-shrink:0;cursor:pointer;transition:background .15s';
+  check.onclick = function() { this.style.background = this.style.background ? '' : 'var(--accent)'; };
+  var label = document.createElement('span');
+  label.style.cssText = 'font-size:12px;flex:1';
+  label.textContent = txt;
+  var del = document.createElement('span');
+  del.style.cssText = 'font-size:18px;color:var(--muted);cursor:pointer;line-height:1;flex-shrink:0';
+  del.textContent = '\u00d7';
+  del.onclick = function() { div.remove(); };
+  div.appendChild(check);
+  div.appendChild(label);
+  div.appendChild(del);
+  return div;
 }
 
 function addAcao() {
   var inp = document.getElementById('mr-acao-input');
   var list = document.getElementById('mr-acoes-list');
   if (!inp || !inp.value.trim() || !list) return;
-  list.innerHTML += mkAcaoItem(inp.value.trim());
+  list.appendChild(mkAcaoItem(inp.value.trim()));
   inp.value = '';
+  inp.focus();
+}
+
+function gravarTranscricao() {
+  var el = document.getElementById('mr-transcricao');
+  if (!el) return;
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    mostrarFeedback('Grava\u00e7\u00e3o n\u00e3o suportada. Use Chrome ou Safari 14+.');
+    return;
+  }
+  var rec = new SR();
+  rec.lang = 'pt-BR';
+  rec.continuous = true;
+  rec.interimResults = false;
+  var textoAnterior = el.textContent === 'Nenhuma transcri\u00e7\u00e3o ainda.' ? '' : el.textContent;
+  el.textContent = '\u25cf Gravando... fale agora.';
+  rec.onresult = function(e) {
+    var novo = Array.from(e.results).map(function(r){ return r[0].transcript; }).join(' ');
+    el.textContent = (textoAnterior + ' ' + novo).trim();
+    mostrarFeedback('Transcri\u00e7\u00e3o adicionada!');
+  };
+  rec.onerror = function(e) {
+    el.textContent = textoAnterior || 'Nenhuma transcri\u00e7\u00e3o ainda.';
+    var msgs = {
+      'not-allowed': 'Permiss\u00e3o do microfone negada.',
+      'no-speech': 'Nenhuma fala detectada.',
+      'network': 'Erro de rede.'
+    };
+    mostrarFeedback(msgs[e.error] || 'Erro: ' + e.error);
+  };
+  rec.onend = function() {
+    if (el.textContent === '\u25cf Gravando... fale agora.') {
+      el.textContent = textoAnterior || 'Nenhuma transcri\u00e7\u00e3o ainda.';
+    }
+  };
+  try { rec.start(); } catch(e) { mostrarFeedback('Erro ao iniciar grava\u00e7\u00e3o.'); }
+}
+
+function importarAudio(input) {
+  if (!input.files || !input.files[0]) return;
+  var el = document.getElementById('mr-transcricao');
+  if (el) el.textContent = 'Arquivo de \u00e1udio: ' + input.files[0].name + '\n(Transcri\u00e7\u00e3o autom\u00e1tica dispon\u00edvel ap\u00f3s integra\u00e7\u00e3o com IA)';
+  mostrarFeedback('\u00c1udio importado: ' + input.files[0].name);
+  input.value = '';
+}
+
+function anexarReuniao(input) {
+  if (!input.files || !input.files.length) return;
+  var el = document.getElementById('mr-anexos');
+  if (!el) return;
+  if (el.textContent === 'Nenhum anexo.') el.textContent = '';
+  Array.from(input.files).forEach(function(file) {
+    var item = document.createElement('div');
+    item.style.cssText = 'display:flex;align-items:center;gap:6px;padding:3px 0;font-size:12px';
+    item.innerHTML = '<span style="color:var(--accent)">' + ic('file-text',12) + '</span>'
+      + '<span style="flex:1">' + file.name + '</span>'
+      + '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px">\u00d7</button>';
+    el.appendChild(item);
+  });
+  mostrarFeedback(input.files.length + ' anexo(s) adicionado(s)');
+  input.value = '';
+}
+
+function salvarReuniao() {
+  // Pega o índice da reunião atual pelo título
+  var titulo = (document.getElementById('mr-titulo')||{textContent:''}).textContent;
+  var idx = reunioesData.findIndex(function(r){ return r.assunto === titulo; });
+  if (idx < 0) idx = reunioesData.length - 1;
+  if (idx < 0) return;
+
+  reunioesData[idx] = {
+    assunto:      titulo,
+    cliente:      (document.getElementById('mr-cliente')||{value:''}).value,
+    projeto:      (document.getElementById('mr-projeto')||{value:''}).value,
+    data:         (document.getElementById('mr-data')||{value:''}).value,
+    participante: (document.getElementById('mr-part')||{value:''}).value,
+    pauta:        (document.getElementById('mr-pauta')||{value:''}).value,
+    ata:          (document.getElementById('mr-ata')||{value:''}).value,
+    transcricao:  (document.getElementById('mr-transcricao')||{textContent:''}).textContent,
+    acoes:        Array.from(document.querySelectorAll('#mr-acoes-list span[style*="flex:1"]')).map(function(s){ return s.textContent; }).join(' \u00b7 '),
+    anexos:       Array.from(document.querySelectorAll('#mr-anexos span[style*="flex:1"]')).map(function(s){ return s.textContent; }).join(', ') || 'Nenhum anexo.'
+  };
+  salvarDados('reunioes', reunioesData);
+  mostrarFeedback('Reuni\u00e3o salva!');
 }
 
 function closeReuniao() {
@@ -1608,11 +1913,42 @@ function closeReuniao() {
 
 function buildKbCol(title, items) {
   var html = '<div class="kb-col"><div class="kb-title">' + title + '</div>';
-  items.forEach(function(it) {
-    html += '<div class="kb-card"><div class="kb-card-title">' + it[0] + '</div><div class="kb-card-sub">' + it[1] + '</div></div>';
+  items.forEach(function(it, i) {
+    var col = title.split('\u00b7')[0].trim().toLowerCase();
+    html += '<div class="kb-card" onclick="abrirCardCRM(' + JSON.stringify(it) + ',\'' + col + '\')">';
+    html += '<div class="kb-card-title">' + it[0] + '</div>';
+    html += '<div class="kb-card-sub">' + it[1] + '</div>';
+    html += '</div>';
   });
   html += '</div>';
   return html;
+}
+
+function abrirCardCRM(it, coluna) {
+  var modal = document.createElement('div');
+  modal.id = 'modal-crm-card';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  var status = coluna === 'leads' ? 'Lead' : coluna === 'proposta' ? 'Em proposta' : coluna === 'fechado' ? 'Fechado' : coluna;
+  var cor = coluna === 'fechado' ? 'p-green' : coluna === 'proposta' ? 'p-blue' : 'p-amber';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:480px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div><div style="font-size:15px;font-weight:700">' + it[0] + '</div>'
+    + '<div style="font-size:11px;color:var(--muted);margin-top:3px">' + it[1] + '</div></div>'
+    + '<button onclick="document.getElementById(\'modal-crm-card\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div style="margin-bottom:14px">' + pill(status, cor) + '</div>'
+    + '<div class="fg"><label class="fl">Origem / Canal</label><input class="fi" value="' + (it[1]||'').split('\u00b7')[0].trim() + '"></div>'
+    + '<div class="fg"><label class="fl">Servi\u00e7o de interesse</label><input class="fi" placeholder="Projeto Completo, Consultoria..."></div>'
+    + '<div class="fg"><label class="fl">Valor estimado (R$)</label><input class="fi" type="number" placeholder="Ex: 3500"></div>'
+    + '<div class="fg"><label class="fl">Pr\u00f3ximo passo</label><input class="fi" placeholder="Ex: Enviar proposta at\u00e9 sexta"></div>'
+    + '<div class="fg"><label class="fl">Observa\u00e7\u00f5es</label><textarea class="fi" style="min-height:70px" placeholder="Notas sobre o contato..."></textarea></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="mostrarFeedback(\'Lead salvo!\');document.getElementById(\'modal-crm-card\').remove()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-crm-card\').remove()">Fechar</button>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(modal);
+  renderIcons();
 }
 
 function buildKbColWithPill(title, items) {
@@ -1625,16 +1961,24 @@ function buildKbColWithPill(title, items) {
 }
 
 function buildMetas() {
-  var items = [
+  var padrao = [
     {label:'Faturamento anual', val:'R$ 51.2k', target:'R$ 120k', pct:43, color:'var(--accent)'},
     {label:'Projetos entregues', val:'4', target:'12', pct:33, color:'var(--amber)'},
     {label:'Seguidores Instagram', val:'3.2k', target:'10k', pct:32, color:'var(--purple)'}
   ];
+  var salvos = lerDados('objetivos', []);
+  var items = padrao.concat(salvos);
   var html = '';
   items.forEach(function(it) {
-    html += '<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:13px;font-weight:500">' + it.label + '</span><span style="font-size:13px;color:' + it.color + '">' + it.val + ' / ' + it.target + '</span></div><div class="prog-bar"><div class="prog-fill" style="width:' + it.pct + '%;background:' + it.color + '"></div></div></div>';
+    html += '<div style="margin-bottom:14px">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+    html += '<span style="font-size:13px;font-weight:500">' + it.label + '</span>';
+    html += '<span style="font-size:13px;color:' + it.color + '">' + it.val + ' / ' + it.target + '</span>';
+    html += '</div>';
+    html += '<div class="prog-bar"><div class="prog-fill" style="width:' + it.pct + '%;background:' + it.color + '"></div></div>';
+    html += '</div>';
   });
-  html += '<div style="margin-top:14px"><button class="btn btn-accent">' + ic('plus',14) + ' Novo objetivo</button></div>';
+  html += '<div style="margin-top:14px"><button class="btn btn-accent" onclick="abrirModalNovoObjetivo()">' + ic('plus',14) + ' Novo objetivo</button></div>';
   return html;
 }
 
@@ -2213,14 +2557,618 @@ function removerAtividade(idx) {
 }
 
 function buildTimer(label, color, icon) {
-  return '<div class="card" style="text-align:center">'
-    + '<div style="font-size:13px;font-weight:600;margin-bottom:16px">' + ic(icon,15) + ' ' + label + '</div>'
-    + '<div style="font-size:48px;font-weight:700;color:' + color + ';margin-bottom:16px;font-variant-numeric:tabular-nums">' + (label === 'Pomodoro' ? '25:00' : '00:00') + '</div>'
-    + '<div style="display:flex;gap:8px;justify-content:center">'
-    + '<button class="btn btn-accent">' + ic('play',14) + ' Iniciar</button>'
-    + '<button class="btn">' + ic('pause',14) + ' Pausar</button>'
-    + '<button class="btn" style="color:var(--red);border-color:var(--red)">' + ic('square',14) + ' Fim</button>'
-    + '</div></div>';
+  var id = label === 'Pomodoro' ? 'pomo' : 'livre';
+  var inicio = label === 'Pomodoro' ? '25:00' : '00:00';
+  var html = '<div class="card" style="text-align:center">';
+  html += '<div style="font-size:13px;font-weight:600;margin-bottom:6px">' + ic(icon,15) + ' ' + label + '</div>';
+
+  // Seletores de projeto + atividade para ambos
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;text-align:left">';
+  html += '<div><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:3px">Projeto</label>';
+  html += '<select id="' + id + '-proj-sel" class="fs" style="font-size:11px;padding:4px 8px;margin-bottom:0"></select></div>';
+  html += '<div><label style="font-size:10px;color:var(--muted);display:block;margin-bottom:3px">Atividade</label>';
+  html += '<select id="' + id + '-ativ-sel" class="fs" style="font-size:11px;padding:4px 8px;margin-bottom:0"></select></div>';
+  html += '</div>';
+
+  if (id === 'pomo') {
+    html += '<div style="font-size:11px;color:var(--muted);margin-bottom:4px" id="pomo-ciclo-label">Foco — Bloco 1</div>';
+    html += '<div style="height:4px;background:var(--bg3);border-radius:2px;margin-bottom:12px;overflow:hidden">';
+    html += '<div id="pomo-barra" style="height:100%;background:var(--accent);border-radius:2px;width:100%;transition:width 1s linear"></div>';
+    html += '</div>';
+  } else {
+    html += '<div style="font-size:11px;color:var(--muted);margin-bottom:12px;text-align:center">Atividade em andamento: <span id="livre-ativ-label" style="color:var(--accent)">—</span></div>';
+  }
+
+  html += '<div id="timer-' + id + '" style="font-size:52px;font-weight:700;color:' + color + ';margin-bottom:8px;font-variant-numeric:tabular-nums;letter-spacing:2px">' + inicio + '</div>';
+  html += '<div style="font-size:11px;color:var(--muted);margin-bottom:14px">Total acumulado: <strong id="pomo-total-' + id + '" style="color:var(--accent)">00:00</strong></div>';
+
+  html += '<div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">';
+  html += '<button class="btn btn-accent" onclick="timerIniciar(\'' + id + '\')">' + ic('play',14) + ' Iniciar</button>';
+  html += '<button class="btn" onclick="timerPausar(\'' + id + '\')">' + ic('pause',14) + ' Pausar</button>';
+  html += '<button class="btn" style="color:var(--red);border-color:var(--red)" onclick="timerReset(\'' + id + '\')">' + ic('square',14) + ' Resetar</button>';
+  html += '</div>';
+
+  if (id === 'livre') {
+    html += '<button class="btn btn-sm btn-accent" onclick="timerRegistrar()" style="width:100%;justify-content:center;margin-bottom:8px">' + ic('check',13) + ' Registrar atividade</button>';
+  } else {
+    html += '<button class="btn btn-sm" onclick="timerRegistrarPomo()" style="width:100%;justify-content:center;margin-bottom:8px">' + ic('check',13) + ' Encerrar e registrar</button>';
+  }
+
+  html += '<div id="log-' + id + '" style="margin-top:8px;text-align:left;max-height:130px;overflow-y:auto"></div>';
+  html += '</div>';
+  return html;
+}
+
+// Estado dos timers
+var timerState = {
+  pomo: {
+    interval: null, segundos: 25*60, rodando: false,
+    ciclo: 'foco', ciclos: 0,
+    totalFoco: 0,   // segundos acumulados de foco
+    totalPausa: 0,  // segundos acumulados de pausa
+    duracaoFoco: 25*60, duracaoPausa: 5*60
+  },
+  livre: {
+    interval: null, segundos: 0, rodando: false,
+    totalSegundos: 0  // acumula mesmo após pausas
+  }
+};
+
+// Popula os selects de projeto e atividade dos timers
+function initTimerSelects() {
+  ['pomo','livre'].forEach(function(id) { initTimerAtivSel(id); });
+}
+
+function initTimerProjSel(id) {
+  var sel = document.getElementById(id + '-proj-sel');
+  if (!sel) return;
+  // Só popula se ainda estiver vazio (evita resetar seleção do usuário)
+  if (sel.options.length > 1) return;
+  sel.innerHTML = '<option value="">— Projeto geral —</option>';
+  var fixos = ['001_05_26 — Sala Silva','002_05_26 — Cozinha Moura','003_05_26 — HO Carvalho'];
+  var salvos = lerDados('projetos', []);
+  var todos = fixos.slice();
+  salvos.forEach(function(p) {
+    if (p.codigo && p.cliente) todos.push(p.codigo + ' — ' + p.cliente);
+  });
+  todos.forEach(function(p) {
+    var opt = document.createElement('option');
+    opt.value = p; opt.textContent = p;
+    sel.appendChild(opt);
+  });
+}
+
+function initTimerAtivSel(id) {
+  // Popula projeto SÓ se ainda vazio
+  initTimerProjSel(id);
+  var sel = document.getElementById(id + '-ativ-sel');
+  if (!sel) return;
+  // Preserva seleção atual antes de repopular
+  var valorAtual = sel.value;
+  sel.innerHTML = '';
+  atividadesCustom.forEach(function(a) {
+    var opt = document.createElement('option');
+    opt.value = a; opt.textContent = a;
+    sel.appendChild(opt);
+  });
+  // Restaura seleção se ainda existir
+  if (valorAtual) sel.value = valorAtual;
+}
+
+// Inicializa os selects quando a página de contador carregar
+function initPomoAtivSel() { initTimerSelects(); }
+
+function timerFmt(s) {
+  var m = Math.floor(Math.abs(s)/60);
+  var sec = Math.abs(s)%60;
+  return (m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;
+}
+
+// Som de alarme via Web Audio API
+function tocarAlarme(tipo) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var notas = tipo === 'foco' ? [880, 1108, 1318] : [523, 659, 784];
+    notas.forEach(function(freq, i) {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.3, ctx.currentTime + i*0.25);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.25 + 0.4);
+      osc.start(ctx.currentTime + i*0.25);
+      osc.stop(ctx.currentTime + i*0.25 + 0.4);
+    });
+  } catch(e) {}
+}
+
+function timerIniciar(id) {
+  var st = timerState[id];
+  if (st.rodando) return;
+  initTimerSelects(); // garante selects populados
+  st.rodando = true;
+
+  st.interval = setInterval(function() {
+    if (id === 'pomo') {
+      st.segundos--;
+      if (st.ciclo === 'foco') st.totalFoco++;
+      else st.totalPausa++;
+
+      var duracao = st.ciclo === 'foco' ? st.duracaoFoco : st.duracaoPausa;
+      var pct = (st.segundos / duracao) * 100;
+      var barra = document.getElementById('pomo-barra');
+      if (barra) barra.style.width = pct + '%';
+
+      var totEl = document.getElementById('pomo-total-pomo');
+      if (totEl) totEl.textContent = timerFmt(st.totalFoco + st.totalPausa);
+
+      if (st.segundos <= 0) {
+        clearInterval(st.interval);
+        st.rodando = false;
+        st.ciclos++;
+
+        if (st.ciclo === 'foco') {
+          tocarAlarme('foco');
+          timerLog('pomo', 'Bloco ' + st.ciclos + ' de foco conclu\u00eddo! (' + timerFmt(st.duracaoFoco) + ')');
+          st.ciclo = 'pausa';
+          st.segundos = st.duracaoPausa;
+          var lbl = document.getElementById('pomo-ciclo-label');
+          if (lbl) lbl.textContent = 'Pausa — Bloco ' + st.ciclos;
+          mostrarFeedback('\u2705 Foco conclu\u00eddo! Hora de pausar.');
+        } else {
+          tocarAlarme('pausa');
+          timerLog('pomo', 'Pausa conclu\u00edda! In\u00edcio do bloco ' + (st.ciclos+1) + ' de foco.');
+          st.ciclo = 'foco';
+          st.segundos = st.duracaoFoco;
+          var lbl2 = document.getElementById('pomo-ciclo-label');
+          if (lbl2) lbl2.textContent = 'Foco — Bloco ' + (st.ciclos+1);
+          mostrarFeedback('\u23F0 Pausa encerrada! Foco iniciado.');
+        }
+        timerIniciar('pomo');
+      }
+    } else {
+      st.segundos++;
+      st.totalSegundos++;
+      var totEl2 = document.getElementById('pomo-total-livre');
+      if (totEl2) totEl2.textContent = timerFmt(st.totalSegundos);
+    }
+
+    var el = document.getElementById('timer-' + id);
+    if (el) el.textContent = timerFmt(st.segundos);
+  }, 1000);
+}
+
+function timerPausar(id) {
+  var st = timerState[id];
+  if (!st.rodando) return;
+  clearInterval(st.interval);
+  st.rodando = false;
+  timerLog(id, 'Pausado em ' + timerFmt(st.segundos));
+}
+
+function timerReset(id) {
+  var st = timerState[id];
+  clearInterval(st.interval);
+  st.rodando = false;
+  if (id === 'pomo') {
+    st.segundos = st.duracaoFoco;
+    st.ciclo = 'foco'; st.ciclos = 0;
+    st.totalFoco = 0; st.totalPausa = 0;
+    var lbl = document.getElementById('pomo-ciclo-label');
+    if (lbl) lbl.textContent = 'Foco — Bloco 1';
+    var barra = document.getElementById('pomo-barra');
+    if (barra) barra.style.width = '100%';
+    var totEl = document.getElementById('pomo-total-pomo');
+    if (totEl) totEl.textContent = '00:00';
+  } else {
+    st.segundos = 0;
+    st.totalSegundos = 0;
+    var totEl2 = document.getElementById('pomo-total-livre');
+    if (totEl2) totEl2.textContent = '00:00';
+  }
+  var el = document.getElementById('timer-' + id);
+  if (el) el.textContent = timerFmt(st.segundos);
+}
+
+function timerLog(id, msg) {
+  var log = document.getElementById('log-' + id);
+  if (!log) return;
+  var now = new Date();
+  var h = now.getHours(), m = now.getMinutes();
+  var time = (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+  var item = document.createElement('div');
+  item.style.cssText = 'font-size:11px;color:var(--muted);padding:3px 0;border-bottom:1px solid var(--border2);display:flex;gap:6px';
+  item.innerHTML = '<span style="color:var(--muted2);flex-shrink:0">' + time + '</span><span>' + msg + '</span>';
+  log.prepend(item);
+}
+
+function timerRegistrarPomo() {
+  var st = timerState['pomo'];
+  clearInterval(st.interval);
+  st.rodando = false;
+  var projSel = document.getElementById('pomo-proj-sel');
+  var ativSel = document.getElementById('pomo-ativ-sel');
+  var proj  = projSel ? projSel.value : '';
+  var ativ  = ativSel ? ativSel.value : 'Atividade';
+  var totalFoco  = timerFmt(st.totalFoco);
+  var totalPausa = timerFmt(st.totalPausa);
+  var totalGeral = timerFmt(st.totalFoco + st.totalPausa);
+
+  var entrada = {
+    ativ: ativ, tipo: 'pomodoro',
+    foco: totalFoco, pausa: totalPausa, total: totalGeral,
+    totalSeg: st.totalFoco + st.totalPausa,
+    ciclos: st.ciclos, projeto: proj,
+    data: new Date().toLocaleDateString('pt-BR'),
+    hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+  };
+
+  // Salva no histórico geral
+  var hist = JSON.parse(localStorage.getItem('arq_timer_hist') || '[]');
+  hist.unshift(entrada);
+  localStorage.setItem('arq_timer_hist', JSON.stringify(hist.slice(0,200)));
+
+  // Salva também no índice por projeto
+  if (proj) salvarHorasNoProjeto(proj, entrada);
+
+  timerLog('pomo', 'Registrado: ' + ativ + (proj?' · '+proj.split('—')[0].trim():'') + ' · Foco ' + totalFoco + ' · Total ' + totalGeral);
+  mostrarFeedback('Registrado: ' + ativ + ' — ' + totalGeral);
+  timerReset('pomo');
+}
+
+function timerRegistrar() {
+  var st = timerState['livre'];
+  var projSel = document.getElementById('livre-proj-sel');
+  var ativSel = document.getElementById('livre-ativ-sel');
+  var ambEl   = document.getElementById('cad-ativ-amb');
+  var proj  = projSel ? projSel.value : '';
+  var ativ  = ativSel ? ativSel.value : 'Atividade';
+  var amb   = ambEl   ? ambEl.value   : '';
+  var tempo = timerFmt(st.totalSegundos);
+
+  var entrada = {
+    ativ: ativ, amb: amb, tipo: 'livre',
+    tempo: tempo, totalSeg: st.totalSegundos,
+    projeto: proj,
+    data: new Date().toLocaleDateString('pt-BR'),
+    hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+  };
+
+  var hist = JSON.parse(localStorage.getItem('arq_timer_hist') || '[]');
+  hist.unshift(entrada);
+  localStorage.setItem('arq_timer_hist', JSON.stringify(hist.slice(0,200)));
+
+  if (proj) salvarHorasNoProjeto(proj, entrada);
+
+  timerLog('livre', ativ + (amb?' — '+amb:'') + (proj?' · '+proj.split('—')[0].trim():'') + ' · ' + tempo);
+  var lbl = document.getElementById('livre-ativ-label');
+  if (lbl) lbl.textContent = ativ;
+  mostrarFeedback('Registrado: ' + ativ + ' · ' + tempo);
+  timerReset('livre');
+}
+
+// Salva horas vinculadas a um projeto — usa só o código como chave
+function salvarHorasNoProjeto(projLabel, entrada) {
+  // projLabel pode ser "001_05_26 — Sala Silva" ou só "001_05_26"
+  // Extrai só o código (antes do " — ")
+  var codigo = projLabel.split('\u2014')[0].split('—')[0].trim();
+  var chave = 'horas_proj_' + codigo.replace(/[^a-zA-Z0-9]/g,'_');
+  var lista = lerDados(chave, []);
+  lista.unshift(entrada);
+  salvarDados(chave, lista.slice(0,100));
+}
+
+// Retorna todas as horas de um projeto pelo código
+function lerHorasDoProjeto(codigo) {
+  var chave = 'horas_proj_' + codigo.replace(/[^a-zA-Z0-9]/g,'_');
+  return lerDados(chave, []);
+}
+
+// Formata segundos em h:mm
+function fmtHorasTotal(segundos) {
+  if (!segundos) return '0h 00min';
+  var h = Math.floor(segundos / 3600);
+  var m = Math.floor((segundos % 3600) / 60);
+  return (h > 0 ? h + 'h ' : '') + (m<10?'0':'')+m+'min';
+}
+
+// Abre painel de detalhe do projeto
+function abrirDetalheProjeto(cId, nome, codigo) {
+  var horas = lerHorasDoProjeto(codigo);
+  var totalSeg = horas.reduce(function(s,h){ return s+(h.totalSeg||0); }, 0);
+
+  var porAtiv = {};
+  horas.forEach(function(h) {
+    var k = h.ativ || 'Outra';
+    if (!porAtiv[k]) porAtiv[k] = 0;
+    porAtiv[k] += (h.totalSeg||0);
+  });
+
+  // Busca capa do projeto salvo
+  var salvos = lerDados('projetos', []);
+  var projSalvo = salvos.find(function(p) { return p.codigo === codigo; });
+  var capa = projSalvo ? projSalvo.capa : null;
+
+  var modal = document.createElement('div');
+  modal.id = 'modal-proj-detalhe';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.65);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 10px';
+
+  var html = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;width:680px;max-width:96vw;margin:auto;box-shadow:0 8px 40px var(--shadow)">';
+
+  // Capa do projeto no topo do modal
+  if (capa && capa.length > 10) {
+    html += '<div style="height:120px;background:url(\'' + capa + '\') center/cover no-repeat;position:relative">';
+    html += '<div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1),rgba(0,0,0,0.55))"></div>';
+    html += '<div style="position:absolute;bottom:12px;left:20px">';
+    html += '<div style="font-size:16px;font-weight:700;color:#fff">' + nome + '</div>';
+    html += '<div style="font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px">' + codigo + '</div>';
+    html += '</div>';
+    html += '<button onclick="document.getElementById(\'modal-proj-detalhe\').remove()" style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.5);border:none;border-radius:50%;width:28px;height:28px;color:#fff;cursor:pointer;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center">\u00D7</button>';
+    html += '</div>';
+    html += '<div style="padding:18px 24px 0">';
+  } else {
+    html += '<div style="padding:24px 24px 0">';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">';
+    html += '<div><div style="font-size:15px;font-weight:700">' + nome + '</div><div style="font-size:11px;color:var(--muted);margin-top:2px">' + codigo + '</div></div>';
+    html += '<button onclick="document.getElementById(\'modal-proj-detalhe\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00D7</button>';
+    html += '</div>';
+  }
+
+  // Abas do projeto
+  html += '<div style="display:flex;gap:4px;margin-bottom:18px;background:var(--bg2);padding:4px;border-radius:9px;border:1px solid var(--border2)">';
+  ['Resumo','Horas','Cap\u00edtulos','Arquivos'].forEach(function(tab, i) {
+    html += '<button class="btn btn-sm' + (i===0?' btn-accent':'') + '" style="flex:1;justify-content:center" onclick="switchProjTab(this,\'ptab-' + tab.toLowerCase().replace(/[^a-z]/g,'') + '\')">' + tab + '</button>';
+  });
+  html += '</div>';
+
+  // ABA RESUMO
+  html += '<div id="ptab-resumo">';
+  html += '<div class="g3" style="margin-bottom:16px">';
+  html += '<div class="stat"><div class="stat-val" style="color:var(--accent)">' + fmtHorasTotal(totalSeg) + '</div><div class="stat-lbl">Total horas</div></div>';
+  html += '<div class="stat"><div class="stat-val" style="color:var(--green)">' + horas.length + '</div><div class="stat-lbl">Registros</div></div>';
+  html += '<div class="stat"><div class="stat-val" style="color:var(--blue)">' + Object.keys(porAtiv).length + '</div><div class="stat-lbl">Atividades</div></div>';
+  html += '</div>';
+  html += '<div class="fg"><label class="fl">Observa\u00e7\u00f5es do projeto</label><textarea class="fi" style="min-height:80px" placeholder="Anota\u00e7\u00f5es, decis\u00f5es, pr\u00f3ximos passos..."></textarea></div>';
+  html += '<button class="btn btn-accent btn-sm">' + ic('save',13) + ' Salvar</button>';
+  html += '</div>';
+
+  // ABA HORAS
+  html += '<div id="ptab-horas" style="display:none">';
+  if (horas.length === 0) {
+    html += '<div style="text-align:center;padding:24px;color:var(--muted)">Nenhuma hora registrada ainda.<br>Use o Contador de Tempo e selecione este projeto.</div>';
+  } else {
+    html += '<div style="overflow-x:auto"><div class="tbl" style="min-width:520px">';
+    html += '<div class="tr th" style="grid-template-columns:90px 1fr 80px 70px 80px"><span>Data</span><span>Atividade</span><span>Tipo</span><span>Tempo</span><span>Total</span></div>';
+    horas.forEach(function(h) {
+      html += '<div class="tr" style="grid-template-columns:90px 1fr 80px 70px 80px">';
+      html += '<span style="color:var(--muted);font-size:11px">' + h.data + '</span>';
+      html += '<span style="font-size:12px;font-weight:500">' + (h.ativ||'—') + (h.amb?' <span style="color:var(--muted);font-weight:400">· '+h.amb+'</span>':'') + '</span>';
+      html += '<span>' + pill(h.tipo==='pomodoro'?'Pomodoro':'Livre', h.tipo==='pomodoro'?'p-accent':'p-blue') + '</span>';
+      html += '<span style="font-size:11px;color:var(--muted)">' + (h.tipo==='pomodoro'?'F:'+h.foco+' P:'+h.pausa:h.tempo||'—') + '</span>';
+      html += '<span style="font-size:12px;font-weight:600;color:var(--accent)">' + fmtHorasTotal(h.totalSeg) + '</span>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+    // Breakdown por atividade
+    html += '<div style="margin-top:14px">';
+    html += '<div style="font-size:11px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Por atividade</div>';
+    Object.keys(porAtiv).forEach(function(ativ) {
+      var pct = totalSeg > 0 ? Math.round((porAtiv[ativ]/totalSeg)*100) : 0;
+      html += '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:12px">' + ativ + '</span><span style="font-size:11px;color:var(--accent);font-weight:600">' + fmtHorasTotal(porAtiv[ativ]) + ' (' + pct + '%)</span></div>';
+      html += '<div style="height:4px;background:var(--bg3);border-radius:2px"><div style="height:100%;width:' + pct + '%;background:var(--accent);border-radius:2px"></div></div></div>';
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // ABA CAPÍTULOS
+  html += '<div id="ptab-captulos" style="display:none">';
+
+  // Capítulos do projeto — usa os salvos ou os padrão ativos
+  var projSalvo2 = lerDados('projetos', []).find(function(p){ return p.codigo === codigo; });
+  var capsAtivos = projSalvo2 && projSalvo2.capitulos
+    ? projSalvo2.capitulos
+    : todosCapitulos.reduce(function(acc, g) {
+        g.itens.forEach(function(ch) { if (ch[2]) acc.push({cod: ch[0], nome: ch[1]}); });
+        return acc;
+      }, []);
+
+  // Conteúdo padrão por tipo de capítulo
+  var capConteudo = {
+    'CAD': { label: 'Dados do Cliente', campos: [
+      {id:'nome', label:'Nome completo', tipo:'text', ph:'Ex: Ana Paula Silva'},
+      {id:'tel', label:'WhatsApp', tipo:'text', ph:'(91) 99999-0000'},
+      {id:'email', label:'E-mail', tipo:'text', ph:'cliente@email.com'},
+      {id:'end', label:'Endereço do imóvel', tipo:'text', ph:'Rua, número, bairro'},
+      {id:'obs', label:'Observações', tipo:'textarea', ph:'Informações adicionais...'}
+    ]},
+    'INP': { label: 'Início de Projeto', campos: [
+      {id:'data-inicio', label:'Data de início', tipo:'date', ph:''},
+      {id:'prazo', label:'Prazo de entrega', tipo:'date', ph:''},
+      {id:'area', label:'Área total (m²)', tipo:'number', ph:'Ex: 65'},
+      {id:'ambientes', label:'Ambientes do projeto', tipo:'textarea', ph:'Ex: Sala, 2 quartos, cozinha...'},
+      {id:'estilo', label:'Estilo desejado', tipo:'text', ph:'Ex: Biofílico, Minimalista...'}
+    ]},
+    'REF': { label: 'Referências', campos: [
+      {id:'ref-pinterest', label:'Link do Pinterest', tipo:'text', ph:'https://pinterest.com/...'},
+      {id:'ref-drive', label:'Link do Drive (fotos)', tipo:'text', ph:'https://drive.google.com/...'},
+      {id:'ref-cores', label:'Cores de referência', tipo:'text', ph:'Ex: terrosos, off-white, madeira clara'},
+      {id:'ref-obs', label:'Observações', tipo:'textarea', ph:'O que o cliente gosta e não gosta...'}
+    ]},
+    'MDB': { label: 'Moodboard', campos: [
+      {id:'mdb-status', label:'Status', tipo:'select', ops:['Em criação','Enviado ao cliente','Aprovado','Revisão solicitada']},
+      {id:'mdb-link', label:'Link do moodboard', tipo:'text', ph:'https://...'},
+      {id:'mdb-obs', label:'Observações', tipo:'textarea', ph:'Notas sobre o moodboard...'}
+    ]},
+    'BRI': { label: 'Briefing de Interiores', campos: [
+      {id:'bri-link', label:'Link do briefing respondido', tipo:'text', ph:'https://drive.google.com/... ou Forms'},
+      {id:'bri-estilo', label:'Estilo preferido', tipo:'text', ph:'Ex: Biofílico, Minimalista, Contemporâneo'},
+      {id:'bri-cores', label:'Paleta de cores', tipo:'text', ph:'Ex: terrosos, off-white, azul petróleo'},
+      {id:'bri-materiais', label:'Materiais preferidos', tipo:'text', ph:'Ex: madeira, concreto, pedra natural'},
+      {id:'bri-pets', label:'Possui pets?', tipo:'select', ops:['Não','Sim — cão','Sim — gato','Sim — outro']},
+      {id:'bri-criancas', label:'Possui crianças?', tipo:'select', ops:['Não','Sim — bebê','Sim — criança pequena','Sim — adolescente']},
+      {id:'bri-obs', label:'Observações gerais', tipo:'textarea', ph:'Informações complementares do briefing...'}
+    ]},
+    'LAY': { label: 'Layout', campos: [
+      {id:'lay-status', label:'Status', tipo:'select', ops:['Em desenvolvimento','Enviado','Aprovado','Em revisão']},
+      {id:'lay-software', label:'Software utilizado', tipo:'text', ph:'Ex: AutoCAD, SketchUp...'},
+      {id:'lay-link', label:'Link do arquivo', tipo:'text', ph:'https://drive.google.com/...'},
+      {id:'lay-obs', label:'Observações', tipo:'textarea', ph:'Decisões de layout, restrições...'}
+    ]},
+    'ELÉ': { label: 'Elétrica', campos: [
+      {id:'ele-status', label:'Status', tipo:'select', ops:['Pendente','Em desenvolvimento','Concluído']},
+      {id:'ele-resp', label:'Responsável', tipo:'text', ph:'Nome do eletricista ou engenheiro'},
+      {id:'ele-link', label:'Link do projeto elétrico', tipo:'text', ph:'https://...'},
+      {id:'ele-obs', label:'Observações', tipo:'textarea', ph:'Pontos de atenção...'}
+    ]},
+    'MOB': { label: 'Mobili\u00e1rio', campos: [
+      {id:'mob-link', label:'Lista de mobili\u00e1rio (Drive)', tipo:'text', ph:'https://drive.google.com/...'},
+      {id:'mob-fornec', label:'Fornecedores principais', tipo:'text', ph:'Ex: Tok&Stok, MadeiraMadeira...'},
+      {id:'mob-status', label:'Status', tipo:'select', ops:['Em sele\u00e7\u00e3o','Lista enviada','Aprovado','Em compra']},
+      {id:'mob-obs', label:'Observa\u00e7\u00f5es', tipo:'textarea', ph:'Itens priorit\u00e1rios, prazos...'}
+    ]},
+    'REV': { label: 'Revestimentos', campos: [
+      {id:'rev-link', label:'Lista de revestimentos (Drive)', tipo:'text', ph:'https://drive.google.com/...'},
+      {id:'rev-fornec', label:'Fornecedores principais', tipo:'text', ph:'Ex: Portobello, Eliane, Ceusa...'},
+      {id:'rev-status', label:'Status', tipo:'select', ops:['Em sele\u00e7\u00e3o','Lista enviada','Aprovado','Em compra']},
+      {id:'rev-obs', label:'Observa\u00e7\u00f5es', tipo:'textarea', ph:'Ambientes, especifica\u00e7\u00f5es, prazos...'}
+    ]},
+    'APR': { label: 'Apresentação', campos: [
+      {id:'apr-data', label:'Data da apresentação', tipo:'date', ph:''},
+      {id:'apr-formato', label:'Formato', tipo:'select', ops:['Online','Presencial','Vídeo gravado']},
+      {id:'apr-link', label:'Link da apresentação', tipo:'text', ph:'https://...'},
+      {id:'apr-resultado', label:'Resultado', tipo:'select', ops:['Pendente','Aprovada','Revisão solicitada','Reprovada']},
+      {id:'apr-obs', label:'Feedback do cliente', tipo:'textarea', ph:''}
+    ]},
+    'RIA': { label: 'Render IA', campos: [
+      {id:'ria-prompt', label:'Prompt utilizado', tipo:'textarea', ph:'Ex: sala de estar biofílica, luz natural, madeira freijó...'},
+      {id:'ria-link', label:'Link das imagens', tipo:'text', ph:'https://drive.google.com/...'},
+      {id:'ria-obs', label:'Observações', tipo:'textarea', ph:'Iterações, ajustes...'}
+    ]}
+  };
+
+  capsAtivos.forEach(function(cap) {
+    var conteudo = capConteudo[cap.cod] || { label: cap.nome, campos: [
+      {id:'obs-geral', label:'Anotações', tipo:'textarea', ph:'Registre informações deste capítulo...'}
+    ]};
+    var chaveBase = 'proj_' + cId + '_cap_' + cap.cod;
+    var dados = lerDados(chaveBase, {});
+
+    html += '<div style="border:1px solid var(--border2);border-radius:10px;margin-bottom:8px;overflow:hidden">';
+    // Header clicável do acordeão
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;background:var(--bg2)"'
+      + ' onclick="toggleCapAccordion(this)">';
+    html += '<div style="display:flex;align-items:center;gap:10px">';
+    html += '<span style="font-size:10px;font-weight:700;color:var(--accent);background:var(--bg3);padding:2px 7px;border-radius:4px">' + cap.cod + '</span>';
+    html += '<span style="font-size:13px;font-weight:500">' + cap.nome + '</span>';
+    html += '</div>';
+    html += '<span style="color:var(--muted);font-size:16px;transition:transform .2s" class="acc-arrow">' + ic('chevron-right', 14) + '</span>';
+    html += '</div>';
+
+    // Corpo do acordeão (oculto por padrão)
+    html += '<div style="display:none;padding:14px;background:var(--surface)">';
+    conteudo.campos.forEach(function(campo) {
+      var fullId = chaveBase + '_' + campo.id;
+      var val = dados[campo.id] || '';
+      html += '<div class="fg">';
+      html += '<label class="fl">' + campo.label + '</label>';
+      if (campo.tipo === 'textarea') {
+        html += '<textarea class="fi" id="' + fullId + '" style="min-height:70px" placeholder="' + (campo.ph||'') + '">' + val + '</textarea>';
+      } else if (campo.tipo === 'select') {
+        html += '<select class="fs" id="' + fullId + '">';
+        (campo.ops||[]).forEach(function(op) {
+          html += '<option' + (op === val ? ' selected' : '') + '>' + op + '</option>';
+        });
+        html += '</select>';
+      } else {
+        html += '<input class="fi" id="' + fullId + '" type="' + campo.tipo + '" placeholder="' + (campo.ph||'') + '" value="' + val + '">';
+      }
+      html += '</div>';
+    });
+    html += '<button class="btn btn-accent btn-sm" onclick="salvarCapitulo(\'' + chaveBase + '\',\'' + cap.cod + '\',this)">' + ic('save',13) + ' Salvar</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+
+  html += '</div>';
+
+  // ABA ARQUIVOS
+  html += '<div id="ptab-arquivos" style="display:none">';
+  html += '<div id="arquivos-lista-' + cId + '" style="margin-bottom:10px"></div>';
+  html += '<div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center">';
+  html += '<div style="color:var(--muted);margin-bottom:8px">' + ic('folder',24) + '</div>';
+  html += '<div style="font-size:13px;color:var(--muted);margin-bottom:10px">Arraste arquivos ou clique para adicionar</div>';
+  html += '<label style="cursor:pointer">';
+  html += '<input type="file" multiple style="display:none" onchange="adicionarArquivosProjeto(\'' + cId + '\', this)">';
+  html += '<span class="btn btn-sm btn-accent">' + ic('upload',13) + ' Selecionar arquivos</span>';
+  html += '</label>';
+  html += '</div>';
+  html += '</div>';
+
+  html += '</div>'; // fecha padding div
+  html += '</div>'; // fecha modal content
+  modal.innerHTML = html;
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function adicionarArquivosProjeto(cId, input) {
+  if (!input.files || !input.files.length) return;
+  var lista = document.getElementById('arquivos-lista-' + cId);
+  if (!lista) return;
+  Array.from(input.files).forEach(function(file) {
+    var item = document.createElement('div');
+    item.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;margin-bottom:6px';
+    var ext = file.name.split('.').pop().toLowerCase();
+    var iconName = ['pdf'].includes(ext) ? 'file-text' : ['png','jpg','jpeg','webp'].includes(ext) ? 'image' : ['doc','docx'].includes(ext) ? 'file' : 'file';
+    item.innerHTML = '<span style="color:var(--accent)">' + ic(iconName,16) + '</span>'
+      + '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + file.name + '</div>'
+      + '<div style="font-size:10px;color:var(--muted)">' + (file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+'MB' : (file.size/1024).toFixed(0)+'KB') + '</div></div>'
+      + '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1">\u00D7</button>';
+    lista.appendChild(item);
+    renderIcons();
+  });
+  input.value = '';
+  mostrarFeedback(input.files.length + ' arquivo(s) adicionado(s)');
+}
+
+function toggleCapAccordion(header) {
+  var body = header.nextElementSibling;
+  var arrow = header.querySelector('.acc-arrow');
+  var isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
+}
+
+function salvarCapitulo(chaveBase, cod, btn) {
+  // Coleta todos os inputs/textareas/selects com id começando pela chaveBase
+  var dados = {};
+  document.querySelectorAll('[id^="' + chaveBase + '_"]').forEach(function(el) {
+    var campo = el.id.replace(chaveBase + '_', '');
+    dados[campo] = el.value;
+  });
+  salvarDados(chaveBase, dados);
+  // Feedback
+  var orig = btn.innerHTML;
+  btn.innerHTML = ic('check',13) + ' Salvo!';
+  btn.style.background = 'var(--green)';
+  btn.style.borderColor = 'var(--green)';
+  setTimeout(function() {
+    btn.innerHTML = orig;
+    btn.style.background = '';
+    btn.style.borderColor = '';
+  }, 1500);
+}
+
+function switchProjTab(btn, tabId) {
+  btn.parentElement.querySelectorAll('button').forEach(function(b){ b.classList.remove('btn-accent'); });
+  btn.classList.add('btn-accent');
+  ['ptab-resumo','ptab-horas','ptab-captulos','ptab-arquivos'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = id === tabId ? 'block' : 'none';
+  });
 }
 
 function buildPomodoro() { return buildTimer('Pomodoro', 'var(--accent)', 'clock'); }
@@ -2494,26 +3442,35 @@ function calcValorHora() {
 
 function buildTextComImagem(id, valor) {
   var html = '';
-  // Textarea principal
   html += '<textarea class="fi" id="' + id + '-txt" style="min-height:80px;margin-bottom:10px">' + valor + '</textarea>';
-  // Área de imagem de referência
   html += '<div style="margin-bottom:10px">';
   html += '<div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Imagem de refer\u00EAncia / inspira\u00E7\u00E3o</div>';
-  html += '<div id="' + id + '-img-wrap" style="position:relative">';
-  // Preview (oculto até ter imagem)
-  html += '<div id="' + id + '-preview" style="display:none;position:relative;margin-bottom:6px">';
-  html += '<img id="' + id + '-img" src="" alt="Refer\u00EAncia" style="width:100%;border-radius:8px;max-height:180px;object-fit:cover;display:block">';
-  html += '<button onclick="removeImg(\'' + id + '\')" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:24px;height:24px;color:#fff;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center">\u00D7</button>';
+  html += '<div id="' + id + '-img-wrap">';
+
+  // Preview com ícones de hover
+  html += '<div id="' + id + '-preview" style="display:none;margin-bottom:8px;position:relative;border-radius:8px;overflow:hidden;cursor:pointer"'
+    + ' onmouseenter="document.getElementById(\'' + id + '-hover\').style.opacity=\'1\'"'
+    + ' onmouseleave="document.getElementById(\'' + id + '-hover\').style.opacity=\'0\'">';
+  html += '<img id="' + id + '-img" src="" alt="Refer\u00EAncia" style="width:100%;max-height:180px;object-fit:cover;display:block">';
+  // Overlay de hover com ícones
+  html += '<div id="' + id + '-hover" style="position:absolute;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;gap:12px;opacity:0;transition:opacity .2s">';
+  html += '<button onclick="trocarImagem(\'' + id + '\')" title="Trocar imagem" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:50%;width:34px;height:34px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)">' + ic('pencil',14) + '</button>';
+  html += '<button onclick="excluirImagem(\'' + id + '\')" title="Excluir imagem" style="background:rgba(248,113,113,0.2);border:1px solid rgba(248,113,113,0.4);border-radius:50%;width:34px;height:34px;color:#f87171;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)">' + ic('trash',14) + '</button>';
   html += '</div>';
-  // Área de drop/upload
+  html += '</div>';
+
+  // Área de upload
   html += '<label for="' + id + '-file" id="' + id + '-drop" style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px dashed var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:border .15s" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">';
   html += '<span style="color:var(--muted)">' + ic('image', 16) + '</span>';
   html += '<div><div style="font-size:12px;color:var(--text2)">Clique para subir imagem</div><div style="font-size:10px;color:var(--muted)">JPG, PNG ou WebP \u00B7 m\u00E1x 5MB</div></div>';
   html += '</label>';
   html += '<input id="' + id + '-file" type="file" accept="image/*" style="display:none" onchange="previewImg(\'' + id + '\', this)">';
   html += '</div></div>';
-  // Botão salvar
-  html += '<button class="btn btn-accent btn-sm">' + ic('save', 13) + ' Salvar</button>';
+
+  // Só o botão Salvar — os outros controles ficam no hover da imagem
+  html += '<div id="' + id + '-actions" style="display:flex;gap:8px;align-items:center">';
+  html += '<button class="btn btn-accent btn-sm" id="' + id + '-btn-salvar" onclick="salvarTextoImagem(\'' + id + '\', this)">' + ic('save', 13) + ' Salvar</button>';
+  html += '</div>';
   return html;
 }
 
@@ -2522,25 +3479,67 @@ function previewImg(id, input) {
   var file = input.files[0];
   var reader = new FileReader();
   reader.onload = function(e) {
-    var img = document.getElementById(id + '-img');
+    var img     = document.getElementById(id + '-img');
     var preview = document.getElementById(id + '-preview');
-    var drop = document.getElementById(id + '-drop');
-    if (img) img.src = e.target.result;
+    var drop    = document.getElementById(id + '-drop');
+    if (img)     img.src = e.target.result;
     if (preview) preview.style.display = 'block';
-    if (drop) drop.style.display = 'none';
+    if (drop)    drop.style.display = 'none';
   };
   reader.readAsDataURL(file);
 }
 
-function removeImg(id) {
-  var img = document.getElementById(id + '-img');
-  var preview = document.getElementById(id + '-preview');
-  var drop = document.getElementById(id + '-drop');
+function removeImg(id) { excluirImagem(id); }
+
+function trocarImagem(id) {
+  var drop      = document.getElementById(id + '-drop');
   var fileInput = document.getElementById(id + '-file');
-  if (img) img.src = '';
-  if (preview) preview.style.display = 'none';
-  if (drop) drop.style.display = 'flex';
-  if (fileInput) fileInput.value = '';
+  var preview   = document.getElementById(id + '-preview');
+  var btnSalvar = document.getElementById(id + '-btn-salvar');
+  if (drop)      drop.style.display    = 'flex';
+  if (preview)   preview.style.display = 'none';
+  if (fileInput) fileInput.value       = '';
+  if (btnSalvar) { btnSalvar.innerHTML = ic('save',13) + ' Salvar'; btnSalvar.style.display = 'inline-flex'; }
+}
+
+function excluirImagem(id) {
+  var img       = document.getElementById(id + '-img');
+  var preview   = document.getElementById(id + '-preview');
+  var drop      = document.getElementById(id + '-drop');
+  var fileInput = document.getElementById(id + '-file');
+  var btnSalvar = document.getElementById(id + '-btn-salvar');
+  if (img)       img.src                = '';
+  if (preview)   preview.style.display  = 'none';
+  if (drop)      drop.style.display     = 'flex';
+  if (fileInput) fileInput.value        = '';
+  salvarDados(id + '_img', null);
+  if (btnSalvar) { btnSalvar.innerHTML = ic('save',13) + ' Salvar'; btnSalvar.style.display = 'inline-flex'; }
+  mostrarFeedback('Imagem exclu\u00edda');
+}
+
+function salvarTextoImagem(id, btn) {
+  var txt = document.getElementById(id + '-txt');
+  if (txt) {
+    salvarDados(id + '_texto', txt.value);
+    // Reaparece só quando o usuário editar o texto novamente
+    txt.oninput = function() {
+      var b = document.getElementById(id + '-btn-salvar');
+      if (b) b.style.display = 'inline-flex';
+    };
+  }
+
+  var preview   = document.getElementById(id + '-preview');
+  var temImagem = preview && preview.style.display !== 'none';
+  var img       = document.getElementById(id + '-img');
+  if (temImagem && img && img.src) salvarDados(id + '_img', img.src);
+
+  // Feedback verde → some sempre
+  btn.innerHTML = ic('check',13) + ' Salvo!';
+  btn.style.background  = 'var(--green)';
+  btn.style.borderColor = 'var(--green)';
+  setTimeout(function() {
+    btn.style.display = 'none';
+  }, 1200);
 }
 
 // Banco de capas sugeridas por tema (Unsplash - URLs públicas de design de interiores)
@@ -2629,6 +3628,229 @@ function uploadCapaPropria(input) {
   reader.readAsDataURL(input.files[0]);
 }
 
+function abrirModalNovaPropostaOuLead(tipo) {
+  var titulo = tipo === 'proposta' ? 'Nova Proposta' : 'Novo Lead';
+  var modal = document.createElement('div');
+  modal.id = 'modal-crm-temp';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:480px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">' + titulo + '</div>'
+    + '<button onclick="this.closest(\'#modal-crm-temp\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00D7</button>'
+    + '</div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Nome do cliente</label><input class="fi" id="crm-nome" placeholder="Ex: Ana Paula"></div>'
+    + '<div class="fg"><label class="fl">Origem</label><select class="fs" id="crm-origem"><option>Instagram</option><option>Indica\u00e7\u00e3o</option><option>Site</option><option>WhatsApp</option><option>Outro</option></select></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Servi\u00e7o de interesse</label><select class="fs" id="crm-servico"><option>Projeto Completo</option><option>Consultoria Online</option><option>Shop the Room</option><option>Kit de Ambiente</option><option>Templates</option></select></div>'
+    + '<div class="fg"><label class="fl">Valor estimado (R$)</label><input class="fi" id="crm-valor" type="number" placeholder="Ex: 3500"></div>'
+    + '<div class="fg"><label class="fl">Observa\u00e7\u00f5es</label><textarea class="fi" id="crm-obs" style="min-height:60px" placeholder="Detalhes do contato, preferências..."></textarea></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarCRM(\'' + tipo + '\')">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-crm-temp\').remove()">Cancelar</button>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function salvarCRM(tipo) {
+  var nome  = (document.getElementById('crm-nome')||{value:''}).value.trim();
+  if (!nome) { mostrarFeedback('Informe o nome do cliente'); return; }
+  var entrada = {
+    nome: nome,
+    origem: (document.getElementById('crm-origem')||{value:''}).value,
+    servico: (document.getElementById('crm-servico')||{value:''}).value,
+    valor: (document.getElementById('crm-valor')||{value:''}).value,
+    obs: (document.getElementById('crm-obs')||{value:''}).value,
+    tipo: tipo,
+    data: new Date().toLocaleDateString('pt-BR')
+  };
+  var lista = lerDados('crm_leads', []);
+  lista.unshift(entrada);
+  salvarDados('crm_leads', lista);
+  var modal = document.getElementById('modal-crm-temp');
+  if (modal) modal.remove();
+  mostrarFeedback((tipo==='proposta'?'Proposta':'Lead') + ' de ' + nome + ' salvo!');
+}
+
+function abrirModalNovoObjetivo() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-obj-temp';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:480px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Novo Objetivo</div>'
+    + '<button onclick="document.getElementById(\'modal-obj-temp\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00D7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Objetivo</label><input class="fi" id="obj-label" placeholder="Ex: Faturamento anual"></div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Valor atual</label><input class="fi" id="obj-val" placeholder="Ex: R$ 51.2k"></div>'
+    + '<div class="fg"><label class="fl">Meta</label><input class="fi" id="obj-target" placeholder="Ex: R$ 120k"></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Cor do indicador</label>'
+    + '<div style="display:flex;gap:8px;margin-bottom:12px">'
+    + ['var(--accent)','var(--green)','var(--amber)','var(--blue)','var(--purple)','var(--red)'].map(function(c,i){
+        return '<div onclick="selectObjCor(this,\'' + c + '\')" style="width:24px;height:24px;border-radius:50%;background:' + c + ';cursor:pointer;border:2px solid ' + (i===0?'var(--text)':'transparent') + '" data-cor="' + c + '"></div>';
+      }).join('')
+    + '</div></div>'
+    + '<div class="fg"><label class="fl">% Conclu\u00eddo</label><input class="fi" id="obj-pct" type="number" min="0" max="100" value="0" placeholder="0"></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarObjetivo()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-obj-temp\').remove()">Cancelar</button>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(modal);
+}
+
+var objCorSelecionada = 'var(--accent)';
+function selectObjCor(el, cor) {
+  objCorSelecionada = cor;
+  el.parentElement.querySelectorAll('div').forEach(function(d){ d.style.border = '2px solid transparent'; });
+  el.style.border = '2px solid var(--text)';
+}
+
+function salvarObjetivo() {
+  var label = (document.getElementById('obj-label')||{value:''}).value.trim();
+  if (!label) { mostrarFeedback('Informe o objetivo'); return; }
+  var obj = {
+    label: label,
+    val: (document.getElementById('obj-val')||{value:''}).value,
+    target: (document.getElementById('obj-target')||{value:''}).value,
+    pct: parseInt((document.getElementById('obj-pct')||{value:'0'}).value)||0,
+    color: objCorSelecionada
+  };
+  var lista = lerDados('objetivos', []);
+  lista.push(obj);
+  salvarDados('objetivos', lista);
+  var modal = document.getElementById('modal-obj-temp');
+  if (modal) modal.remove();
+  mostrarFeedback('Objetivo "' + label + '" salvo!');
+  renderPage('metas'); // atualiza a página
+}
+
+
+function salvarSWOT(btn) {
+  var dados = {
+    forcas:       (document.getElementById('swot-f') ||{value:''}).value,
+    fraquezas:    (document.getElementById('swot-fr')||{value:''}).value,
+    oportunidades:(document.getElementById('swot-o') ||{value:''}).value,
+    ameacas:      (document.getElementById('swot-a') ||{value:''}).value
+  };
+  salvarDados('swot', dados);
+  var orig = btn.innerHTML;
+  btn.innerHTML = ic('check',14) + ' Salvo!';
+  btn.style.background = 'var(--green)';
+  btn.style.borderColor = 'var(--green)';
+  setTimeout(function() {
+    btn.innerHTML = orig;
+    btn.style.background = '';
+    btn.style.borderColor = '';
+  }, 2000);
+}
+
+function abrirModalNovoLancamento() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-lanc-temp';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:440px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Novo lan\u00e7amento</div>'
+    + '<button onclick="document.getElementById(\'modal-lanc-temp\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00D7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Descri\u00e7\u00e3o</label><input class="fi" id="lanc-desc" placeholder="Ex: Projeto Silva — 1\u00aa parcela"></div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Tipo</label><select class="fs" id="lanc-tipo"><option value="receita">Receita</option><option value="despesa">Despesa</option></select></div>'
+    + '<div class="fg"><label class="fl">Valor (R$)</label><input class="fi" id="lanc-valor" type="number" placeholder="0,00"></div>'
+    + '</div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Vencimento</label><input class="fi" id="lanc-data" type="date"></div>'
+    + '<div class="fg"><label class="fl">Status</label><select class="fs" id="lanc-status"><option>Recebido</option><option>Pendente</option><option>Pago</option><option>Fixo</option></select></div>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarLancamento()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-lanc-temp\').remove()">Cancelar</button>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function salvarLancamento() {
+  var desc = (document.getElementById('lanc-desc')||{value:''}).value.trim();
+  if (!desc) { mostrarFeedback('Informe a descri\u00e7\u00e3o'); return; }
+  var entrada = {
+    desc: desc,
+    tipo: (document.getElementById('lanc-tipo')||{value:'receita'}).value,
+    valor: 'R$ ' + parseFloat((document.getElementById('lanc-valor')||{value:'0'}).value||0).toLocaleString('pt-BR',{minimumFractionDigits:2}),
+    data: (document.getElementById('lanc-data')||{value:''}).value,
+    status: (document.getElementById('lanc-status')||{value:'Pendente'}).value,
+    criadoEm: new Date().toLocaleDateString('pt-BR')
+  };
+  var lista = lerDados('lancamentos', []);
+  lista.unshift(entrada);
+  salvarDados('lancamentos', lista);
+  var modal = document.getElementById('modal-lanc-temp');
+  if (modal) modal.remove();
+  mostrarFeedback('Lan\u00e7amento salvo: ' + desc);
+}
+
+function abrirModalNovaNF() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-nf-temp';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:480px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Nova Nota Fiscal</div>'
+    + '<button onclick="document.getElementById(\'modal-nf-temp\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00D7</button>'
+    + '</div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Cliente</label><input class="fi" id="nf-cliente" placeholder="Nome do cliente"></div>'
+    + '<div class="fg"><label class="fl">Servi\u00e7o</label><select class="fs" id="nf-servico"><option>Projeto Interiores</option><option>Consultoria</option><option>Shop the Room</option><option>Kit de Ambiente</option></select></div>'
+    + '</div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Valor (R$)</label><input class="fi" id="nf-valor" type="number" placeholder="0,00"></div>'
+    + '<div class="fg"><label class="fl">Data de emiss\u00e3o</label><input class="fi" id="nf-data" type="date"></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Status</label>'
+    + '<div style="display:flex;gap:8px;margin-bottom:12px">'
+    + '<button type="button" class="btn btn-accent btn-sm nf-status-btn" data-s="Emitida" onclick="selectNFStatus(this)" style="flex:1;justify-content:center">Emitida</button>'
+    + '<button type="button" class="btn btn-sm nf-status-btn" data-s="Pendente" onclick="selectNFStatus(this)" style="flex:1;justify-content:center">Pendente</button>'
+    + '</div></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarNF()">' + ic('save',14) + ' Salvar NF</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-nf-temp\').remove()">Cancelar</button>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function selectNFStatus(btn) {
+  btn.closest('div').querySelectorAll('.nf-status-btn').forEach(function(b){ b.classList.remove('btn-accent'); });
+  btn.classList.add('btn-accent');
+}
+
+function salvarNF() {
+  var cliente = (document.getElementById('nf-cliente')||{value:''}).value.trim();
+  if (!cliente) { mostrarFeedback('Informe o cliente'); return; }
+  var statusBtn = document.querySelector('#modal-nf-temp .nf-status-btn.btn-accent');
+  var nf = {
+    cliente: cliente,
+    servico: (document.getElementById('nf-servico')||{value:''}).value,
+    valor: 'R$ ' + parseFloat((document.getElementById('nf-valor')||{value:'0'}).value||0).toLocaleString('pt-BR',{minimumFractionDigits:2}),
+    data: (document.getElementById('nf-data')||{value:''}).value,
+    status: statusBtn ? statusBtn.getAttribute('data-s') : 'Pendente',
+    criadoEm: new Date().toLocaleDateString('pt-BR')
+  };
+  var lista = lerDados('notas_fiscais', []);
+  lista.unshift(nf);
+  salvarDados('notas_fiscais', lista);
+  var modal = document.getElementById('modal-nf-temp');
+  if (modal) modal.remove();
+  mostrarFeedback('NF de ' + cliente + ' salva!');
+}
+
 function previewFonte() {
   var titulo = document.getElementById('font-titulo');
   var corpo = document.getElementById('font-corpo');
@@ -2705,7 +3927,7 @@ function buildCalculadora() {
     card: 'background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px',
     th: 'font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);text-align:center;padding:6px 4px;border-bottom:1px solid var(--border2)',
     td: 'font-size:12px;padding:5px 4px;border-bottom:1px solid var(--border2)',
-    inp: 'background:var(--bg2);border:1px solid var(--border2);border-radius:4px;padding:3px 6px;font-size:12px;color:var(--text);font-family:inherit;width:60px;text-align:right',
+    inp: 'background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:4px 6px;font-size:12px;color:var(--text);font-family:inherit;width:60px;text-align:right;box-sizing:border-box;outline:none;-moz-appearance:textfield',
     tot: 'font-size:12px;font-weight:700;padding:6px 4px;border-top:2px solid var(--border)',
     sec: 'font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);text-align:center;padding:8px 4px;background:var(--bg2)',
     desc: 'font-size:10px;color:var(--muted);text-align:center;padding:3px 4px;border-bottom:1px solid var(--border2)'
@@ -2732,10 +3954,12 @@ function buildCalculadora() {
   ];
   var defaults = [1, 10, 0, 0];
   linhasValor.forEach(function(l, i) {
-    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap">';
-    html += '<span style="font-size:11px;flex:1;min-width:80px">' + l[0] + '</span>';
-    html += '<div style="display:flex;align-items:center;gap:2px;flex-shrink:0"><input id="' + l[1] + '" ' + s.inp.replace('width:60px','width:44px') + ' type="number" value="' + defaults[i] + '" onchange="calcOrc()"><span style="font-size:10px">%</span></div>';
-    html += '<span style="font-size:11px;font-weight:600;color:var(--accent);flex-shrink:0;min-width:70px;text-align:right;white-space:nowrap" id="' + l[2] + '">R$ \u2014</span>';
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+    html += '<span style="font-size:11px;flex:1">' + l[0] + '</span>';
+    html += '<div style="display:flex;align-items:center;gap:3px;flex-shrink:0">';
+    html += '<input id="' + l[1] + '" ' + s.inp.replace('width:60px','width:42px') + ' type="number" min="0" max="100" value="' + defaults[i] + '" onchange="calcOrc()">';
+    html += '<span style="font-size:10px;color:var(--muted)">%</span></div>';
+    html += '<span style="font-size:11px;font-weight:600;color:var(--accent);flex-shrink:0;width:72px;text-align:right" id="' + l[2] + '">R$ \u2014</span>';
     html += '</div>';
   });
   html += '<div style="font-size:10px;color:var(--muted);text-align:right;margin-top:6px">Taxas e impostos totais do projeto: <strong id="c-tx-tot">1%</strong> \u00B7 R$ <span id="c-tx-val">\u2014</span></div>';
@@ -2900,7 +4124,7 @@ function buildCalculadora() {
   // Botão exportar
   html += '<div style="display:flex;gap:8px;margin-top:4px">';
   html += '<button class="btn btn-accent" onclick="calcOrc()">' + ic('refresh-cw',14) + ' Recalcular tudo</button>';
-  html += '<button class="btn">' + ic('download',14) + ' Exportar PDF</button>';
+  html += '<button class="btn" onclick="exportarPDF(\'calculadora\')">' + ic('download',14) + ' Exportar PDF</button>';
   html += '</div>';
 
   return html;
@@ -3431,8 +4655,8 @@ function buildMetricasRede() {
 
 function buildNotasFiscais() {
   var html = '<div style="display:flex;gap:8px;margin-bottom:14px">';
-  html += '<button class="btn btn-accent">' + ic("plus",14) + ' Nova NF</button>';
-  html += '<button class="btn">' + ic("external-link",14) + ' Acessar sistema NF-e</button>';
+  html += '<button class="btn btn-accent" onclick="abrirModalNovaNF()">' + ic("plus",14) + ' Nova NF</button>';
+  html += '<button class="btn" onclick="window.open(\'https://www.nfse.gov.br\',\'_blank\')">' + ic("external-link",14) + ' Acessar sistema NF-e</button>';
   html += '</div>';
   html += mkTblWrap('580px');
   html += '<div class="tr th" style="grid-template-columns:50px 1fr 110px 80px 90px 80px 36px">';
@@ -3464,6 +4688,320 @@ function buildNotasFiscais() {
   html += '<div class="stat"><div class="stat-val" style="color:var(--amber)">1</div><div class="stat-lbl">NFs pendentes</div></div>';
   html += '</div>';
   return html;
+}
+
+// ============================================================
+// SALVAR DADOS — localStorage
+// ============================================================
+
+var ARQ_KEY = 'arqcentral_dados';
+
+function salvarDados(chave, valor) {
+  try {
+    var dados = JSON.parse(localStorage.getItem(ARQ_KEY) || '{}');
+    dados[chave] = valor;
+    localStorage.setItem(ARQ_KEY, JSON.stringify(dados));
+    return true;
+  } catch(e) { return false; }
+}
+
+function lerDados(chave, fallback) {
+  try {
+    var dados = JSON.parse(localStorage.getItem(ARQ_KEY) || '{}');
+    return dados[chave] !== undefined ? dados[chave] : (fallback || null);
+  } catch(e) { return fallback || null; }
+}
+
+// Salva todos os inputs de um card de uma vez
+function salvarCard(prefixo, campos) {
+  var obj = {};
+  campos.forEach(function(c) {
+    var el = document.getElementById(c);
+    if (el) obj[c] = el.value;
+  });
+  salvarDados(prefixo, obj);
+  mostrarFeedback('Salvo com sucesso!');
+}
+
+// Carrega dados salvos em inputs
+function carregarCard(prefixo, campos) {
+  var obj = lerDados(prefixo, {});
+  campos.forEach(function(c) {
+    var el = document.getElementById(c);
+    if (el && obj[c] !== undefined) el.value = obj[c];
+  });
+}
+
+function mostrarFeedback(msg) {
+  var fb = document.createElement('div');
+  fb.textContent = msg;
+  fb.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--accent);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:opacity .3s';
+  document.body.appendChild(fb);
+  setTimeout(function() { fb.style.opacity='0'; setTimeout(function(){ fb.remove(); }, 300); }, 2000);
+}
+
+// Salva dados do escritório
+function salvarDadosEscritorio() {
+  salvarCard('escritorio', ['np-crea','np-nome-esc','np-email-esc','np-tel-esc','np-site-esc','np-cidade-esc','np-slogan-esc']);
+}
+
+// Salva dados de projeto do modal
+function previewCodigoProjeto() {
+  var cliente = (document.getElementById('np-cliente')||{value:''}).value.trim();
+  var preview = document.getElementById('np-codigo-preview');
+  if (!preview) return;
+  if (!cliente) { preview.textContent = '\u2014'; return; }
+  preview.textContent = gerarCodigoProjeto(cliente);
+}
+
+function gerarCodigoProjeto(cliente) {
+  var agora = new Date();
+  var mm = String(agora.getMonth()+1).padStart(2,'0');
+  var aa = String(agora.getFullYear()).slice(-2);
+  var sigla = (cliente||'PROJ')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-zA-Z0-9 ]/g,'')
+    .trim().split(' ')[0]
+    .toUpperCase()
+    .substring(0,5);
+  var total = lerDados('projetos', []).length;
+  var num = String(total + 1).padStart(3,'0');
+  return num + '_' + mm + '_' + aa + '_' + sigla;
+}
+
+function salvarNovoProjeto() {
+  var clienteEl = document.getElementById('np-cliente');
+  var catEl     = document.getElementById('np-categoria');
+  var cliente   = (clienteEl||{value:''}).value.trim();
+
+  if (!cliente) {
+    mostrarFeedback('Informe o nome do cliente');
+    if (clienteEl) clienteEl.focus();
+    return;
+  }
+
+  var codigo = gerarCodigoProjeto(cliente);
+
+  var proj = {
+    cliente:   cliente,
+    codigo:    codigo,
+    categoria: (catEl||{value:'Residencial'}).value,
+    ambientes: ambientesSelecionados.slice(),
+    capa:      capaSelecionada,
+    criado:    new Date().toLocaleDateString('pt-BR')
+  };
+
+  var projetos = lerDados('projetos', []);
+  projetos.push(proj);
+  salvarDados('projetos', projetos);
+
+  mostrarFeedback('Projeto ' + codigo + ' criado!');
+  closeNovoProj();
+
+  // Re-renderiza onde quer que os cards estejam visíveis
+  document.querySelectorAll('.g3').forEach(function(g) {
+    if (g.querySelector('[onclick*="abrirDetalheProjeto"]') || g.children.length === 0) {
+      g.innerHTML = buildProjectCards();
+    }
+  });
+  renderIcons();
+}
+
+// ============================================================
+// EXPORTAR PDF — via jsPDF (carregado sob demanda)
+// ============================================================
+
+function carregarJsPDF(callback) {
+  if (window.jspdf) { callback(); return; }
+  var script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  script.onload = function() { setTimeout(callback, 150); };
+  script.onerror = function() { mostrarFeedback('Erro ao carregar PDF. Verifique a conex\u00e3o.'); };
+  document.head.appendChild(script);
+}
+
+function exportarPDF(tipo) {
+  carregarJsPDF(function() {
+    var doc = new window.jspdf.jsPDF();
+    var accent = [212, 149, 106]; // cor da marca
+    var y = 20;
+
+    // Cabeçalho
+    doc.setFillColor(26, 26, 26);
+    doc.rect(0, 0, 210, 28, 'F');
+    doc.setTextColor(212, 149, 106);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ARQ|CENTRAL', 14, 18);
+    doc.setTextColor(180, 180, 180);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Arquitetura e Design de Interiores', 14, 24);
+    y = 40;
+
+    if (tipo === 'calculadora') {
+      exportarPDFCalculadora(doc, y, accent);
+    } else if (tipo === 'proposta') {
+      exportarPDFProposta(doc, y, accent);
+    } else if (tipo === 'reuniao') {
+      exportarPDFReuniao(doc, y, accent);
+    }
+  });
+}
+
+function addSecao(doc, titulo, y, accent) {
+  doc.setFillColor(accent[0], accent[1], accent[2]);
+  doc.rect(14, y, 182, 7, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.text(titulo.toUpperCase(), 16, y + 5);
+  doc.setTextColor(40, 40, 40);
+  doc.setFont('helvetica', 'normal');
+  return y + 12;
+}
+
+function addLinha(doc, label, valor, y) {
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(80, 80, 80);
+  doc.text(label + ':', 14, y);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(30, 30, 30);
+  doc.text(String(valor || '—'), 70, y);
+  doc.setDrawColor(220, 220, 220);
+  doc.line(14, y + 2, 196, y + 2);
+  return y + 8;
+}
+
+function exportarPDFCalculadora(doc, y, accent) {
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(30, 30, 30);
+  doc.text('Calculadora de Projeto', 14, y);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(120, 120, 120);
+  doc.text('Gerado em ' + new Date().toLocaleDateString('pt-BR') + ' \u00E0s ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}), 14, y+6);
+  y += 16;
+
+  y = addSecao(doc, 'Valor do Or\u00E7amento', y, accent);
+  var total = document.getElementById('c-total');
+  y = addLinha(doc, 'VALOR TOTAL', 'R$ ' + (total ? total.textContent : '0,00'), y);
+  y = addLinha(doc, 'Margem de negocia\u00E7\u00E3o', document.getElementById('c-mn-val') ? document.getElementById('c-mn-val').textContent : '—', y);
+  y = addLinha(doc, 'Lucro', document.getElementById('c-lc-val') ? document.getElementById('c-lc-val').textContent : '—', y);
+  y = addLinha(doc, 'Impostos', document.getElementById('c-imp-val') ? document.getElementById('c-imp-val').textContent : '—', y);
+  y += 4;
+
+  y = addSecao(doc, 'Horas de Trabalho', y, accent);
+  y = addLinha(doc, 'Total de horas calculadas', document.getElementById('c-h-calc') ? document.getElementById('c-h-calc').textContent : '0', y);
+  y = addLinha(doc, 'Margem de seguran\u00E7a', (document.getElementById('c-ms')||{value:'15'}).value + '%', y);
+  y = addLinha(doc, 'Total de horas', document.getElementById('c-h-tot') ? document.getElementById('c-h-tot').textContent : '0', y);
+  y += 4;
+
+  y = addSecao(doc, 'Custos do Projeto', y, accent);
+  y = addLinha(doc, 'Custo de m\u00E3o de obra', document.getElementById('c-mdo') ? document.getElementById('c-mdo').textContent : '—', y);
+  y = addLinha(doc, 'Custo vari\u00E1veis', document.getElementById('c-cv-tot') ? document.getElementById('c-cv-tot').textContent : '—', y);
+  y = addLinha(doc, 'CUSTO TOTAL', document.getElementById('c-custo-total') ? document.getElementById('c-custo-total').textContent : '—', y);
+
+  // Rodapé
+  doc.setDrawColor(212, 149, 106);
+  doc.line(14, 282, 196, 282);
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150);
+  doc.text('ARQ|CENTRAL \u2014 Plataforma de Gest\u00E3o para Arquitetura e Design de Interiores', 14, 287);
+
+  doc.save('orcamento_arqcentral.pdf');
+  mostrarFeedback('PDF exportado!');
+}
+
+function exportarPDFProposta(doc, y, accent) {
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(30, 30, 30);
+  doc.text('Proposta de Servi\u00E7os', 14, y);
+  y += 16;
+
+  y = addSecao(doc, 'Dados do Cliente', y, accent);
+  var cliente = (document.getElementById('gen-prop-cliente')||{value:'—'}).value;
+  var servico = (document.getElementById('gen-prop-servico')||{value:'—'}).value;
+  var ambientes = (document.getElementById('gen-prop-amb')||{value:'—'}).value;
+  var area = (document.getElementById('gen-prop-area')||{value:'—'}).value;
+  y = addLinha(doc, 'Cliente', cliente, y);
+  y = addLinha(doc, 'Servi\u00E7o', servico, y);
+  y = addLinha(doc, 'Ambientes', ambientes, y);
+  y = addLinha(doc, '\u00C1rea', area + ' m\u00B2', y);
+  y += 4;
+
+  y = addSecao(doc, 'Condi\u00E7\u00F5es Gerais', y, accent);
+  y = addLinha(doc, 'Validade da proposta', '15 dias corridos', y);
+  y = addLinha(doc, 'Forma de pagamento', '50% entrada + 50% na entrega', y);
+  y = addLinha(doc, 'Prazo de entrega', 'A definir ap\u00F3s assinatura', y);
+  y += 4;
+
+  y = addSecao(doc, 'Observa\u00E7\u00F5es', y, accent);
+  var obs = (document.getElementById('gen-prop-obs')||{value:''}).value || 'Nenhuma observa\u00E7\u00E3o adicional.';
+  doc.setFontSize(9);
+  doc.setTextColor(50, 50, 50);
+  var linhasObs = doc.splitTextToSize(obs, 170);
+  doc.text(linhasObs, 14, y);
+
+  doc.setDrawColor(212, 149, 106);
+  doc.line(14, 282, 196, 282);
+  doc.setFontSize(8);
+  doc.setTextColor(150, 150, 150);
+  doc.text('ARQ|CENTRAL \u2014 Plataforma de Gest\u00E3o para Arquitetura e Design de Interiores', 14, 287);
+
+  doc.save('proposta_arqcentral.pdf');
+  mostrarFeedback('PDF exportado!');
+}
+
+function exportarPDFReuniao(doc, y, accent) {
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(30, 30, 30);
+  doc.text('Ata de Reuni\u00E3o', 14, y);
+  y += 16;
+
+  y = addSecao(doc, 'Informa\u00E7\u00F5es da Reuni\u00E3o', y, accent);
+  y = addLinha(doc, 'Assunto', (document.getElementById('mr-titulo')||{textContent:'—'}).textContent, y);
+  y = addLinha(doc, 'Cliente', (document.getElementById('mr-cliente')||{value:'—'}).value, y);
+  y = addLinha(doc, 'Projeto', (document.getElementById('mr-projeto')||{value:'—'}).value, y);
+  y = addLinha(doc, 'Data', (document.getElementById('mr-data')||{value:'—'}).value, y);
+  y = addLinha(doc, 'Participantes', (document.getElementById('mr-part')||{value:'—'}).value, y);
+  y += 4;
+
+  y = addSecao(doc, 'Pauta', y, accent);
+  var pauta = (document.getElementById('mr-pauta')||{value:''}).value || '—';
+  doc.setFontSize(9); doc.setTextColor(50,50,50);
+  var lp = doc.splitTextToSize(pauta, 170);
+  doc.text(lp, 14, y); y += lp.length * 5 + 6;
+
+  y = addSecao(doc, 'Ata / Decis\u00F5es', y, accent);
+  var ata = (document.getElementById('mr-ata')||{value:''}).value || '—';
+  var la = doc.splitTextToSize(ata, 170);
+  doc.text(la, 14, y); y += la.length * 5 + 6;
+
+  y = addSecao(doc, 'A\u00E7\u00F5es Geradas', y, accent);
+  var acoesDivs = document.querySelectorAll('#mr-acoes-list [data-acao]');
+  if (acoesDivs.length) {
+    acoesDivs.forEach(function(d, i) {
+      doc.setFontSize(9); doc.setTextColor(50,50,50);
+      doc.text((i+1) + '. ' + d.getAttribute('data-acao'), 14, y);
+      y += 6;
+    });
+  } else {
+    doc.setFontSize(9); doc.setTextColor(120,120,120);
+    doc.text('Nenhuma a\u00e7\u00e3o registrada.', 14, y);
+  }
+
+  doc.setDrawColor(212, 149, 106);
+  doc.line(14, 282, 196, 282);
+  doc.setFontSize(8); doc.setTextColor(150,150,150);
+  doc.text('ARQ|CENTRAL \u2014 Plataforma de Gest\u00E3o para Arquitetura e Design de Interiores', 14, 287);
+
+  doc.save('ata_reuniao_arqcentral.pdf');
+  mostrarFeedback('PDF exportado!');
 }
 
 window.addEventListener('load', function() {
