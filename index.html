@@ -683,13 +683,21 @@ function renderIcons() {
       <button onclick="closePerfil()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1">×</button>
     </div>
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
-      <div class="avatar" style="width:54px;height:54px;font-size:18px;cursor:pointer" title="Clique para trocar foto">SM</div>
+      <div style="position:relative;cursor:pointer" onclick="document.getElementById('perfil-foto-input').click()">
+        <div class="avatar" id="perfil-avatar" style="width:54px;height:54px;font-size:18px;overflow:hidden">SM</div>
+        <img id="perfil-avatar-img" src="" alt="" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%">
+        <div style="position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;transition:background .2s" onmouseover="this.style.background='rgba(0,0,0,0.35)'" onmouseout="this.style.background='rgba(0,0,0,0)'">
+        </div>
+      </div>
       <div>
         <div style="font-size:13px;font-weight:600">Sibelle Moura</div>
         <div style="font-size:11px;color:var(--muted)">Arquiteta · Admin</div>
-        <button class="btn btn-sm" style="margin-top:6px;font-size:11px">
-          <i data-lucide="upload" style="width:11px;height:11px"></i> Trocar foto
-        </button>
+        <label style="cursor:pointer">
+          <input type="file" id="perfil-foto-input" accept="image/*" style="display:none" onchange="trocarFotoPerfil(this)">
+          <span class="btn btn-sm" style="margin-top:6px;font-size:11px;display:inline-flex">
+            <i data-lucide="upload" style="width:11px;height:11px"></i> Trocar foto
+          </span>
+        </label>
       </div>
     </div>
     <div class="fg"><label class="fl">Nome completo</label><input class="fi" value="Sibelle Moura"></div>
@@ -1111,7 +1119,7 @@ function renderPage(page) {
     html += '</div></div>';
 
   } else if (page === 'produtos') {
-    html = '<div class="page on"><div class="page-title">Produtos e Servi\u00E7os</div><div class="page-sub">Cat\u00E1logo com pre\u00E7os e status.</div>';
+    html += '<div style="margin-bottom:14px"><button class="btn btn-accent" onclick="abrirModalNovoServico()">' + ic('plus', 14) + ' Novo servi\u00E7o</button></div>';
     html += '<div style="margin-bottom:14px"><button class="btn btn-accent">' + ic('plus', 14) + ' Novo servi\u00E7o</button></div>';
     html += mkCard('Cat\u00E1logo', 'package', buildCatalogo());
     html += '</div>';
@@ -1138,8 +1146,8 @@ function renderPage(page) {
 
   } else if (page === 'producao') {
     html = '<div class="page on"><div class="page-title">Produ\u00E7\u00E3o</div><div class="page-sub">Gest\u00E3o de conte\u00FAdo por etapas.</div>';
+    html += '<div style="margin-bottom:12px"><button class="btn btn-accent" onclick="abrirModalNovaIdeia()">' + ic('plus', 14) + ' Nova ideia</button></div>';
     html += '<div class="kanban">';
-    html += buildKbCol('IDEIA', [['5 erros na ilumina\u00E7\u00E3o','Reels \u00B7 Educativo']]);
     html += buildKbCol('EM REVIS\u00C3O', [['Biofilia no ap\u00EA pequeno','Carrossel \u00B7 Dicas']]);
     html += buildKbCol('AGENDADO', [['Antes e depois HO','Post \u00B7 07/06 \u00B7 18h']]);
     html += '</div><div style="margin-top:12px"><button class="btn btn-accent">' + ic('plus', 14) + ' Nova ideia</button></div>';
@@ -1161,13 +1169,12 @@ function renderPage(page) {
     html += '</div>';
 
   } else if (page === 'modelos') {
+  } else if (page === 'modelos') {
     html = '<div class="page on"><div class="page-title">Meus Modelos</div><div class="page-sub">Templates de identidade visual, portf\u00F3lio e apresenta\u00E7\u00F5es.</div>';
     html += '<div class="g3">';
-    html += '<div class="card" style="text-align:center;cursor:pointer"><div style="font-size:32px;margin-bottom:10px">\u1F3A8</div><div style="font-size:13px;font-weight:600">Identidade Visual</div><div style="font-size:11px;color:var(--muted);margin-top:4px">3 templates</div></div>';
-    html += '<div class="card" style="text-align:center;cursor:pointer"><div style="font-size:32px;margin-bottom:10px">\u1F4F8</div><div style="font-size:13px;font-weight:600">Portf\u00F3lio</div><div style="font-size:11px;color:var(--muted);margin-top:4px">5 templates</div></div>';
-    html += '<div class="card" style="text-align:center;cursor:pointer"><div style="font-size:32px;margin-bottom:10px">\u1F4CA</div><div style="font-size:13px;font-weight:600">Apresenta\u00E7\u00F5es</div><div style="font-size:11px;color:var(--muted);margin-top:4px">4 templates</div></div>';
+    var modelos2 = [{icon:'palette',label:'Identidade Visual',n:'3 templates'},{icon:'image',label:'Portf\u00F3lio',n:'5 templates'},{icon:'presentation',label:'Apresenta\u00E7\u00F5es',n:'4 templates'}];
+    modelos2.forEach(function(m){ html += '<div class="card" style="text-align:center;cursor:pointer;transition:border .15s" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'"><div style="color:var(--accent);margin-bottom:10px">' + ic(m.icon,28) + '</div><div style="font-size:13px;font-weight:600">' + m.label + '</div><div style="font-size:11px;color:var(--muted);margin-top:4px">' + m.n + '</div></div>'; });
     html += '</div></div>';
-
   } else if (page === 'nossa-empresa') {
     html = '<div class="page on"><div class="page-title">Nossa Empresa</div><div class="page-sub">Vis\u00EDvel para toda a equipe.</div>';
     html += mkCard('Quem Somos', 'home', buildNossaEmpresa());
@@ -1175,15 +1182,15 @@ function renderPage(page) {
 
   } else if (page === 'tarefas') {
     html = '<div class="page on"><div class="page-title">Tarefas</div><div class="page-sub">Dashboard kanban com filtros.</div>';
-    html += '<div style="display:flex;gap:8px;margin-bottom:16px"><button class="btn btn-accent">' + ic('plus', 14) + ' Nova tarefa</button>';
-    html += buildSelect(['Todos os status','N\u00E3o iniciado','Em andamento','Conclu\u00EDda']);
-    html += buildSelect(['Todos','Sibelle','Julia']);
-    html += buildSelect(['Prioridade','Urgente','Importante','M\u00E9dio','Baixo']);
-    html += '</div><div class="kanban">';
-    html += buildKbColWithPill('A FAZER \u00B7 3', [['Planta hidr\u00E1ulica Silva','Sibelle \u00B7 Projeto Silva','Urgente','p-red'],['Moodboard Moura','Julia \u00B7 Projeto Moura','M\u00E9dio','p-blue'],['Proposta Juliana','Sibelle \u00B7 CRM','Importante','p-amber']]);
-    html += buildKbCol('EM ANDAMENTO \u00B7 2', [['Layout Moura','Julia \u00B7 18/06'],['Fotos Carvalho','Sibelle \u00B7 20/06']]);
-    html += buildKbCol('CONCLU\u00CDDA \u00B7 4', [['Cadastro Silva','Conclu\u00EDdo 12/05'],['Briefing Carvalho','Conclu\u00EDdo 02/04']]);
+    html += '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"><button class="btn btn-accent" onclick="abrirModalNovaTarefa()">' + ic('plus', 14) + ' Nova tarefa</button>';
+    html += '<select class="fs" id="filtro-status" style="max-width:160px" onchange="filtrarTarefas()"><option value="">Todos os status</option><option value="fazer">A fazer</option><option value="andamento">Em andamento</option><option value="concluida">Conclu\u00edda</option></select>';
+    html += '<select class="fs" id="filtro-resp" style="max-width:130px" onchange="filtrarTarefas()"><option value="">Todos</option><option value="Sibelle">Sibelle</option><option value="Julia">Julia</option></select>';
+    html += '<select class="fs" id="filtro-prio" style="max-width:130px" onchange="filtrarTarefas()"><option value="">Prioridade</option><option value="Urgente">Urgente</option><option value="Importante">Importante</option><option value="M\u00e9dio">M\u00e9dio</option></select>';
+    html += '</div><div id="tarefas-kanban" class="kanban">';
+    html += buildTarefasKanban('','','');
     html += '</div></div>';
+    setTimeout(function(){ renderIcons(); }, 50);
+
 
   } else if (page === 'funcoes') {
     html = '<div class="page on"><div class="page-title">Equipe e Fun\u00E7\u00F5es</div><div class="page-sub">Funcion\u00E1rios, fun\u00E7\u00F5es cadastradas e processos do escrit\u00F3rio.</div>';
@@ -1195,7 +1202,7 @@ function renderPage(page) {
 
     // ABA FUNCIONÁRIOS
     html += '<div id="ef-funcionarios">';
-    html += '<div style="margin-bottom:16px"><button class="btn btn-accent">' + ic('plus',14) + ' Novo funcion\u00E1rio</button></div>';
+    html += '<div style="margin-bottom:16px"><button class="btn btn-accent" onclick="abrirModalNovoFuncionario()">' + ic('plus',14) + ' Novo funcion\u00E1rio</button></div>';
     var equipe = [
       {init:'SM', cor:'var(--accent)', nome:'Sibelle Moura', funcao:'CEO \u00B7 Arquiteta', status:'Ativo', pill:'p-green'},
       {init:'JC', cor:'var(--purple)', nome:'Julia Costa', funcao:'Social Media \u00B7 Assistente', status:'Ativo', pill:'p-green'}
@@ -1249,7 +1256,7 @@ function renderPage(page) {
     });
     html += '</div>';
     html += '<div style="display:flex;align-items:center;gap:6px"><button class="btn btn-sm">' + ic('chevron-left',13) + '</button><span style="font-size:13px;font-weight:600;min-width:110px;text-align:center">Junho 2026</span><button class="btn btn-sm">' + ic('chevron-right',13) + '</button></div>';
-    html += '<button class="btn btn-accent btn-sm">' + ic('plus',13) + ' Novo evento</button>';
+    html += '<button class="btn btn-accent btn-sm" onclick="abrirModalNovoEvento()">' + ic('plus',13) + ' Novo evento</button>';
     html += '</div>';
     html += '<div id="cal-ano" style="display:none">' + mkCard('2026', 'calendar', buildCalAnual()) + '</div>';
     html += '<div id="cal-m\u00EAs">' + mkCard('Junho 2026', 'calendar', buildCalendario()) + '</div>';
@@ -1259,8 +1266,29 @@ function renderPage(page) {
 
   } else if (page === 'biblioteca') {
     html = '<div class="page on"><div class="page-title">Biblioteca</div><div class="page-sub">Materiais, produtos e fornecedores.</div>';
-    html += '<div style="display:flex;gap:8px;margin-bottom:16px"><button class="btn btn-accent">' + ic('plus', 14) + ' Cadastrar material</button><button class="btn">' + ic('upload', 14) + ' Importar lista</button></div>';
-    html += '<div style="text-align:center;padding:48px;color:var(--muted2)">' + ic('package', 32) + '<div style="font-size:13px;margin-top:12px">Nenhum material cadastrado ainda.</div></div>';
+    html += '<div style="display:flex;gap:8px;margin-bottom:16px">';
+    html += '<button class="btn btn-accent" onclick="abrirModalCadastrarMaterial()">' + ic('plus', 14) + ' Cadastrar material</button>';
+    html += '<label style="cursor:pointer"><input type="file" accept=".csv,.xlsx,.xls" style="display:none" onchange="importarListaBiblioteca(this)"><span class="btn">' + ic('upload', 14) + ' Importar lista</span></label>';
+    html += '</div>';
+    html += '<div id="biblioteca-lista">';
+    var mats = lerDados('biblioteca_materiais', []);
+    if (!mats.length) {
+      html += '<div style="text-align:center;padding:48px;color:var(--muted2)">' + ic('package', 32) + '<div style="font-size:13px;margin-top:12px">Nenhum material cadastrado ainda.</div><div style="font-size:11px;margin-top:6px;color:var(--muted2)">Clique em "Cadastrar material" para come\u00e7ar</div></div>';
+    } else {
+      html += mkTblWrap('560px');
+      html += mkTblRow(['Material / Produto','Categoria','Fornecedor','Pre\u00e7o ref.',''], '1fr 100px 120px 80px 30px', true);
+      mats.forEach(function(m, i) {
+        html += '<div class="tr" style="grid-template-columns:1fr 100px 120px 80px 30px">';
+        html += '<span style="font-weight:500">' + m.nome + '</span>';
+        html += '<span style="color:var(--muted)">' + (m.cat||'\u2014') + '</span>';
+        html += '<span style="color:var(--muted)">' + (m.fornec||'\u2014') + '</span>';
+        html += '<span style="color:var(--accent)">' + (m.preco ? 'R$ '+m.preco : '\u2014') + '</span>';
+        html += '<span style="cursor:pointer;color:var(--muted)" onclick="removerMaterial(' + i + ')">\u00d7</span>';
+        html += '</div>';
+      });
+      html += mkTblWrapEnd;
+    }
+    html += '</div>';
     html += '</div>';
 
   } else if (page === 'contador') {
@@ -1890,11 +1918,15 @@ function closeReuniao() {
   document.getElementById('modal-reuniao').style.display = 'none';
 }
 
+var _crmData = {};
+
 function buildKbCol(title, items) {
+  var col = title.split('\u00b7')[0].trim().toLowerCase().replace(/\s+/g,'_');
   var html = '<div class="kb-col"><div class="kb-title">' + title + '</div>';
   items.forEach(function(it, i) {
-    var col = title.split('\u00b7')[0].trim().toLowerCase();
-    html += '<div class="kb-card" onclick="abrirCardCRM(' + JSON.stringify(it) + ',\'' + col + '\')">';
+    var key = col + '_' + i;
+    _crmData[key] = {nome: it[0], info: it[1], coluna: col};
+    html += '<div class="kb-card" onclick="abrirCardCRM(\'' + key + '\')">';
     html += '<div class="kb-card-title">' + it[0] + '</div>';
     html += '<div class="kb-card-sub">' + it[1] + '</div>';
     html += '</div>';
@@ -1903,29 +1935,33 @@ function buildKbCol(title, items) {
   return html;
 }
 
-function abrirCardCRM(it, coluna) {
+function abrirCardCRM(key) {
+  var d = _crmData[key];
+  if (!d) { mostrarFeedback('Dado n\u00e3o encontrado'); return; }
+  var coluna = d.coluna;
+  var status = coluna.indexOf('fechado') >= 0 ? 'Fechado' : coluna.indexOf('proposta') >= 0 ? 'Em proposta' : 'Lead';
+  var cor    = coluna.indexOf('fechado') >= 0 ? 'p-green' : coluna.indexOf('proposta') >= 0 ? 'p-blue' : 'p-amber';
+  var old = document.getElementById('modal-crm-card');
+  if (old) old.remove();
   var modal = document.createElement('div');
   modal.id = 'modal-crm-card';
   modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
-  var status = coluna === 'leads' ? 'Lead' : coluna === 'proposta' ? 'Em proposta' : coluna === 'fechado' ? 'Fechado' : coluna;
-  var cor = coluna === 'fechado' ? 'p-green' : coluna === 'proposta' ? 'p-blue' : 'p-amber';
   modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:480px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
     + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
-    + '<div><div style="font-size:15px;font-weight:700">' + it[0] + '</div>'
-    + '<div style="font-size:11px;color:var(--muted);margin-top:3px">' + it[1] + '</div></div>'
+    + '<div><div style="font-size:15px;font-weight:700">' + d.nome + '</div>'
+    + '<div style="font-size:11px;color:var(--muted);margin-top:3px">' + d.info + '</div></div>'
     + '<button onclick="document.getElementById(\'modal-crm-card\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
     + '</div>'
     + '<div style="margin-bottom:14px">' + pill(status, cor) + '</div>'
-    + '<div class="fg"><label class="fl">Origem / Canal</label><input class="fi" value="' + (it[1]||'').split('\u00b7')[0].trim() + '"></div>'
+    + '<div class="fg"><label class="fl">Origem / Canal</label><input class="fi" value="' + d.info.split('\u00b7')[0].trim() + '"></div>'
     + '<div class="fg"><label class="fl">Servi\u00e7o de interesse</label><input class="fi" placeholder="Projeto Completo, Consultoria..."></div>'
     + '<div class="fg"><label class="fl">Valor estimado (R$)</label><input class="fi" type="number" placeholder="Ex: 3500"></div>'
     + '<div class="fg"><label class="fl">Pr\u00f3ximo passo</label><input class="fi" placeholder="Ex: Enviar proposta at\u00e9 sexta"></div>'
-    + '<div class="fg"><label class="fl">Observa\u00e7\u00f5es</label><textarea class="fi" style="min-height:70px" placeholder="Notas sobre o contato..."></textarea></div>'
+    + '<div class="fg"><label class="fl">Observa\u00e7\u00f5es</label><textarea class="fi" style="min-height:60px" placeholder="Notas sobre o contato..."></textarea></div>'
     + '<div style="display:flex;gap:8px">'
-    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="mostrarFeedback(\'Lead salvo!\');document.getElementById(\'modal-crm-card\').remove()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="mostrarFeedback(\'Salvo!\');document.getElementById(\'modal-crm-card\').remove()">' + ic('save',14) + ' Salvar</button>'
     + '<button class="btn" onclick="document.getElementById(\'modal-crm-card\').remove()">Fechar</button>'
-    + '</div>'
-    + '</div>';
+    + '</div></div>';
   document.body.appendChild(modal);
   renderIcons();
 }
@@ -2419,11 +2455,25 @@ function removerFornecedor(cat, idx) {
 }
 
 function buildClientesEq() {
+  var clientes = lerDados('clientes_lista', [
+    {init:'AS',cor:'var(--purple)',nome:'Ana Paula Silva',  status:'Em andamento',pill:'p-amber',proj:'001_05_26_SILVA',tipo:'Interiores',prog:'65%',progCor:'var(--accent)',tel:'(91) 99999-0000',email:'ana@email.com',end:'Av. Gentil Bittencourt, 500, Belém'},
+    {init:'MM',cor:'var(--blue)',  nome:'Família Moura',    status:'Em andamento',pill:'p-amber',proj:'002_05_26_MOURA',tipo:'Interiores',prog:'30%',progCor:'var(--accent)',tel:'',email:'',end:''},
+    {init:'RC',cor:'var(--accent)',nome:'Dr. Roberto Carvalho',status:'Concluído',pill:'p-green',proj:'003_05_26_CARV',tipo:'Interiores',prog:'90%',progCor:'var(--green)',tel:'',email:'',end:''}
+  ]);
+
   var html = mkTblWrap('480px');
-  html += mkTblRow(['Cliente','C\u00F3digo','Tipo','Status','Progresso'], '1fr 80px 100px 80px 80px', true);
-  var rows = [['Ana Silva','001','Interiores',pill('Andamento','p-amber'),'<span style="color:var(--accent)">65%</span>'],['Fam\u00EDlia Moura','002','Interiores',pill('Andamento','p-amber'),'<span style="color:var(--accent)">30%</span>'],['Dr. Carvalho','003','Interiores',pill('Conclu\u00EDdo','p-green'),'<span style="color:var(--green)">90%</span>']];
-  rows.forEach(function(r) {
-    html += mkTblRow(['<span style="font-weight:500">'+r[0]+'</span>','<span style="color:var(--muted)">'+r[1]+'</span>','<span style="color:var(--muted)">'+r[2]+'</span>',r[3],r[4]], '1fr 80px 100px 80px 80px', false);
+  html += mkTblRow(['Cliente','C\u00f3digo','Tipo','Status','Progresso'], '1fr 80px 100px 80px 80px', true);
+  clientes.forEach(function(c, i) {
+    html += '<div class="tr" style="grid-template-columns:1fr 80px 100px 80px 80px;cursor:pointer;transition:background .15s"'
+      + ' onclick="abrirDetalheCliente(' + i + ')"'
+      + ' onmouseover="this.style.background=\'var(--bg2)\'"'
+      + ' onmouseout="this.style.background=\'\'">';
+    html += '<span style="font-weight:500;display:flex;align-items:center;gap:6px"><span class="avatar" style="width:22px;height:22px;font-size:9px;background:' + c.cor + ';flex-shrink:0">' + c.init + '</span>' + c.nome + '</span>';
+    html += '<span style="color:var(--muted)">' + (c.proj||'').split('_')[0] + '</span>';
+    html += '<span style="color:var(--muted)">' + (c.tipo||'Interiores') + '</span>';
+    html += '<span>' + pill(c.status, c.pill) + '</span>';
+    html += '<span style="color:' + (c.progCor||'var(--accent)') + ';font-weight:600">' + (c.prog||'0%') + '</span>';
+    html += '</div>';
   });
   html += mkTblWrapEnd;
   return html;
@@ -3279,22 +3329,37 @@ function buildPerfilPage() {
 
 function buildDadosEscritorio() {
   var html = '<div class="fg"><label class="fl">Logo do Escrit\u00F3rio</label>';
-  html += '<div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;margin-bottom:12px">';
+  html += '<div style="position:relative;background:var(--bg2);border:1px dashed var(--border);border-radius:8px;padding:20px;text-align:center;margin-bottom:12px">';
+  html += '<div id="logo-esc-preview" style="display:none;margin-bottom:10px"><img id="logo-esc-img" src="" style="max-height:80px;max-width:200px;object-fit:contain;border-radius:6px"></div>';
   html += '<i data-lucide="image" style="width:28px;height:28px;color:var(--muted2);margin-bottom:8px"></i>';
-  html += '<div style="font-size:12px;color:var(--muted)">PNG, JPG ou WebP \u00B7 m\u00E1x 2MB</div>';
-  html += '<button class="btn btn-sm" style="margin-top:10px">' + ic('upload',13) + ' Enviar logo</button>';
+  html += '<div style="font-size:12px;color:var(--muted);margin-bottom:10px">PNG, JPG ou WebP \u00b7 m\u00e1x 2MB</div>';
+  html += '<label style="cursor:pointer"><input type="file" accept="image/*" style="display:none" onchange="uploadLogo(this,\'esc\')"><span class="btn btn-sm">' + ic('upload',13) + ' Enviar logo</span></label>';
   html += '</div></div>';
   html += '<div class="g2">';
-  html += '<div class="fg"><label class="fl">Nome do Escrit\u00F3rio</label><input class="fi" value="Sibelle Moura Arquitetura"></div>';
-  html += '<div class="fg"><label class="fl">CREA / CAU</label><input class="fi" placeholder="CAU A000000-0 BR"></div>';
-  html += '<div class="fg"><label class="fl">E-mail Profissional</label><input class="fi" value="sibelle@arqcentral.com.br"></div>';
-  html += '<div class="fg"><label class="fl">Telefone / WhatsApp</label><input class="fi" value="(91) 99999-0000"></div>';
-  html += '<div class="fg"><label class="fl">Site</label><input class="fi" value="arq-central.vercel.app"></div>';
-  html += '<div class="fg"><label class="fl">Cidade / UF</label><input class="fi" value="Bel\u00E9m, PA"></div>';
+  html += '<div class="fg"><label class="fl">Nome do Escrit\u00F3rio</label><input class="fi" id="esc-nome" value="Sibelle Moura Arquitetura"></div>';
+  html += '<div class="fg"><label class="fl">CREA / CAU</label><input class="fi" id="esc-cau" placeholder="CAU A000000-0 BR"></div>';
+  html += '<div class="fg"><label class="fl">E-mail Profissional</label><input class="fi" id="esc-email" value="sibelle@arqcentral.com.br"></div>';
+  html += '<div class="fg"><label class="fl">Telefone / WhatsApp</label><input class="fi" id="esc-tel" value="(91) 99999-0000"></div>';
+  html += '<div class="fg"><label class="fl">Site</label><input class="fi" id="esc-site" value="arq-central.vercel.app"></div>';
+  html += '<div class="fg"><label class="fl">Cidade / UF</label><input class="fi" id="esc-cidade" value="Bel\u00e9m, PA"></div>';
   html += '</div>';
-  html += '<div class="fg"><label class="fl">Slogan / Tagline</label><input class="fi" value="Design consciente com biofilia e prop\u00F3sito"></div>';
-  html += '<div style="margin-top:4px"><button class="btn btn-accent">' + ic('save',14) + ' Salvar</button></div>';
+  html += '<div class="fg"><label class="fl">Slogan / Tagline</label><input class="fi" id="esc-slogan" value="Design consciente com biofilia e prop\u00f3sito"></div>';
+  html += '<div style="margin-top:4px"><button class="btn btn-accent" onclick="salvarDadosEscritorio()">' + ic('save',14) + ' Salvar</button></div>';
   return html;
+}
+
+function uploadLogo(input, tipo) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var preview = document.getElementById('logo-' + tipo + '-preview');
+    var img     = document.getElementById('logo-' + tipo + '-img');
+    if (preview) preview.style.display = 'block';
+    if (img) img.src = e.target.result;
+    salvarDados('logo_' + tipo, e.target.result);
+    mostrarFeedback('Logo enviado!');
+  };
+  reader.readAsDataURL(input.files[0]);
 }
 
 function buildCapitulosPadrao() {
@@ -3368,6 +3433,20 @@ function openNovoProj() {
 
 function closeNovoProj() {
   document.getElementById('modal-novo-projeto').style.display = 'none';
+}
+
+function trocarFotoPerfil(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = document.getElementById('perfil-avatar-img');
+    var av  = document.getElementById('perfil-avatar');
+    if (img) { img.src = e.target.result; img.style.display = 'block'; }
+    if (av)  av.style.opacity = '0';
+    salvarDados('perfil_foto', e.target.result);
+    mostrarFeedback('Foto atualizada!');
+  };
+  reader.readAsDataURL(input.files[0]);
 }
 
 function openPerfil() {
@@ -3830,6 +3909,403 @@ function salvarNF() {
   mostrarFeedback('NF de ' + cliente + ' salva!');
 }
 
+// ============================================================
+// TAREFAS
+// ============================================================
+var tarefasData = [
+  {titulo:'Planta hidráulica Silva', resp:'Sibelle', proj:'Projeto Silva', prio:'Urgente', prio_pill:'p-red',    status:'fazer',    prazo:'20/06/26', obs:''},
+  {titulo:'Moodboard Moura',         resp:'Julia',   proj:'Projeto Moura', prio:'Médio',   prio_pill:'p-blue',   status:'fazer',    prazo:'22/06/26', obs:''},
+  {titulo:'Proposta Juliana',        resp:'Sibelle', proj:'CRM',           prio:'Importante', prio_pill:'p-amber', status:'fazer',  prazo:'18/06/26', obs:''},
+  {titulo:'Layout Moura',            resp:'Julia',   proj:'Projeto Moura', prio:'Médio',   prio_pill:'p-blue',   status:'andamento',prazo:'18/06/26', obs:''},
+  {titulo:'Fotos Carvalho',          resp:'Sibelle', proj:'',              prio:'Baixo',   prio_pill:'p-muted',  status:'andamento',prazo:'20/06/26', obs:''},
+  {titulo:'Cadastro Silva',          resp:'Sibelle', proj:'Projeto Silva', prio:'Médio',   prio_pill:'p-blue',   status:'concluida',prazo:'12/05/26', obs:''},
+  {titulo:'Briefing Carvalho',       resp:'Sibelle', proj:'',              prio:'Médio',   prio_pill:'p-blue',   status:'concluida',prazo:'02/04/26', obs:''}
+];
+
+function buildTarefasKanban(filtStatus, filtResp, filtPrio) {
+  var dados = lerDados('tarefas_data', null) || tarefasData;
+  var cols = [
+    {id:'fazer',     label:'A FAZER'},
+    {id:'andamento', label:'EM ANDAMENTO'},
+    {id:'concluida', label:'CONCLU\u00cdDA'}
+  ];
+  var html = '';
+  cols.forEach(function(col) {
+    var items = dados.filter(function(t) {
+      if (filtStatus && t.status !== filtStatus) return false;
+      if (filtResp  && t.resp   !== filtResp)   return false;
+      if (filtPrio  && t.prio   !== filtPrio)   return false;
+      return t.status === col.id;
+    });
+    var idx = dados; // para o índice global
+    html += '<div class="kb-col"><div class="kb-title">' + col.label + ' \u00b7 ' + items.length + '</div>';
+    items.forEach(function(t) {
+      var gi = dados.indexOf(t);
+      html += '<div class="kb-card" onclick="abrirDetalheTarefa(' + gi + ')">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">';
+      html += '<div class="kb-card-title" style="flex:1">' + t.titulo + '</div>';
+      html += pill(t.prio, t.prio_pill);
+      html += '</div>';
+      html += '<div class="kb-card-sub">' + t.resp + (t.proj ? ' \u00b7 ' + t.proj : '') + '</div>';
+      if (t.prazo) html += '<div style="font-size:10px;color:var(--muted);margin-top:4px">\u23f0 ' + t.prazo + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  return html;
+}
+
+function filtrarTarefas() {
+  var s = (document.getElementById('filtro-status')||{value:''}).value;
+  var r = (document.getElementById('filtro-resp')  ||{value:''}).value;
+  var p = (document.getElementById('filtro-prio')  ||{value:''}).value;
+  var kb = document.getElementById('tarefas-kanban');
+  if (kb) { kb.innerHTML = buildTarefasKanban(s,r,p); renderIcons(); }
+}
+
+function abrirDetalheTarefa(i) {
+  var dados = lerDados('tarefas_data', null) || tarefasData;
+  var t = dados[i];
+  if (!t) return;
+  var modal = document.createElement('div');
+  modal.id = 'modal-tarefa-temp';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:480px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">' + t.titulo + '</div>'
+    + '<button onclick="document.getElementById(\'modal-tarefa-temp\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Respons\u00e1vel</label><select class="fs" id="td-resp"><option' + (t.resp==='Sibelle'?' selected':'') + '>Sibelle</option><option' + (t.resp==='Julia'?' selected':'') + '>Julia</option></select></div>'
+    + '<div class="fg"><label class="fl">Status</label><select class="fs" id="td-status"><option value="fazer"' + (t.status==='fazer'?' selected':'') + '>A fazer</option><option value="andamento"' + (t.status==='andamento'?' selected':'') + '>Em andamento</option><option value="concluida"' + (t.status==='concluida'?' selected':'') + '>Conclu\u00edda</option></select></div>'
+    + '<div class="fg"><label class="fl">Prioridade</label><select class="fs" id="td-prio"><option' + (t.prio==='Urgente'?' selected':'') + '>Urgente</option><option' + (t.prio==='Importante'?' selected':'') + '>Importante</option><option' + (t.prio==='M\u00e9dio'?' selected':'') + '>M\u00e9dio</option><option' + (t.prio==='Baixo'?' selected':'') + '>Baixo</option></select></div>'
+    + '<div class="fg"><label class="fl">Prazo</label><input class="fi" id="td-prazo" value="' + (t.prazo||'') + '"></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Projeto vinculado</label><input class="fi" id="td-proj" value="' + (t.proj||'') + '" placeholder="Ex: Projeto Silva"></div>'
+    + '<div class="fg"><label class="fl">Observa\u00e7\u00f5es</label><textarea class="fi" id="td-obs" style="min-height:80px" placeholder="Detalhes da tarefa...">' + (t.obs||'') + '</textarea></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarTarefa(' + i + ')">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" style="color:var(--red);border-color:var(--red)" onclick="excluirTarefa(' + i + ')">' + ic('trash',13) + ' Excluir</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-tarefa-temp\').remove()">Fechar</button>'
+    + '</div></div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function salvarTarefa(i) {
+  var dados = lerDados('tarefas_data', null) || tarefasData;
+  var prioMap = {'Urgente':'p-red','Importante':'p-amber','Médio':'p-blue','Baixo':'p-muted'};
+  var prio = (document.getElementById('td-prio')||{value:'Médio'}).value;
+  dados[i].resp   = (document.getElementById('td-resp')  ||{value:''}).value;
+  dados[i].status = (document.getElementById('td-status')||{value:''}).value;
+  dados[i].prio   = prio;
+  dados[i].prio_pill = prioMap[prio] || 'p-blue';
+  dados[i].prazo  = (document.getElementById('td-prazo') ||{value:''}).value;
+  dados[i].proj   = (document.getElementById('td-proj')  ||{value:''}).value;
+  dados[i].obs    = (document.getElementById('td-obs')   ||{value:''}).value;
+  salvarDados('tarefas_data', dados);
+  var modal = document.getElementById('modal-tarefa-temp');
+  if (modal) modal.remove();
+  mostrarFeedback('Tarefa salva!');
+  filtrarTarefas();
+}
+
+function excluirTarefa(i) {
+  var dados = lerDados('tarefas_data', null) || tarefasData;
+  dados.splice(i, 1);
+  salvarDados('tarefas_data', dados);
+  var modal = document.getElementById('modal-tarefa-temp');
+  if (modal) modal.remove();
+  mostrarFeedback('Tarefa exclu\u00edda');
+  filtrarTarefas();
+}
+
+function abrirModalNovaTarefa() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-nova-tarefa';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:440px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Nova tarefa</div>'
+    + '<button onclick="document.getElementById(\'modal-nova-tarefa\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">T\u00edtulo</label><input class="fi" id="nt-titulo" placeholder="Ex: Enviar proposta cliente X"></div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Respons\u00e1vel</label><select class="fs" id="nt-resp"><option>Sibelle</option><option>Julia</option></select></div>'
+    + '<div class="fg"><label class="fl">Prioridade</label><select class="fs" id="nt-prio"><option>Urgente</option><option>Importante</option><option selected>M\u00e9dio</option><option>Baixo</option></select></div>'
+    + '</div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Prazo</label><input class="fi" id="nt-prazo" type="date"></div>'
+    + '<div class="fg"><label class="fl">Projeto</label><input class="fi" id="nt-proj" placeholder="Ex: Projeto Silva"></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Observa\u00e7\u00f5es</label><textarea class="fi" id="nt-obs" style="min-height:60px" placeholder="Detalhes..."></textarea></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarNovaTarefa()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-nova-tarefa\').remove()">Cancelar</button>'
+    + '</div></div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function salvarNovaTarefa() {
+  var titulo = (document.getElementById('nt-titulo')||{value:''}).value.trim();
+  if (!titulo) { mostrarFeedback('Informe o t\u00edtulo'); return; }
+  var prioMap = {'Urgente':'p-red','Importante':'p-amber','M\u00e9dio':'p-blue','Baixo':'p-muted'};
+  var prio = (document.getElementById('nt-prio')||{value:'M\u00e9dio'}).value;
+  var dados = lerDados('tarefas_data', null) || tarefasData;
+  dados.unshift({
+    titulo: titulo,
+    resp: (document.getElementById('nt-resp') ||{value:'Sibelle'}).value,
+    prio: prio, prio_pill: prioMap[prio]||'p-blue',
+    prazo: (document.getElementById('nt-prazo')||{value:''}).value,
+    proj:  (document.getElementById('nt-proj') ||{value:''}).value,
+    obs:   (document.getElementById('nt-obs')  ||{value:''}).value,
+    status: 'fazer'
+  });
+  salvarDados('tarefas_data', dados);
+  var modal = document.getElementById('modal-nova-tarefa');
+  if (modal) modal.remove();
+  mostrarFeedback('Tarefa criada!');
+  filtrarTarefas();
+}
+
+// ============================================================
+// EQUIPE — accordion por funcionário
+// ============================================================
+function buildPersonCardAccordion(e, i) {
+  var html = '<div style="border:1px solid var(--border2);border-radius:10px;margin-bottom:8px;overflow:hidden">';
+  // Header clicável
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;background:var(--bg2)" onclick="toggleFuncAccordion(this)">';
+  html += '<div style="display:flex;align-items:center;gap:10px">';
+  html += '<div class="avatar sm" style="background:' + e.cor + '">' + e.init + '</div>';
+  html += '<div><div style="font-size:13px;font-weight:600">' + e.nome + '</div>';
+  html += '<div style="font-size:11px;color:var(--muted)">' + e.funcao + '</div></div>';
+  html += '</div>';
+  html += '<div style="display:flex;align-items:center;gap:8px">';
+  html += pill(e.status, e.pill);
+  html += '<span style="color:var(--muted);transition:transform .2s" class="acc-arrow">' + ic('chevron-right',13) + '</span>';
+  html += '</div></div>';
+  // Corpo oculto
+  html += '<div style="display:none;padding:14px;background:var(--surface)">';
+  html += '<div class="g2">';
+  html += '<div class="fg"><label class="fl">WhatsApp</label><input class="fi" value="' + (e.tel||'') + '" placeholder="(91) 99999-0000"></div>';
+  html += '<div class="fg"><label class="fl">E-mail</label><input class="fi" value="' + (e.email||'') + '" placeholder="email@arq.com"></div>';
+  html += '<div class="fg"><label class="fl">Fun\u00e7\u00e3o</label><input class="fi" value="' + (e.funcao||'') + '"></div>';
+  html += '<div class="fg"><label class="fl">Status</label><select class="fs"><option' + (e.status==='Ativo'?' selected':'') + '>Ativo</option><option' + (e.status!=='Ativo'?' selected':'') + '>Inativo</option></select></div>';
+  html += '</div>';
+  html += '<div style="margin-top:8px">' + buildSobreVoce() + '</div>';
+  html += '<div style="margin-top:8px"><button class="btn btn-accent btn-sm" onclick="mostrarFeedback(\'Dados salvos!\')">' + ic('save',13) + ' Salvar</button></div>';
+  html += '</div></div>';
+  return html;
+}
+
+function toggleFuncAccordion(header) {
+  var body = header.nextElementSibling;
+  var arrow = header.querySelector('.acc-arrow');
+  var isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
+  if (!isOpen) renderIcons();
+}
+
+function abrirModalNovoFuncionario() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-novo-func';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:440px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Novo funcion\u00e1rio</div>'
+    + '<button onclick="document.getElementById(\'modal-novo-func\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Nome completo</label><input class="fi" id="nf-nome" placeholder="Ex: Ana Lima"></div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Fun\u00e7\u00e3o</label><input class="fi" id="nf-funcao" placeholder="Ex: Arquiteta"></div>'
+    + '<div class="fg"><label class="fl">WhatsApp</label><input class="fi" id="nf-tel" placeholder="(91) 99999-0000"></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">E-mail</label><input class="fi" id="nf-email" placeholder="email@arq.com"></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="mostrarFeedback(\'Funcion\u00e1rio adicionado!\');document.getElementById(\'modal-novo-func\').remove()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-novo-func\').remove()">Cancelar</button>'
+    + '</div></div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function abrirModalNovaFuncao() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-nova-funcao';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:440px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Nova fun\u00e7\u00e3o</div>'
+    + '<button onclick="document.getElementById(\'modal-nova-funcao\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Nome da fun\u00e7\u00e3o</label><input class="fi" id="ncf-nome" placeholder="Ex: Designer"></div>'
+    + '<div class="fg"><label class="fl">Responsabilidades</label><textarea class="fi" id="ncf-resp" style="min-height:70px" placeholder="Descreva as responsabilidades..."></textarea></div>'
+    + '<div class="fg"><label class="fl">Rotina</label><textarea class="fi" id="ncf-rotina" style="min-height:60px" placeholder="Atividades do dia a dia..."></textarea></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="mostrarFeedback(\'Fun\u00e7\u00e3o criada!\');document.getElementById(\'modal-nova-funcao\').remove()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-nova-funcao\').remove()">Cancelar</button>'
+    + '</div></div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+// ============================================================
+// SERVIÇOS e IDEIA
+// ============================================================
+function abrirModalNovoServico() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-novo-serv';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:480px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Novo servi\u00e7o</div>'
+    + '<button onclick="document.getElementById(\'modal-novo-serv\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Nome do servi\u00e7o</label><input class="fi" id="ns-nome" placeholder="Ex: Consultoria Online"></div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Valor (R$)</label><input class="fi" id="ns-valor" type="number" placeholder="297"></div>'
+    + '<div class="fg"><label class="fl">Tipo</label><select class="fs" id="ns-tipo"><option>Produto digital</option><option>Projeto presencial</option><option>Consultoria</option><option>Template</option></select></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Descri\u00e7\u00e3o</label><textarea class="fi" id="ns-desc" style="min-height:70px" placeholder="O que est\u00e1 inclu\u00eddo..."></textarea></div>'
+    + '<div class="fg"><label class="fl">Status</label><select class="fs" id="ns-status"><option>Ativo</option><option>Inativo</option><option>Em desenvolvimento</option></select></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="mostrarFeedback(\'Servi\u00e7o salvo!\');document.getElementById(\'modal-novo-serv\').remove()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-novo-serv\').remove()">Cancelar</button>'
+    + '</div></div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function abrirModalNovaIdeia() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-nova-ideia';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:440px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Nova ideia de conte\u00fado</div>'
+    + '<button onclick="document.getElementById(\'modal-nova-ideia\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">T\u00edtulo / Tema</label><input class="fi" id="ni-titulo" placeholder="Ex: 5 erros na ilumina\u00e7\u00e3o"></div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Formato</label><select class="fs" id="ni-formato"><option>Reels</option><option>Carrossel</option><option>Post est\u00e1tico</option><option>Stories</option><option>V\u00eddeo longo</option></select></div>'
+    + '<div class="fg"><label class="fl">Pilar</label><select class="fs" id="ni-pilar"><option>Educativo</option><option>Inspiracional</option><option>Bastidores</option><option>Vendas</option><option>Entretenimento</option></select></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Descri\u00e7\u00e3o / Roteiro</label><textarea class="fi" id="ni-desc" style="min-height:70px" placeholder="Anota\u00e7\u00f5es, estrutura, ganchos..."></textarea></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="mostrarFeedback(\'Ideia salva!\');document.getElementById(\'modal-nova-ideia\').remove()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-nova-ideia\').remove()">Cancelar</button>'
+    + '</div></div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function abrirModalNovoEvento() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-novo-evento';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:440px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Novo evento</div>'
+    + '<button onclick="document.getElementById(\'modal-novo-evento\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">T\u00edtulo do evento</label><input class="fi" id="nev-titulo" placeholder="Ex: Apresenta\u00e7\u00e3o Silva"></div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Data</label><input class="fi" id="nev-data" type="date"></div>'
+    + '<div class="fg"><label class="fl">Hor\u00e1rio</label><input class="fi" id="nev-hora" type="time"></div>'
+    + '</div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Tipo</label><select class="fs" id="nev-tipo"><option>Reuni\u00e3o</option><option>Entrega</option><option>Visita t\u00e9cnica</option><option>Prazo</option><option>Outro</option></select></div>'
+    + '<div class="fg"><label class="fl">Projeto</label><input class="fi" id="nev-proj" placeholder="Ex: Projeto Silva"></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Observa\u00e7\u00f5es</label><textarea class="fi" id="nev-obs" style="min-height:60px" placeholder="Detalhes do evento..."></textarea></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarEvento()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-novo-evento\').remove()">Cancelar</button>'
+    + '</div></div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function salvarEvento() {
+  var titulo = (document.getElementById('nev-titulo')||{value:''}).value.trim();
+  if (!titulo) { mostrarFeedback('Informe o t\u00edtulo'); return; }
+  var eventos = lerDados('eventos_cronograma', []);
+  eventos.push({
+    titulo: titulo,
+    data:  (document.getElementById('nev-data') ||{value:''}).value,
+    hora:  (document.getElementById('nev-hora') ||{value:''}).value,
+    tipo:  (document.getElementById('nev-tipo') ||{value:''}).value,
+    proj:  (document.getElementById('nev-proj') ||{value:''}).value,
+    obs:   (document.getElementById('nev-obs')  ||{value:''}).value
+  });
+  salvarDados('eventos_cronograma', eventos);
+  var modal = document.getElementById('modal-novo-evento');
+  if (modal) modal.remove();
+  mostrarFeedback('Evento "' + titulo + '" salvo!');
+}
+
+function abrirModalCadastrarMaterial() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-novo-mat';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:480px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Cadastrar material</div>'
+    + '<button onclick="document.getElementById(\'modal-novo-mat\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Nome do material / produto</label><input class="fi" id="nm-nome" placeholder="Ex: Piso porcelanato 60x60"></div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Categoria</label><select class="fs" id="nm-cat"><option>Revestimento</option><option>Mobili\u00e1rio</option><option>Ilumina\u00e7\u00e3o</option><option>Louças e Metais</option><option>Tintas</option><option>Madeira</option><option>Pedras</option><option>Tecidos</option><option>Outro</option></select></div>'
+    + '<div class="fg"><label class="fl">Pre\u00e7o de refer\u00eancia (R$)</label><input class="fi" id="nm-preco" type="number" placeholder="0,00"></div>'
+    + '</div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">Fornecedor</label><input class="fi" id="nm-fornec" placeholder="Ex: Portobello"></div>'
+    + '<div class="fg"><label class="fl">C\u00f3d. do fabricante</label><input class="fi" id="nm-cod" placeholder="Ex: POR-6060-BG"></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Observa\u00e7\u00f5es</label><textarea class="fi" id="nm-obs" style="min-height:60px" placeholder="Dimens\u00f5es, cores, aplica\u00e7\u00f5es..."></textarea></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarMaterial()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-novo-mat\').remove()">Cancelar</button>'
+    + '</div></div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function salvarMaterial() {
+  var nome = (document.getElementById('nm-nome')||{value:''}).value.trim();
+  if (!nome) { mostrarFeedback('Informe o nome'); return; }
+  var lista = lerDados('biblioteca_materiais', []);
+  lista.push({
+    nome:   nome,
+    cat:    (document.getElementById('nm-cat')   ||{value:''}).value,
+    preco:  (document.getElementById('nm-preco') ||{value:''}).value,
+    fornec: (document.getElementById('nm-fornec')||{value:''}).value,
+    cod:    (document.getElementById('nm-cod')   ||{value:''}).value,
+    obs:    (document.getElementById('nm-obs')   ||{value:''}).value
+  });
+  salvarDados('biblioteca_materiais', lista);
+  var modal = document.getElementById('modal-novo-mat');
+  if (modal) modal.remove();
+  mostrarFeedback(nome + ' adicionado!');
+  renderPage('biblioteca');
+}
+
+function removerMaterial(i) {
+  var lista = lerDados('biblioteca_materiais', []);
+  lista.splice(i, 1);
+  salvarDados('biblioteca_materiais', lista);
+  mostrarFeedback('Material removido');
+  renderPage('biblioteca');
+}
+
+function importarListaBiblioteca(input) {
+  if (!input.files || !input.files[0]) return;
+  mostrarFeedback('Importa\u00e7\u00e3o via planilha ser\u00e1 ativada em breve. Use "Cadastrar material" por enquanto.');
+  input.value = '';
+}
+
 function previewFonte() {
   var titulo = document.getElementById('font-titulo');
   var corpo = document.getElementById('font-corpo');
@@ -3906,7 +4382,7 @@ function buildCalculadora() {
     card: 'background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px',
     th: 'font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);text-align:center;padding:6px 4px;border-bottom:1px solid var(--border2)',
     td: 'font-size:12px;padding:5px 4px;border-bottom:1px solid var(--border2)',
-    inp: 'background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:4px 6px;font-size:12px;color:var(--text);font-family:inherit;width:60px;text-align:right;box-sizing:border-box;outline:none;-moz-appearance:textfield',
+    inp: 'background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:4px 6px;font-size:12px;color:var(--text);font-family:inherit;width:50px;text-align:right;box-sizing:border-box;outline:none;-moz-appearance:textfield',
     tot: 'font-size:12px;font-weight:700;padding:6px 4px;border-top:2px solid var(--border)',
     sec: 'font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);text-align:center;padding:8px 4px;background:var(--bg2)',
     desc: 'font-size:10px;color:var(--muted);text-align:center;padding:3px 4px;border-bottom:1px solid var(--border2)'
@@ -3950,7 +4426,7 @@ function buildCalculadora() {
   html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border2)"><span style="font-size:11px">TOTAL DE HORAS CALCULADAS</span><span id="c-h-calc" style="font-size:12px;font-weight:700">0</span></div>';
   html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border2)">';
   html += '<span style="font-size:11px">MARGEM DE SEGURAN\u00C7A</span>';
-  html += '<div style="display:flex;align-items:center;gap:4px"><input id="c-ms" ' + s.inp.replace('width:60px','width:40px') + ' type="number" value="15" onchange="calcOrc()"><span style="font-size:10px">%</span></div>';
+  html += '<div style="display:flex;align-items:center;gap:4px;flex-shrink:0"><input id="c-ms" style="background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:4px 6px;font-size:12px;color:var(--text);font-family:inherit;width:36px;text-align:right;box-sizing:border-box;outline:none;-moz-appearance:textfield" type="number" value="15" onchange="calcOrc()"><span style="font-size:10px">%</span></div>';
   html += '</div>';
   html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border2)"><span style="font-size:11px;font-weight:700">TOTAL DE HORAS</span><span id="c-h-tot" style="font-size:13px;font-weight:700;color:var(--accent)">0</span></div>';
   html += '<div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.6">';
@@ -3966,9 +4442,9 @@ function buildCalculadora() {
   html += '<div style="font-size:10px;color:var(--muted);text-align:center">Valor da Hora</div>';
   html += '<div style="font-size:10px;color:var(--muted);text-align:center">Custo total das horas</div>';
   html += '</div>';
-  html += '<div style="display:grid;grid-template-columns:1fr 80px 1fr;gap:4px;align-items:center;margin-bottom:12px">';
+  html += '<div style="display:grid;grid-template-columns:1fr 90px 1fr;gap:4px;align-items:center;margin-bottom:12px">';
   html += '<div style="font-size:14px;font-weight:700;text-align:center" id="c-h-exec">0</div>';
-  html += '<div style="display:flex;align-items:center;justify-content:center;gap:4px">R$ <input id="c-vh" ' + s.inp + ' type="number" value="30" onchange="calcOrc()"></div>';
+  html += '<div style="display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap"><span style="font-size:11px">R$</span><input id="c-vh" style="background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:4px 6px;font-size:12px;color:var(--text);font-family:inherit;width:44px;text-align:right;box-sizing:border-box;outline:none;-moz-appearance:textfield" type="number" value="30" onchange="calcOrc()"></div>';
   html += '<div style="font-size:14px;font-weight:700;text-align:right" id="c-custo-h">R$ 0,00</div>';
   html += '</div>';
   var linhasCusto = [['TOTAL DE CUSTOS POR M\u00C3O DE OBRA','c-mdo'],['TOTAL DE CUSTOS VARI\u00C1VEIS','c-cv-tot'],['CUSTO TOTAL DO PROJETO','c-custo-total']];
@@ -4719,19 +5195,45 @@ function buildPlanejamentoMensal() {
 }
 
 function buildMetricasRede() {
-  var redes = [
-    {nome:'Instagram', seguidores:'3.200', meta:'10.000', engajamento:'4.8%', alcance:'12.400', leads:'8'},
-    {nome:'Pinterest', seguidores:'890', meta:'5.000', engajamento:'2.1%', alcance:'4.200', leads:'2'},
-    {nome:'WhatsApp Business', seguidores:'\u2014', meta:'\u2014', engajamento:'\u2014', alcance:'\u2014', leads:'4'}
-  ];
-  var html = mkTblWrap('500px');
-  html += '<div class="tr th" style="grid-template-columns:120px 80px 80px 70px 80px 60px"><span>Rede</span><span>Seguidores</span><span>Meta</span><span>Engaj.</span><span>Alcance</span><span>Leads</span></div>';
-  redes.forEach(function(r) {
-    html += '<div class="tr" style="grid-template-columns:120px 80px 80px 70px 80px 60px"><span style="font-weight:600">' + r.nome + '</span><span style="color:var(--accent)">' + r.seguidores + '</span><span style="color:var(--muted)">' + r.meta + '</span><span>' + r.engajamento + '</span><span style="color:var(--muted)">' + r.alcance + '</span><span style="color:var(--green)">' + r.leads + '</span></div>';
+  var redes = lerDados('metricas_redes', [
+    {nome:'Instagram',        seguidores:'3.200', meta:'10.000', engajamento:'4.8%', alcance:'12.400', leads:'8'},
+    {nome:'Pinterest',        seguidores:'890',   meta:'5.000',  engajamento:'2.1%', alcance:'4.200',  leads:'2'},
+    {nome:'WhatsApp Business',seguidores:'\u2014',meta:'\u2014', engajamento:'\u2014',alcance:'\u2014', leads:'4'}
+  ]);
+  var html = '<div style="overflow-x:auto"><div style="min-width:520px">';
+  html += '<div style="display:grid;grid-template-columns:130px 90px 90px 80px 90px 70px;gap:0;font-size:11px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:.5px;padding:6px 0;border-bottom:1px solid var(--border2);margin-bottom:6px">';
+  ['Rede','Seguidores','Meta','Engaj.','Alcance','Leads'].forEach(function(h){ html += '<span>' + h + '</span>'; });
+  html += '</div>';
+  var inp = 'background:var(--bg2);border:1px solid var(--border2);border-radius:5px;padding:4px 6px;font-size:12px;color:var(--text);width:100%;box-sizing:border-box;font-family:inherit;outline:none';
+  redes.forEach(function(r, i) {
+    html += '<div style="display:grid;grid-template-columns:130px 90px 90px 80px 90px 70px;gap:4px;align-items:center;padding:6px 0;border-bottom:1px solid var(--border2)">';
+    html += '<span style="font-weight:600;font-size:12px">' + r.nome + '</span>';
+    html += '<input style="' + inp + '" id="mr-seg-' + i + '" value="' + r.seguidores + '">';
+    html += '<input style="' + inp + '" id="mr-meta-' + i + '" value="' + r.meta + '">';
+    html += '<input style="' + inp + '" id="mr-eng-' + i + '" value="' + r.engajamento + '">';
+    html += '<input style="' + inp + '" id="mr-alc-' + i + '" value="' + r.alcance + '">';
+    html += '<input style="' + inp + '" id="mr-lds-' + i + '" value="' + r.leads + '">';
+    html += '</div>';
   });
-  html += mkTblWrapEnd;
-  html += '<div style="margin-top:14px"><button class="btn btn-accent">' + ic('refresh-cw',14) + ' Atualizar m\u00E9tricas</button></div>';
+  html += '</div></div>';
+  html += '<div style="margin-top:12px;display:flex;gap:8px">';
+  html += '<button class="btn btn-accent" onclick="salvarMetricas(' + redes.length + ')">' + ic('save',14) + ' Salvar m\u00e9tricas</button>';
+  html += '</div>';
   return html;
+}
+
+function salvarMetricas(n) {
+  var dados = lerDados('metricas_redes', []);
+  for (var i = 0; i < n; i++) {
+    if (!dados[i]) continue;
+    dados[i].seguidores   = (document.getElementById('mr-seg-'  + i)||{value:''}).value;
+    dados[i].meta         = (document.getElementById('mr-meta-' + i)||{value:''}).value;
+    dados[i].engajamento  = (document.getElementById('mr-eng-'  + i)||{value:''}).value;
+    dados[i].alcance      = (document.getElementById('mr-alc-'  + i)||{value:''}).value;
+    dados[i].leads        = (document.getElementById('mr-lds-'  + i)||{value:''}).value;
+  }
+  salvarDados('metricas_redes', dados);
+  mostrarFeedback('M\u00e9tricas salvas!');
 }
 
 
