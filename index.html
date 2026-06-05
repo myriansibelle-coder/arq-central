@@ -1713,53 +1713,6 @@ function buildReunioes() {
 
   html += '</div></div>'; // fim tbl + scroll
 
-  // Modal de detalhe
-  html += '<div id="modal-reuniao" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 10px">';
-  html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:680px;max-width:96vw;margin:auto;box-shadow:0 8px 40px var(--shadow)">';
-
-  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">';
-  html += '<div style="font-size:15px;font-weight:700" id="mr-titulo">Reuni\u00E3o</div>';
-  html += '<button onclick="closeReuniao()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00D7</button>';
-  html += '</div>';
-
-  html += '<div class="g2" style="margin-bottom:0">';
-  html += '<div class="fg"><label class="fl">Cliente</label><input class="fi" id="mr-cliente"></div>';
-  html += '<div class="fg"><label class="fl">Projeto</label><input class="fi" id="mr-projeto"></div>';
-  html += '<div class="fg"><label class="fl">Data e hora</label><input class="fi" id="mr-data"></div>';
-  html += '<div class="fg"><label class="fl">Tipo</label>' + buildSelect(["Abertura","Aprova\u00E7\u00E3o","Alinhamento","Apresenta\u00E7\u00E3o","Feedback","Outro"]) + '</div>';
-  html += '</div>';
-
-  html += '<div class="fg"><label class="fl">Participantes</label><input class="fi" id="mr-part" placeholder="Ex: Sibelle \u00B7 Cliente \u00B7 Engenheiro"></div>';
-  html += '<div class="fg"><label class="fl">Pauta</label><textarea class="fi" id="mr-pauta" style="min-height:70px" placeholder="T\u00F3picos a discutir na reuni\u00E3o..."></textarea></div>';
-  html += '<div class="fg"><label class="fl">Ata da Reuni\u00E3o</label><textarea class="fi" id="mr-ata" style="min-height:90px" placeholder="Resumo das decis\u00F5es tomadas..."></textarea></div>';
-
-  html += '<div class="fg"><label class="fl">A\u00E7\u00F5es geradas</label>';
-  html += '<div id="mr-acoes-list" style="margin-bottom:8px"></div>';
-  html += '<div style="display:flex;gap:6px"><input class="fi" id="mr-acao-input" placeholder="Descreva a a\u00E7\u00E3o..." style="flex:1;margin-bottom:0"><button class="btn btn-sm" onclick="addAcao()">' + ic('plus',13) + ' Adicionar</button></div>';
-  html += '</div>';
-
-  html += '<div class="fg"><label class="fl">Transcri\u00E7\u00E3o</label>';
-  html += '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px">';
-  html += '<div id="mr-transcricao" style="font-size:12px;color:var(--muted);min-height:36px;white-space:pre-wrap;margin-bottom:8px"></div>';
-  html += '<div style="display:flex;gap:6px">';
-  html += '<button class="btn btn-sm" onclick="gravarTranscricao()">' + ic('mic',12) + ' Gravar</button>';
-  html += '<label style="cursor:pointer"><input type="file" accept="audio/*" style="display:none" onchange="importarAudio(this)"><span class="btn btn-sm">' + ic('upload',12) + ' Importar \u00e1udio</span></label>';
-  html += '</div>';
-  html += '</div></div>';
-
-  html += '<div class="fg"><label class="fl">Anexos</label>';
-  html += '<div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;padding:12px;margin-bottom:12px">';
-  html += '<div id="mr-anexos" style="font-size:12px;color:var(--text2);margin-bottom:8px">Nenhum anexo.</div>';
-  html += '<label style="cursor:pointer"><input type="file" multiple style="display:none" onchange="anexarReuniao(this)"><span class="btn btn-sm">' + ic('paperclip',12) + ' Adicionar anexo</span></label>';
-  html += '</div></div>';
-
-  html += '<div style="display:flex;gap:8px;margin-top:4px">';
-  html += '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarReuniao()">' + ic('save',14) + ' Salvar</button>';
-  html += '<button class="btn" onclick="exportarPDF(\'reuniao\')">' + ic('download',14) + ' PDF</button>';
-  html += '<button class="btn" onclick="closeReuniao()">Fechar</button>';
-  html += '</div>';
-  html += '</div></div>';
-
   return html;
 }
 
@@ -1823,40 +1776,66 @@ function addAcao() {
   inp.focus();
 }
 
+var _recInstance = null;
+
 function gravarTranscricao() {
-  var el = document.getElementById('mr-transcricao');
-  if (!el) return;
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    mostrarFeedback('Grava\u00e7\u00e3o n\u00e3o suportada. Use Chrome ou Safari 14+.');
-    return;
-  }
+  if (!SR) { mostrarFeedback('Use Chrome ou Safari 14+ para gravar.'); return; }
+  var el    = document.getElementById('mr-transcricao');
+  var badge = document.getElementById('mr-gravando');
+  var btnGr = document.getElementById('btn-gravar');
+  var btnPr = document.getElementById('btn-parar');
+  if (!el) return;
+
+  var textoBase = el.textContent === 'Nenhuma transcrição ainda.' ? '' : el.textContent.replace(' ⏺', '').trim();
+
   var rec = new SR();
+  _recInstance = rec;
   rec.lang = 'pt-BR';
   rec.continuous = true;
-  rec.interimResults = false;
-  var textoAnterior = el.textContent === 'Nenhuma transcri\u00e7\u00e3o ainda.' ? '' : el.textContent;
-  el.textContent = '\u25cf Gravando... fale agora.';
+  rec.interimResults = true; // mostra enquanto fala
+
+  if (badge) badge.style.display = 'block';
+  if (btnGr) btnGr.style.display = 'none';
+  if (btnPr) btnPr.style.display = 'inline-flex';
+
   rec.onresult = function(e) {
-    var novo = Array.from(e.results).map(function(r){ return r[0].transcript; }).join(' ');
-    el.textContent = (textoAnterior + ' ' + novo).trim();
-    mostrarFeedback('Transcri\u00e7\u00e3o adicionada!');
-  };
-  rec.onerror = function(e) {
-    el.textContent = textoAnterior || 'Nenhuma transcri\u00e7\u00e3o ainda.';
-    var msgs = {
-      'not-allowed': 'Permiss\u00e3o do microfone negada.',
-      'no-speech': 'Nenhuma fala detectada.',
-      'network': 'Erro de rede.'
-    };
-    mostrarFeedback(msgs[e.error] || 'Erro: ' + e.error);
-  };
-  rec.onend = function() {
-    if (el.textContent === '\u25cf Gravando... fale agora.') {
-      el.textContent = textoAnterior || 'Nenhuma transcri\u00e7\u00e3o ainda.';
+    var interino = '';
+    var final = textoBase;
+    for (var i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) {
+        final += (final ? ' ' : '') + e.results[i][0].transcript;
+        textoBase = final;
+      } else {
+        interino += e.results[i][0].transcript;
+      }
     }
+    el.textContent = final + (interino ? ' ⏺ ' + interino : '');
   };
-  try { rec.start(); } catch(e) { mostrarFeedback('Erro ao iniciar grava\u00e7\u00e3o.'); }
+
+  rec.onerror = function(e) {
+    var msgs = {'not-allowed':'Permissão do microfone negada.','no-speech':'Nenhuma fala detectada.','network':'Erro de rede.'};
+    mostrarFeedback(msgs[e.error] || 'Erro: ' + e.error);
+    pararGravacao();
+  };
+
+  rec.onend = function() { pararGravacao(); };
+
+  try { rec.start(); }
+  catch(e) { mostrarFeedback('Erro ao iniciar gravação.'); pararGravacao(); }
+}
+
+function pararGravacao() {
+  if (_recInstance) { try { _recInstance.stop(); } catch(e) {} _recInstance = null; }
+  var badge = document.getElementById('mr-gravando');
+  var btnGr = document.getElementById('btn-gravar');
+  var btnPr = document.getElementById('btn-parar');
+  if (badge) badge.style.display = 'none';
+  if (btnGr) btnGr.style.display = 'inline-flex';
+  if (btnPr) btnPr.style.display = 'none';
+  // Limpa marcador ⏺
+  var el = document.getElementById('mr-transcricao');
+  if (el) el.textContent = el.textContent.replace(/ ⏺ .*/,'').trim() || 'Nenhuma transcrição ainda.';
 }
 
 function importarAudio(input) {
@@ -4261,29 +4240,132 @@ function buildConfig() {
 // ===== BUILDERS COMPLETOS =====
 
 function buildClientesCompleto() {
-  var html = '<div style="margin-bottom:16px;display:flex;gap:8px"><button class="btn btn-accent">' + ic('plus',14) + ' Novo cliente</button></div>';
-  // Cards de clientes
-  html += buildPersonCard('AS','var(--purple)','Ana Paula Silva','CPF: 123.456.789-00 \u00B7 Cliente desde 12/05/26','Em andamento','p-amber');
-  html += buildPersonCard('MM','var(--blue)','Fam\u00EDlia Moura','CPF: 987.654.321-00 \u00B7 Cliente desde 18/05/26','Em andamento','p-amber');
-  html += buildPersonCard('RC','var(--accent)','Dr. Roberto Carvalho','CPF: 111.222.333-44 \u00B7 Conclu\u00EDdo','Conclu\u00EDdo','p-green');
-  // Detalhes de um cliente expandido
-  html += '<div class="card" style="margin-top:16px">';
-  html += '<div class="card-title">' + ic('user-circle',15) + ' Ana Paula Silva \u2014 Detalhes</div>';
-  html += '<div class="g2">';
-  var campos = [['Data de In\u00EDcio','12/05/2026'],['C\u00F3digo Cliente','001'],['WhatsApp','(91) 99999-0000'],['E-mail','ana@email.com'],['Endere\u00E7o da Obra','Av. Gentil Bittencourt, 500, Bel\u00E9m'],['Projeto Vinculado','001_05_26_SILVA']];
-  campos.forEach(function(c) { html += '<div class="fg"><label class="fl">' + c[0] + '</label><input class="fi" value="' + c[1] + '"></div>'; });
-  html += '<div class="fg"><label class="fl">Link para o Drive</label><input class="fi" value="https://drive.google.com/..."></div>';
-  html += '<div class="fg"><label class="fl">Acordo de Pagamento</label><select class="fs"><option>50% entrada + 50% entrega</option><option>3x iguais</option><option>\u00C0 vista</option></select></div>';
+  var html = '<div style="margin-bottom:16px;display:flex;gap:8px">';
+  html += '<button class="btn btn-accent" onclick="abrirModalNovoCliente()">' + ic('plus',14) + ' Novo cliente</button>';
   html += '</div>';
-  html += '<div style="margin-top:14px"><div style="font-size:12px;font-weight:600;margin-bottom:10px">Parcelas</div>';
-  html += mkTblWrap('440px');
-  html += '<div class="tr th" style="grid-template-columns:60px 80px 90px 1fr 80px"><span>Parcela</span><span>Valor</span><span>Vencimento</span><span>Comprovante</span><span>Status</span></div>';
-  html += '<div class="tr" style="grid-template-columns:60px 80px 90px 1fr 80px"><span>1/2</span><span>R$ 1.400</span><span>12/05/26</span><span style="color:var(--accent);cursor:pointer">' + ic('file-text',13) + ' comprovante_01.pdf</span><span>' + pill('Pago','p-green') + '</span></div>';
-  html += '<div class="tr" style="grid-template-columns:60px 80px 90px 1fr 80px"><span>2/2</span><span>R$ 1.400</span><span>30/06/26</span><span><button class="btn btn-sm">' + ic('upload',13) + ' Enviar</button></span><span>' + pill('Pendente','p-amber') + '</span></div>';
-  html += mkTblWrapEnd + '</div>';
-  html += '<div style="margin-top:14px;display:flex;gap:8px"><button class="btn btn-accent">' + ic('save',14) + ' Salvar</button></div>';
-  html += '</div>';
+
+  var clientes = lerDados('clientes_lista', [
+    {init:'AS',cor:'var(--purple)',nome:'Ana Paula Silva',info:'CPF: 123.456.789-00 · Cliente desde 12/05/26',status:'Em andamento',pill:'p-amber',tel:'(91) 99999-0000',email:'ana@email.com',end:'Av. Gentil Bittencourt, 500, Belém',proj:'001_05_26_SILVA'},
+    {init:'MM',cor:'var(--blue)',nome:'Família Moura',info:'CPF: 987.654.321-00 · Cliente desde 18/05/26',status:'Em andamento',pill:'p-amber',tel:'',email:'',end:'',proj:'002_05_26_MOURA'},
+    {init:'RC',cor:'var(--accent)',nome:'Dr. Roberto Carvalho',info:'CPF: 111.222.333-44 · Concluído',status:'Concluído',pill:'p-green',tel:'',email:'',end:'',proj:'003_05_26_CARV'}
+  ]);
+
+  clientes.forEach(function(c, i) {
+    html += '<div class="card" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:8px;transition:border .15s"'
+      + ' onclick="abrirDetalheCliente(' + i + ')"'
+      + ' onmouseover="this.style.borderColor=\'var(--accent)\'"'
+      + ' onmouseout="this.style.borderColor=\'var(--border)\'">';
+    html += '<div style="display:flex;align-items:center;gap:12px">';
+    html += '<div class="avatar" style="background:' + c.cor + ';flex-shrink:0">' + c.init + '</div>';
+    html += '<div><div style="font-size:13px;font-weight:600">' + c.nome + '</div>';
+    html += '<div style="font-size:11px;color:var(--muted);margin-top:2px">' + c.info + '</div></div>';
+    html += '</div>';
+    html += '<div style="display:flex;align-items:center;gap:8px">';
+    html += pill(c.status, c.pill);
+    html += '<span style="color:var(--muted)">' + ic('chevron-right',14) + '</span>';
+    html += '</div></div>';
+  });
   return html;
+}
+
+function abrirDetalheCliente(i) {
+  var clientes = lerDados('clientes_lista', [
+    {init:'AS',cor:'var(--purple)',nome:'Ana Paula Silva',info:'',status:'Em andamento',pill:'p-amber',tel:'(91) 99999-0000',email:'ana@email.com',end:'Av. Gentil Bittencourt, 500, Belém',proj:'001_05_26_SILVA'},
+    {init:'MM',cor:'var(--blue)',nome:'Família Moura',info:'',status:'Em andamento',pill:'p-amber',tel:'',email:'',end:'',proj:'002_05_26_MOURA'},
+    {init:'RC',cor:'var(--accent)',nome:'Dr. Roberto Carvalho',info:'',status:'Concluído',pill:'p-green',tel:'',email:'',end:'',proj:'003_05_26_CARV'}
+  ]);
+  var c = clientes[i];
+  if (!c) return;
+  var modal = document.createElement('div');
+  modal.id = 'modal-cliente-temp';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 10px';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:580px;max-width:96vw;margin:auto;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="display:flex;align-items:center;gap:10px">'
+    + '<div class="avatar" style="background:' + c.cor + '">' + c.init + '</div>'
+    + '<div><div style="font-size:15px;font-weight:700">' + c.nome + '</div>'
+    + '<div style="margin-top:2px">' + pill(c.status, c.pill) + '</div></div>'
+    + '</div>'
+    + '<button onclick="document.getElementById(\'modal-cliente-temp\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">WhatsApp</label><input class="fi" id="cli-tel" value="' + (c.tel||'') + '" placeholder="(91) 99999-0000"></div>'
+    + '<div class="fg"><label class="fl">E-mail</label><input class="fi" id="cli-email" value="' + (c.email||'') + '" placeholder="cliente@email.com"></div>'
+    + '<div class="fg"><label class="fl">Endereço da obra</label><input class="fi" id="cli-end" value="' + (c.end||'') + '" placeholder="Rua, número, bairro..."></div>'
+    + '<div class="fg"><label class="fl">Projeto vinculado</label><input class="fi" id="cli-proj" value="' + (c.proj||'') + '" placeholder="001_05_26_SILVA"></div>'
+    + '<div class="fg"><label class="fl">Acordo de pagamento</label><select class="fs" id="cli-pgto"><option>50% entrada + 50% entrega</option><option>3x iguais</option><option>À vista</option></select></div>'
+    + '<div class="fg"><label class="fl">Link Drive do cliente</label><input class="fi" id="cli-drive" placeholder="https://drive.google.com/..."></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Observações</label><textarea class="fi" id="cli-obs" style="min-height:70px" placeholder="Informações relevantes sobre o cliente..."></textarea></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarCliente(' + i + ')">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-cliente-temp\').remove()">Fechar</button>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function salvarCliente(i) {
+  var clientes = lerDados('clientes_lista', []);
+  if (!clientes[i]) return;
+  clientes[i].tel   = (document.getElementById('cli-tel')  ||{value:''}).value;
+  clientes[i].email = (document.getElementById('cli-email')||{value:''}).value;
+  clientes[i].end   = (document.getElementById('cli-end')  ||{value:''}).value;
+  clientes[i].proj  = (document.getElementById('cli-proj') ||{value:''}).value;
+  salvarDados('clientes_lista', clientes);
+  var modal = document.getElementById('modal-cliente-temp');
+  if (modal) modal.remove();
+  mostrarFeedback('Cliente salvo!');
+}
+
+function abrirModalNovoCliente() {
+  var modal = document.createElement('div');
+  modal.id = 'modal-novo-cli';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:480px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div style="font-size:15px;font-weight:700">Novo Cliente</div>'
+    + '<button onclick="document.getElementById(\'modal-novo-cli\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00d7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Nome completo</label><input class="fi" id="ncli-nome" placeholder="Ex: Ana Paula Silva"></div>'
+    + '<div class="g2">'
+    + '<div class="fg"><label class="fl">WhatsApp</label><input class="fi" id="ncli-tel" placeholder="(91) 99999-0000"></div>'
+    + '<div class="fg"><label class="fl">E-mail</label><input class="fi" id="ncli-email" placeholder="cliente@email.com"></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Endereço da obra</label><input class="fi" id="ncli-end" placeholder="Rua, número, bairro..."></div>'
+    + '<div class="fg"><label class="fl">Projeto vinculado</label><input class="fi" id="ncli-proj" placeholder="001_05_26_SILVA"></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarNovoCliente()">' + ic('save',14) + ' Salvar</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-novo-cli\').remove()">Cancelar</button>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(modal);
+  renderIcons();
+}
+
+function salvarNovoCliente() {
+  var nome = (document.getElementById('ncli-nome')||{value:''}).value.trim();
+  if (!nome) { mostrarFeedback('Informe o nome'); return; }
+  var clientes = lerDados('clientes_lista', []);
+  var init = nome.split(' ').map(function(w){ return w[0]; }).slice(0,2).join('').toUpperCase();
+  var cores = ['var(--accent)','var(--blue)','var(--purple)','var(--green)','var(--amber)'];
+  clientes.push({
+    init: init,
+    cor: cores[clientes.length % cores.length],
+    nome: nome,
+    info: 'Cliente desde ' + new Date().toLocaleDateString('pt-BR'),
+    status: 'Em andamento', pill: 'p-amber',
+    tel:   (document.getElementById('ncli-tel')  ||{value:''}).value,
+    email: (document.getElementById('ncli-email')||{value:''}).value,
+    end:   (document.getElementById('ncli-end')  ||{value:''}).value,
+    proj:  (document.getElementById('ncli-proj') ||{value:''}).value
+  });
+  salvarDados('clientes_lista', clientes);
+  var modal = document.getElementById('modal-novo-cli');
+  if (modal) modal.remove();
+  mostrarFeedback('Cliente ' + nome + ' adicionado!');
+  renderPage('clientes');
 }
 
 function buildSobreVoce() {
@@ -5054,6 +5136,67 @@ window.addEventListener('load', function() {
   </div>
   <div class="portal-body">
     <div class="portal-inner" id="posvenda-content"></div>
+  </div>
+</div>
+
+<!-- MODAL REUNIÃO — estático, nunca recriado -->
+<div id="modal-reuniao" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 10px">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:680px;max-width:96vw;margin:auto;box-shadow:0 8px 40px var(--shadow)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div style="font-size:15px;font-weight:700" id="mr-titulo">Reuni&atilde;o</div>
+      <button onclick="closeReuniao()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">&times;</button>
+    </div>
+    <div class="g2" style="margin-bottom:0">
+      <div class="fg"><label class="fl">Cliente</label><input class="fi" id="mr-cliente"></div>
+      <div class="fg"><label class="fl">Projeto</label><input class="fi" id="mr-projeto"></div>
+      <div class="fg"><label class="fl">Data e hora</label><input class="fi" id="mr-data"></div>
+      <div class="fg"><label class="fl">Tipo</label>
+        <select class="fs" id="mr-tipo">
+          <option>Abertura</option><option>Aprovação</option><option>Alinhamento</option>
+          <option>Apresentação</option><option>Feedback</option><option>Outro</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Participantes</label><input class="fi" id="mr-part" placeholder="Ex: Sibelle · Cliente · Engenheiro"></div>
+    <div class="fg"><label class="fl">Pauta</label><textarea class="fi" id="mr-pauta" style="min-height:70px" placeholder="Tópicos a discutir..."></textarea></div>
+    <div class="fg"><label class="fl">Ata da Reunião</label><textarea class="fi" id="mr-ata" style="min-height:90px" placeholder="Resumo das decisões tomadas..."></textarea></div>
+
+    <!-- AÇÕES -->
+    <div class="fg"><label class="fl">Ações geradas</label>
+      <div id="mr-acoes-list" style="margin-bottom:8px;min-height:4px"></div>
+      <div style="display:flex;gap:6px">
+        <input class="fi" id="mr-acao-input" placeholder="Descreva a ação..." style="flex:1;margin-bottom:0"
+          onkeydown="if(event.key==='Enter'){addAcao();event.preventDefault();}">
+        <button class="btn btn-sm" onclick="addAcao()">+ Adicionar</button>
+      </div>
+    </div>
+
+    <!-- TRANSCRIÇÃO -->
+    <div class="fg"><label class="fl">Transcrição</label>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px">
+        <div id="mr-transcricao" style="font-size:12px;color:var(--muted);min-height:40px;white-space:pre-wrap;margin-bottom:8px;line-height:1.5">Nenhuma transcrição ainda.</div>
+        <div id="mr-gravando" style="display:none;font-size:11px;color:var(--red);margin-bottom:6px;display:none">⏺ Gravando... fale agora</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-sm" id="btn-gravar" onclick="gravarTranscricao()">🎙 Gravar</button>
+          <button class="btn btn-sm" id="btn-parar" style="display:none" onclick="pararGravacao()">⏹ Parar</button>
+          <label style="cursor:pointer"><input type="file" accept="audio/*" style="display:none" onchange="importarAudio(this)"><span class="btn btn-sm">↑ Importar áudio</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANEXOS -->
+    <div class="fg"><label class="fl">Anexos</label>
+      <div style="background:var(--bg2);border:1px dashed var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
+        <div id="mr-anexos" style="font-size:12px;color:var(--text2);margin-bottom:8px">Nenhum anexo.</div>
+        <label style="cursor:pointer"><input type="file" multiple style="display:none" onchange="anexarReuniao(this)"><span class="btn btn-sm">📎 Adicionar anexo</span></label>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarReuniao()">💾 Salvar</button>
+      <button class="btn" onclick="exportarPDF('reuniao')">↓ PDF</button>
+      <button class="btn" onclick="closeReuniao()">Fechar</button>
+    </div>
   </div>
 </div>
 
