@@ -341,6 +341,7 @@ var ICONS = {
   "info": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 8l.01 0"/><path d="M11 12l1 0l0 4l1 0"/>',
   "menu": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6l16 0"/><path d="M4 12l16 0"/><path d="M4 18l16 0"/>',
   "key": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16.555 3.843l3.602 3.602a2.877 2.877 0 0 1 0 4.069l-2.643 2.643a2.877 2.877 0 0 1 -4.069 0l-.301 -.301l-6.558 6.558a2 2 0 0 1 -1.239 .578l-.175 .008h-1.172a1 1 0 0 1 -.993 -.883l-.007 -.117v-1.172a2 2 0 0 1 .467 -1.284l.119 -.13l.175 -.144l6.558 -6.558l-.301 -.301a2.877 2.877 0 0 1 0 -4.069l2.643 -2.643a2.877 2.877 0 0 1 4.069 0z"/>',
+  "trash": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>',
   "pencil": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"/><path d="M13.5 6.5l4 4"/>',
   "chart-bar-2": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12h4l3 8l4 -16l3 8h4"/>',
   "layout-grid-2": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M14 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M4 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M14 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/>'
@@ -1022,7 +1023,7 @@ function renderPage(page) {
     html += mkStat('R$ 8.4k', 'Faturamento junho', ic('trending-up', 12) + ' +12%', 'var(--accent)');
     html += mkStat('2', 'Leads no CRM', ic('clock', 12) + ' Aguardando', 'var(--amber)');
     html += '</div>';
-    html += mkCard('Projetos recentes', 'folder', buildProjectCards());
+    html += '<div class="card"><div class="card-title">' + ic('folder',15) + ' Projetos recentes</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px">' + buildProjectCards() + '</div></div>';
     html += '<div class="card" style="background:rgba(96,165,250,0.06);border-color:rgba(96,165,250,0.15)">';
     html += '<div style="display:flex;align-items:flex-start;gap:10px">' + ic('bell', 16);
     html += '<div><div style="font-size:13px;font-weight:600;margin-bottom:2px">2 novos leads no CRM</div>';
@@ -1248,7 +1249,7 @@ function renderPage(page) {
     html = '<div class="page on"><div class="page-title">Projetos</div><div class="page-sub">Gerencie todos os projetos do escrit\u00F3rio.</div>';
     html += '<div style="display:flex;gap:8px;margin-bottom:18px"><button class="btn btn-accent" onclick="openNovoProj()">' + ic('plus', 14) + ' Novo projeto</button>';
     html += '<div style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0 12px;display:flex;align-items:center;gap:8px;color:var(--muted)">' + ic('search', 14) + '<input style="background:none;border:none;outline:none;font-family:inherit;font-size:13px;color:var(--text);width:100%" placeholder="Buscar projeto..."></div></div>';
-    html += '<div class="g3">' + buildProjectCards() + '</div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px">' + buildProjectCards() + '</div>';
     html += '</div>';
 
   } else if (page === 'cronograma') {
@@ -1374,11 +1375,15 @@ function buildSelect(options) {
 }
 
 function buildProjectCards() {
-  var projects = [
+  var fixos = [
     {i:'SE', n:'Sala Estar \u2014 Fam\u00EDlia Silva', c:'001_05_26', p:65, bg:'linear-gradient(135deg,#1a3a5c,#0a1a2e)', tc:'#60a5fa', capa:null},
     {i:'CI', n:'Cozinha Integrada \u2014 Ap. Moura',   c:'002_05_26', p:30, bg:'linear-gradient(135deg,#2d1a3a,#150d1f)', tc:'#a78bfa', capa:null},
     {i:'HO', n:'Home Office \u2014 Dr. Carvalho',      c:'003_05_26', p:90, bg:'linear-gradient(135deg,#1a3a1a,#0a1f0a)', tc:'#4ade80', capa:null}
   ];
+
+  // Filtra projetos fixos excluídos
+  var excluidos = lerDados('projetos_excluidos', []);
+  var projects = fixos.filter(function(p) { return excluidos.indexOf(p.c) < 0; });
 
   var salvos = lerDados('projetos', []);
   salvos.forEach(function(p) {
@@ -1393,7 +1398,8 @@ function buildProjectCards() {
         c:    p.codigo, p: 0,
         bg:   'linear-gradient(135deg,#3a2a1a,#1f150a)',
         tc:   '#d4956a',
-        capa: p.capa || null
+        capa: p.capa || null,
+        salvo: true
       });
     }
   });
@@ -1419,7 +1425,7 @@ function buildProjectCards() {
       + ' onmouseover="this.style.borderColor=\'var(--accent)\'"'
       + ' onmouseout="this.style.borderColor=\'var(--border)\'">';
 
-    cardHtml += '<div style="height:90px;' + capaBg + ';position:relative">';
+    cardHtml += '<div style="height:120px;' + capaBg + ';position:relative">';
     if (!temCapa) {
       cardHtml += '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;letter-spacing:2px;color:' + pr.tc + '">' + pr.i + '</div>';
     } else {
@@ -1429,26 +1435,12 @@ function buildProjectCards() {
     cardHtml += '<div style="position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;background:rgba(0,0,0,0.55);color:#fff;padding:2px 7px;border-radius:10px">' + pr.p + '%</div>';
     cardHtml += '</div>';
 
-    cardHtml += '<div style="padding:11px 12px">';
-    cardHtml += '<div style="font-size:12px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + pr.n + '</div>';
-    cardHtml += '<div style="font-size:10px;color:var(--muted);margin-top:2px;margin-bottom:8px">' + pr.c + '</div>';
+    cardHtml += '<div style="padding:8px 10px">';
+    cardHtml += '<div style="font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + pr.n + '</div>';
+    cardHtml += '<div style="font-size:10px;color:var(--muted);margin-top:1px">' + pr.c + '</div>';
 
     if (totalSeg > 0) {
-      cardHtml += '<div style="border-top:1px solid var(--border2);padding-top:8px">';
-      cardHtml += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
-      cardHtml += '<span style="font-size:10px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:1px">Horas registradas</span>';
-      cardHtml += '<span style="font-size:11px;font-weight:700;color:var(--accent)">' + fmtHorasTotal(totalSeg) + '</span>';
-      cardHtml += '</div>';
-      Object.keys(porAtiv).forEach(function(ativ) {
-        var pct = Math.round((porAtiv[ativ] / totalSeg) * 100);
-        cardHtml += '<div style="margin-bottom:5px"><div style="display:flex;justify-content:space-between;margin-bottom:2px">';
-        cardHtml += '<span style="font-size:10px;color:var(--text2)">' + ativ + '</span>';
-        cardHtml += '<span style="font-size:10px;color:var(--muted)">' + fmtHorasTotal(porAtiv[ativ]) + '</span>';
-        cardHtml += '</div><div style="height:3px;background:var(--bg3);border-radius:2px"><div style="height:100%;width:' + pct + '%;background:var(--accent);border-radius:2px"></div></div></div>';
-      });
-      cardHtml += '</div>';
-    } else {
-      cardHtml += '<div style="font-size:10px;color:var(--muted2);border-top:1px solid var(--border2);padding-top:6px">' + ic('clock',11) + ' Nenhuma hora registrada</div>';
+      cardHtml += '<div style="font-size:10px;color:var(--accent);margin-top:4px;font-weight:600">' + ic('clock',10) + ' ' + fmtHorasTotal(totalSeg) + '</div>';
     }
 
     cardHtml += '</div></div>';
@@ -2945,7 +2937,10 @@ function abrirDetalheProjeto(cId, nome, codigo) {
     html += '<div style="padding:24px 24px 0">';
     html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">';
     html += '<div><div style="font-size:15px;font-weight:700">' + nome + '</div><div style="font-size:11px;color:var(--muted);margin-top:2px">' + codigo + '</div></div>';
+    html += '<div style="display:flex;align-items:center;gap:8px">';
+    html += '<button onclick="excluirProjeto(\'' + codigo + '\')" title="Excluir projeto" style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);border-radius:6px;width:28px;height:28px;color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center">' + ic('trash',13) + '</button>';
     html += '<button onclick="document.getElementById(\'modal-proj-detalhe\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;line-height:1">\u00D7</button>';
+    html += '</div>';
     html += '</div>';
   }
 
@@ -2964,7 +2959,7 @@ function abrirDetalheProjeto(cId, nome, codigo) {
   html += '<div class="stat"><div class="stat-val" style="color:var(--blue)">' + Object.keys(porAtiv).length + '</div><div class="stat-lbl">Atividades</div></div>';
   html += '</div>';
   html += '<div class="fg"><label class="fl">Observa\u00e7\u00f5es do projeto</label><textarea class="fi" style="min-height:80px" placeholder="Anota\u00e7\u00f5es, decis\u00f5es, pr\u00f3ximos passos..."></textarea></div>';
-  html += '<button class="btn btn-accent btn-sm">' + ic('save',13) + ' Salvar</button>';
+  html += '<div style="padding-bottom:20px"><button class="btn btn-accent btn-sm" onclick="mostrarFeedback(\'Salvo!\')">' + ic('save',13) + ' Salvar</button></div>';
   html += '</div>';
 
   // ABA HORAS
@@ -3193,6 +3188,38 @@ function salvarCapitulo(chaveBase, cod, btn) {
     btn.style.background = '';
     btn.style.borderColor = '';
   }, 1500);
+}
+
+function excluirProjeto(codigo) {
+  if (!confirm('Excluir o projeto ' + codigo + '? Esta ação não pode ser desfeita.')) return;
+
+  // Verifica se é fixo ou salvo
+  var fixos = ['001_05_26','002_05_26','003_05_26'];
+  if (fixos.indexOf(codigo) >= 0) {
+    // Marca como excluído na lista de excluídos
+    var excluidos = lerDados('projetos_excluidos', []);
+    if (excluidos.indexOf(codigo) < 0) excluidos.push(codigo);
+    salvarDados('projetos_excluidos', excluidos);
+  } else {
+    // Remove dos projetos salvos
+    var salvos = lerDados('projetos', []);
+    salvos = salvos.filter(function(p) { return p.codigo !== codigo; });
+    salvarDados('projetos', salvos);
+  }
+
+  // Fecha o modal
+  var modal = document.getElementById('modal-proj-detalhe');
+  if (modal) modal.remove();
+
+  mostrarFeedback('Projeto exclu\u00eddo');
+
+  // Re-renderiza os cards
+  document.querySelectorAll('.g3').forEach(function(g) {
+    if (g.querySelector('[onclick*="abrirDetalheProjeto"]') !== null) {
+      g.innerHTML = buildProjectCards();
+      renderIcons();
+    }
+  });
 }
 
 function switchProjTab(btn, tabId) {
