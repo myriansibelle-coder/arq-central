@@ -830,6 +830,9 @@ function renderIcons() {
         <button class="icon-btn" onclick="toggleTheme()">
           <i data-lucide="sun" id="app-theme-icon" style="width:15px;height:15px"></i>
         </button>
+        <button class="icon-btn" onclick="abrirConfigAPI()" title="Configurar API">
+          <i data-lucide="key" style="width:15px;height:15px"></i>
+        </button>
         <button class="icon-btn"><i data-lucide="bell" style="width:15px;height:15px"></i></button>
         <div class="avatar sm" onclick="openPerfil()" style="cursor:pointer" title="Meu Perfil">SM</div>
         <button class="btn btn-sm" onclick="goHome()">
@@ -3280,21 +3283,41 @@ function buildGenRender() {
 }
 
 function buildGenProposta() {
-  return '<div class="g2"><div class="fg"><label class="fl">Cliente</label>' + buildSelect(['Ana Paula Silva','Fam\u00EDlia Moura','Dr. Roberto Carvalho']) + '</div>'
-    + '<div class="fg"><label class="fl">Servi\u00E7o</label>' + buildSelect(['Consultoria Online \u2014 R$ 350','Projeto Completo \u2014 R$ 2.800']) + '</div>'
-    + '<div class="fg"><label class="fl">Ambientes</label><input class="fi" value="Sala de estar, sala de jantar"></div>'
-    + '<div class="fg"><label class="fl">\u00C1rea (m\u00B2)</label><input class="fi" value="48"></div></div>'
-    + '<div class="fg"><label class="fl">Observa\u00E7\u00F5es</label><textarea class="fi" placeholder="Personaliza\u00E7\u00F5es, prazos especiais..."></textarea></div>'
-    + '<button class="btn btn-accent">' + ic('sparkles',14) + ' Gerar proposta</button>';
+  var clientes = lerDados('clientes_lista', [{nome:'Ana Paula Silva'},{nome:'Fam\u00edlia Moura'},{nome:'Dr. Roberto Carvalho'}]);
+  var opts = clientes.map(function(c){ return c.nome||c; }).join('|');
+  return '<div class="g2">'
+    + '<div class="fg"><label class="fl">Cliente</label><select class="fs" id="gen-prop-cliente">' + clientes.map(function(c){ var n=c.nome||c; return '<option>'+n+'</option>'; }).join('') + '</select></div>'
+    + '<div class="fg"><label class="fl">Servi\u00e7o</label><select class="fs" id="gen-prop-servico"><option>Projeto de Interiores Completo</option><option>Consultoria Online</option><option>Shop the Room</option><option>Kit de Ambiente</option></select></div>'
+    + '<div class="fg"><label class="fl">Ambientes</label><input class="fi" id="gen-prop-amb" value="Sala de estar, sala de jantar"></div>'
+    + '<div class="fg"><label class="fl">\u00c1rea (m\u00b2)</label><input class="fi" id="gen-prop-area" value="48"></div>'
+    + '<div class="fg"><label class="fl">Valor total (R$)</label><input class="fi" id="gen-prop-valor" value="2800"></div>'
+    + '<div class="fg"><label class="fl">Prazo de entrega</label><input class="fi" id="gen-prop-prazo" value="45 dias corridos"></div>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Observa\u00e7\u00f5es / personaliza\u00e7\u00f5es</label><textarea class="fi" id="gen-prop-obs" style="min-height:70px" placeholder="Inclua aqui qualquer detalhe espec\u00edfico do cliente..."></textarea></div>'
+    + '<div id="gen-prop-resultado" style="display:none;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:16px;margin-bottom:12px;font-size:13px;line-height:1.7;white-space:pre-wrap;max-height:400px;overflow-y:auto"></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" onclick="gerarComIA(\'proposta\')">' + ic('sparkles',14) + ' Gerar proposta</button>'
+    + '<button class="btn" id="btn-copiar-prop" style="display:none" onclick="copiarResultado(\'gen-prop-resultado\')">' + ic('copy',14) + ' Copiar</button>'
+    + '<button class="btn" id="btn-pdf-prop" style="display:none" onclick="exportarPDF(\'proposta\')">' + ic('download',14) + ' PDF</button>'
+    + '</div>';
 }
 
 function buildGenContrato() {
-  return '<div class="g2"><div class="fg"><label class="fl">Cliente</label>' + buildSelect(['Ana Paula Silva','Fam\u00EDlia Moura']) + '</div>'
-    + '<div class="fg"><label class="fl">Valor total</label><input class="fi" value="R$ 2.800,00"></div>'
-    + '<div class="fg"><label class="fl">Forma de pagamento</label>' + buildSelect(['50% entrada + 50% entrega','3x iguais','\u00C0 vista']) + '</div>'
-    + '<div class="fg"><label class="fl">Prazo</label><input class="fi" value="45 dias corridos"></div></div>'
-    + '<button class="btn btn-accent">' + ic('sparkles',14) + ' Gerar contrato</button>';
+  var clientes = lerDados('clientes_lista', [{nome:'Ana Paula Silva'},{nome:'Fam\u00edlia Moura'},{nome:'Dr. Roberto Carvalho'}]);
+  return '<div class="g2">'
+    + '<div class="fg"><label class="fl">Cliente</label><select class="fs" id="gen-cont-cliente">' + clientes.map(function(c){ var n=c.nome||c; return '<option>'+n+'</option>'; }).join('') + '</select></div>'
+    + '<div class="fg"><label class="fl">Valor total (R$)</label><input class="fi" id="gen-cont-valor" value="2800"></div>'
+    + '<div class="fg"><label class="fl">Forma de pagamento</label><select class="fs" id="gen-cont-pgto"><option>50% entrada + 50% na entrega</option><option>3x iguais</option><option>\u00c0 vista</option></select></div>'
+    + '<div class="fg"><label class="fl">Prazo de entrega</label><input class="fi" id="gen-cont-prazo" value="45 dias corridos"></div>'
+    + '<div class="fg"><label class="fl">Escopo do projeto</label><textarea class="fi" id="gen-cont-escopo" style="min-height:70px" placeholder="Descreva os ambientes e servi\u00e7os inclusos...">Projeto de interiores completo: sala de estar e jantar (48m\u00b2), incluindo layout, memorial descritivo, moodboard e acompanhamento de execu\u00e7\u00e3o.</textarea></div>'
+    + '</div>'
+    + '<div id="gen-cont-resultado" style="display:none;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:16px;margin-bottom:12px;font-size:13px;line-height:1.7;white-space:pre-wrap;max-height:400px;overflow-y:auto"></div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" onclick="gerarComIA(\'contrato\')">' + ic('sparkles',14) + ' Gerar contrato</button>'
+    + '<button class="btn" id="btn-copiar-cont" style="display:none" onclick="copiarResultado(\'gen-cont-resultado\')">' + ic('copy',14) + ' Copiar</button>'
+    + '</div>';
 }
+
 
 function buildGenMoodboard() {
   return '<div class="g2"><div class="fg"><label class="fl">Projeto</label>' + buildSelect(['Sala Estar \u2014 Fam\u00EDlia Silva','Cozinha \u2014 Ap. Moura']) + '</div>'
@@ -4304,6 +4327,202 @@ function importarListaBiblioteca(input) {
   if (!input.files || !input.files[0]) return;
   mostrarFeedback('Importa\u00e7\u00e3o via planilha ser\u00e1 ativada em breve. Use "Cadastrar material" por enquanto.');
   input.value = '';
+}
+
+// ============================================================
+// INTEGRAÇÃO CLAUDE API
+// ============================================================
+var CLAUDE_KEY = lerDados('claude_api_key', '');
+
+function salvarChaveAPI(key) {
+  CLAUDE_KEY = key;
+  salvarDados('claude_api_key', key);
+}
+
+async function gerarComIA(tipo) {
+  // Verifica chave
+  var key = CLAUDE_KEY || lerDados('claude_api_key', '');
+  if (!key) {
+    mostrarFeedback('Configure a chave API nas configurações');
+    return;
+  }
+
+  // Monta o prompt baseado no tipo
+  var prompt = '';
+  var resultId = '';
+  var copiarBtnId = '';
+
+  if (tipo === 'proposta') {
+    var cliente  = (document.getElementById('gen-prop-cliente') ||{value:'Cliente'}).value;
+    var servico  = (document.getElementById('gen-prop-servico') ||{value:'Projeto'}).value;
+    var amb      = (document.getElementById('gen-prop-amb')     ||{value:''}).value;
+    var area     = (document.getElementById('gen-prop-area')    ||{value:''}).value;
+    var valor    = (document.getElementById('gen-prop-valor')   ||{value:''}).value;
+    var prazo    = (document.getElementById('gen-prop-prazo')   ||{value:''}).value;
+    var obs      = (document.getElementById('gen-prop-obs')     ||{value:''}).value;
+    resultId     = 'gen-prop-resultado';
+    copiarBtnId  = 'btn-copiar-prop';
+
+    prompt = 'Você é Sibelle Moura, arquiteta e designer de interiores em Belém, PA. Gere uma proposta comercial profissional e calorosa em português brasileiro para:\n\n'
+      + 'CLIENTE: ' + cliente + '\n'
+      + 'SERVIÇO: ' + servico + '\n'
+      + 'AMBIENTES: ' + amb + '\n'
+      + 'ÁREA: ' + area + ' m²\n'
+      + 'VALOR: R$ ' + valor + '\n'
+      + 'PRAZO: ' + prazo + '\n'
+      + (obs ? 'OBSERVAÇÕES: ' + obs + '\n' : '')
+      + '\nA proposta deve incluir:\n'
+      + '1. Saudação personalizada ao cliente\n'
+      + '2. Apresentação dos serviços inclusos\n'
+      + '3. Metodologia de trabalho (etapas)\n'
+      + '4. Investimento e condições de pagamento\n'
+      + '5. Validade da proposta (15 dias)\n'
+      + '6. Próximos passos\n'
+      + '7. Fechamento caloroso com assinatura\n\n'
+      + 'Tom: profissional, caloroso, que transmite confiança e expertise em design biofílico.';
+
+  } else if (tipo === 'contrato') {
+    var clienteC = (document.getElementById('gen-cont-cliente') ||{value:'Cliente'}).value;
+    var valorC   = (document.getElementById('gen-cont-valor')   ||{value:''}).value;
+    var pgtoC    = (document.getElementById('gen-cont-pgto')    ||{value:''}).value;
+    var prazoC   = (document.getElementById('gen-cont-prazo')   ||{value:''}).value;
+    var escopoC  = (document.getElementById('gen-cont-escopo')  ||{value:''}).value;
+    resultId     = 'gen-cont-resultado';
+    copiarBtnId  = 'btn-copiar-cont';
+
+    prompt = 'Você é Sibelle Moura, arquiteta (CAU) em Belém, PA. Gere um contrato de prestação de serviços de arquitetura e design de interiores em português brasileiro para:\n\n'
+      + 'CONTRATANTE: ' + clienteC + '\n'
+      + 'CONTRATADA: Sibelle Moura Arquitetura\n'
+      + 'VALOR TOTAL: R$ ' + valorC + '\n'
+      + 'PAGAMENTO: ' + pgtoC + '\n'
+      + 'PRAZO: ' + prazoC + '\n'
+      + 'ESCOPO: ' + escopoC + '\n\n'
+      + 'O contrato deve incluir cláusulas sobre:\n'
+      + '1. Objeto do contrato\n'
+      + '2. Obrigações da contratada\n'
+      + '3. Obrigações do contratante\n'
+      + '4. Valor e forma de pagamento\n'
+      + '5. Prazo de execução\n'
+      + '6. Propriedade intelectual\n'
+      + '7. Rescisão\n'
+      + '8. Disposições gerais\n'
+      + '9. Espaço para assinaturas e data\n\n'
+      + 'Linguagem: jurídica mas acessível, clara e sem ambiguidades.';
+  }
+
+  // Mostra loading
+  var resultEl = document.getElementById(resultId);
+  if (!resultEl) return;
+  resultEl.style.display = 'block';
+  resultEl.textContent = '\u23f3 Gerando com IA... aguarde alguns segundos.';
+
+  // Desabilita botão durante a geração
+  var btns = document.querySelectorAll('[onclick*="gerarComIA"]');
+  btns.forEach(function(b){ b.disabled = true; b.style.opacity = '0.6'; });
+
+  try {
+    var response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    var data = await response.json();
+
+    if (data.error) {
+      resultEl.textContent = '\u274c Erro: ' + (data.error.message || 'Falha na API');
+      mostrarFeedback('Erro na API: ' + data.error.type);
+    } else {
+      var texto = data.content && data.content[0] ? data.content[0].text : 'Sem resposta';
+      resultEl.textContent = texto;
+      // Mostra botões de copiar/PDF
+      var copBtn = document.getElementById(copiarBtnId);
+      if (copBtn) copBtn.style.display = 'inline-flex';
+      var pdfBtn = document.getElementById('btn-pdf-prop');
+      if (pdfBtn && tipo === 'proposta') pdfBtn.style.display = 'inline-flex';
+      mostrarFeedback('\u2728 ' + (tipo === 'proposta' ? 'Proposta' : 'Contrato') + ' gerado!');
+    }
+  } catch(e) {
+    resultEl.textContent = '\u274c Erro de conex\u00e3o: ' + e.message;
+    mostrarFeedback('Erro de conex\u00e3o');
+  }
+
+  // Reabilita botões
+  btns.forEach(function(b){ b.disabled = false; b.style.opacity = '1'; });
+}
+
+function copiarResultado(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(function() {
+    mostrarFeedback('Copiado para a \u00e1rea de transfer\u00eancia!');
+  }).catch(function() {
+    // Fallback para iOS
+    var range = document.createRange();
+    range.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    mostrarFeedback('Copiado!');
+  });
+}
+
+function abrirConfigAPI() {
+  var atual = lerDados('claude_api_key', '');
+  var modal = document.createElement('div');
+  modal.id = 'modal-config-api';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center';
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:500px;max-width:96vw;box-shadow:0 8px 40px var(--shadow)">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">'
+    + '<div><div style="font-size:15px;font-weight:700">Configurar chave da API</div>'
+    + '<div style="font-size:11px;color:var(--muted);margin-top:2px">A chave fica salva s\u00f3 no seu dispositivo (localStorage)</div></div>'
+    + '<button onclick="document.getElementById(\'modal-config-api\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px">\u00d7</button>'
+    + '</div>'
+    + '<div class="fg"><label class="fl">Chave Anthropic (Claude API)</label>'
+    + '<input class="fi" id="cfg-claude-key" type="password" placeholder="sk-ant-api03-..." value="' + (atual ? '••••••••••••••••' : '') + '"></div>'
+    + '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:12px;margin-bottom:14px;font-size:11px;color:var(--muted);line-height:1.6">'
+    + '\ud83d\udd11 Sua chave nunca \u00e9 enviada para nenhum servidor — fica salva apenas no seu navegador.<br>'
+    + '\ud83d\udccd Obtenha em: <span style="color:var(--accent)">console.anthropic.com</span>'
+    + '</div>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarChaveAPI()">' + ic('save',14) + ' Salvar chave</button>'
+    + '<button class="btn" style="color:var(--red);border-color:var(--red)" onclick="removerChaveAPI()">Remover</button>'
+    + '<button class="btn" onclick="document.getElementById(\'modal-config-api\').remove()">Cancelar</button>'
+    + '</div></div>';
+  document.body.appendChild(modal);
+  renderIcons();
+  // Limpa o campo para digitar a chave real
+  setTimeout(function() {
+    var inp = document.getElementById('cfg-claude-key');
+    if (inp) { inp.value = atual || ''; inp.focus(); }
+  }, 100);
+}
+
+function salvarChaveAPI() {
+  var key = (document.getElementById('cfg-claude-key')||{value:''}).value.trim();
+  if (!key || key === '••••••••••••••••') { mostrarFeedback('Digite a chave v\u00e1lida'); return; }
+  CLAUDE_KEY = key;
+  salvarDados('claude_api_key', key);
+  var modal = document.getElementById('modal-config-api');
+  if (modal) modal.remove();
+  mostrarFeedback('\u2705 Chave salva com sucesso!');
+}
+
+function removerChaveAPI() {
+  CLAUDE_KEY = '';
+  salvarDados('claude_api_key', '');
+  var modal = document.getElementById('modal-config-api');
+  if (modal) modal.remove();
+  mostrarFeedback('Chave removida');
 }
 
 function previewFonte() {
