@@ -1693,34 +1693,47 @@ function buildCliReferencias() {
 function buildCliDocs() {
   var s = _cliSessao || {};
   var proj = s.proj, lead = s.lead;
-  var estagio = lead ? lead.estagio : 'BRIEFING';
-  var estagios = ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA','CONTRATO','CLIENTE'];
-  var idx = estagios.indexOf(estagio);
-  function docRow(icon, label, sub, avail, btnLabel, onclick) {
-    return '<div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border2)">' +
-      '<i data-lucide="'+icon+'" style="width:20px;height:20px;color:'+(avail?'var(--accent)':'var(--muted2)')+'"></i>' +
-      '<div style="flex:1"><div style="font-size:13px;font-weight:500;color:'+(avail?'var(--text)':'var(--muted)')+'">'+label+'</div>' +
-        '<div style="font-size:11px;color:var(--muted2)">'+sub+'</div></div>' +
-      (avail?'<button class="btn btn-sm" onclick="'+onclick+'"><i data-lucide="external-link" style="width:12px;height:12px"></i> '+btnLabel+'</button>':'') +
-    '</div>';
+  var proposta = (proj && proj.proposta) || { link:'', status:'pendente' };
+  var contrato = (proj && proj.contrato) || { link:'', status:'pendente' };
+
+  function docCard(icon, label, doc, statusMap) {
+    var hasLink = !!doc.link;
+    var statusLabel = statusMap[doc.status] || 'Pendente';
+    var statusColor = doc.status==='assinada'||doc.status==='assinado' ? 'var(--green)' : doc.status==='enviada'||doc.status==='enviado' ? 'var(--accent)' : 'var(--muted2)';
+    return '<div style="padding:16px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px">'
+      + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
+        + '<i data-lucide="'+icon+'" style="width:18px;height:18px;color:'+(hasLink?'var(--accent)':'var(--muted2)')+'"></i>'
+        + '<div style="flex:1"><div style="font-size:13px;font-weight:500;color:'+(hasLink?'var(--text)':'var(--muted)')+'">'+label+'</div>'
+          + '<div style="font-size:11px;color:'+statusColor+';margin-top:1px">'+statusLabel+'</div>'
+        + '</div>'
+      + '</div>'
+      + (hasLink
+        ? '<div style="display:flex;gap:8px">'
+            + '<a href="'+doc.link+'" target="_blank" class="btn btn-accent btn-sm" style="flex:1;justify-content:center"><i data-lucide="external-link" style="width:12px;height:12px"></i> Abrir / Baixar</a>'
+            + (doc.status!=='assinada'&&doc.status!=='assinado'
+              ? '<a href="'+doc.link+'" target="_blank" class="btn btn-sm" style="flex:1;justify-content:center"><i data-lucide="pen-line" style="width:12px;height:12px"></i> Assinar</a>'
+              : '<span class="pill p-green" style="align-self:center">Assinado ✓</span>')
+          + '</div>'
+        : '<div style="font-size:11px;color:var(--muted2);text-align:center;padding:8px 0">Aguardando envio pelo escritório</div>'
+      )
+      + '</div>';
   }
-  return '<div class="cli-section">' +
-    '<h2 class="cli-section-title">Documentos</h2>' +
-    '<p class="cli-section-sub">Todos os arquivos do seu projeto em um só lugar.</p>' +
-    '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">' +
-      docRow('file-text','Proposta comercial', idx>=3?'Enviada pelo escritório':'Aguardando briefing completo', idx>=3,'Ver','mostrarFeedback("Baixe a proposta pelo link enviado no WhatsApp")') +
-      docRow('pen-tool','Contrato',            idx>=4?'Em vigor':'Aguardando aprovação da proposta',             idx>=4,'Ver','mostrarFeedback("Contrato disponível após assinatura")') +
-      docRow('layers','Projeto executivo',     idx>=5?'Em desenvolvimento':'Após assinatura do contrato',         idx>=5,'Ver','mostrarFeedback("Seu arquiteto irá compartilhar pelo Drive")') +
-      docRow('folder','Drive do projeto',      idx>=5?'Pasta compartilhada':'Disponível após início do projeto',  idx>=5,'Abrir','mostrarFeedback("Link do Drive será enviado por WhatsApp")') +
-    '</div>' +
-    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:16px">' +
-      '<div style="font-size:12px;font-weight:600;margin-bottom:10px">Enviar arquivo ao escritório</div>' +
-      '<label style="cursor:pointer"><input type="file" style="display:none" onchange="uploadArqCliente(this)">' +
-        '<span class="btn btn-sm"><i data-lucide="upload" style="width:12px;height:12px"></i> Selecionar arquivo</span>' +
-      '</label>' +
-      '<div style="font-size:11px;color:var(--muted2);margin-top:8px">Fotos do imóvel, plantas, medidas...</div>' +
-    '</div>' +
-    _cliPrevNext('documentos', false) + '</div>';
+
+  return '<div class="cli-section">'
+    + '<h2 class="cli-section-title">Documentos</h2>'
+    + '<p class="cli-section-sub">Acesse, baixe e assine os documentos do seu projeto.</p>'
+    + '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">'
+      + docCard('file-text','Proposta comercial', proposta, {pendente:'Aguardando', enviada:'Enviada pelo escritório', assinada:'Assinada ✓'})
+      + docCard('pen-tool','Contrato',            contrato, {pendente:'Aguardando', enviado:'Enviado pelo escritório', assinado:'Assinado ✓'})
+    + '</div>'
+    + '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:16px">'
+      + '<div style="font-size:12px;font-weight:600;margin-bottom:6px">Enviar arquivo ao escritório</div>'
+      + '<div style="font-size:11px;color:var(--muted2);margin-bottom:10px">Fotos do imóvel, plantas, medidas, referências...</div>'
+      + '<label style="cursor:pointer"><input type="file" style="display:none" onchange="uploadArqCliente(this)">'
+        + '<span class="btn btn-sm"><i data-lucide="upload" style="width:12px;height:12px"></i> Selecionar arquivo</span>'
+      + '</label>'
+    + '</div>'
+    + _cliPrevNext('documentos', false) + '</div>';
 }
 
 function buildCliPagamentos() {
@@ -1771,36 +1784,34 @@ function buildCliProxPassos() {
   ];
   var cfg = getStudioConfig();
 
-  // Bloco de entregas para validação
-  var entregas = (proj && proj.entregas) ? proj.entregas : [];
+  // Etapas de entrega definidas pelo arquiteto
+  var fases = (proj && proj.fases) || [];
   var entregasHtml = '';
-  if (idx >= 5) {
+  if (fases.length) {
     entregasHtml += '<div style="margin-bottom:28px">';
-    entregasHtml += '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;gap:6px"><i data-lucide="package-check" style="width:14px;height:14px;color:var(--accent)"></i> Entregas para validação</div>';
-    if (!entregas.length) {
-      entregasHtml += '<div style="padding:16px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;font-size:12px;color:var(--muted2);text-align:center">Nenhuma entrega registrada ainda.</div>';
-    } else {
-      entregasHtml += '<div style="display:flex;flex-direction:column;gap:8px">';
-      entregas.forEach(function(e) {
-        var aprovada = e.status === 'aprovada';
-        entregasHtml += '<div style="padding:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;display:flex;align-items:center;gap:12px">';
-        entregasHtml += '<div style="width:32px;height:32px;border-radius:50%;background:' + (aprovada ? 'rgba(74,222,128,0.15)' : 'rgba(184,134,90,0.12)') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0">';
-        entregasHtml += '<i data-lucide="' + (aprovada ? 'check-circle-2' : 'clock') + '" style="width:16px;height:16px;color:' + (aprovada ? 'var(--green)' : 'var(--accent)') + '"></i></div>';
-        entregasHtml += '<div style="flex:1">';
-        entregasHtml += '<div style="font-size:13px;font-weight:500;color:' + (aprovada ? 'var(--muted)' : 'var(--text)') + '">' + (e.titulo || 'Entrega') + (aprovada ? ' <span style="text-decoration:line-through"></span>' : '') + '</div>';
-        if (e.descricao) entregasHtml += '<div style="font-size:11px;color:var(--muted2);margin-top:2px">' + e.descricao + '</div>';
-        entregasHtml += '<div style="font-size:10px;color:var(--muted2);margin-top:2px">' + (e.data || '') + (aprovada ? ' · Validado por você ✓' : '') + '</div>';
-        entregasHtml += '</div>';
-        if (!aprovada) {
-          entregasHtml += '<button class="btn btn-accent btn-sm" onclick="validarEntrega(\'' + e.id + '\')"><i data-lucide="check" style="width:12px;height:12px"></i> Validar</button>';
-        } else {
-          entregasHtml += '<span class="pill p-green">Aprovado</span>';
-        }
-        entregasHtml += '</div>';
-      });
+    entregasHtml += '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;gap:6px"><i data-lucide="package-check" style="width:14px;height:14px;color:var(--accent)"></i> Etapas de entrega</div>';
+    entregasHtml += '<div style="display:flex;flex-direction:column;gap:8px">';
+    fases.forEach(function(f) {
+      var validada = f.status === 'validada';
+      var entregue = f.status === 'entregue';
+      var icon = validada ? 'check-circle-2' : entregue ? 'package' : 'clock';
+      var iconColor = validada ? 'var(--green)' : entregue ? 'var(--accent)' : 'var(--muted2)';
+      var bgColor = validada ? 'rgba(74,222,128,0.12)' : entregue ? 'rgba(184,134,90,0.12)' : 'var(--bg2)';
+      entregasHtml += '<div style="padding:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;display:flex;align-items:center;gap:12px">';
+      entregasHtml += '<div style="width:32px;height:32px;border-radius:50%;background:'+bgColor+';display:flex;align-items:center;justify-content:center;flex-shrink:0">';
+      entregasHtml += '<i data-lucide="'+icon+'" style="width:16px;height:16px;color:'+iconColor+'"></i></div>';
+      entregasHtml += '<div style="flex:1">';
+      entregasHtml += '<div style="font-size:13px;font-weight:500;color:'+(validada?'var(--muted)':'var(--text)')+'">'+(f.titulo||'Etapa')+'</div>';
+      if (validada) entregasHtml += '<div style="font-size:10px;color:var(--green);margin-top:2px">Validado por você'+(f.validadoEm?' · '+f.validadoEm:'')+'</div>';
+      else if (entregue) entregasHtml += '<div style="font-size:10px;color:var(--accent);margin-top:2px">Aguardando sua validação</div>';
+      else entregasHtml += '<div style="font-size:10px;color:var(--muted2);margin-top:2px">Em desenvolvimento</div>';
       entregasHtml += '</div>';
-    }
-    entregasHtml += '</div>';
+      if (entregue) entregasHtml += '<button class="btn btn-accent btn-sm" onclick="validarEntrega(\''+f.id+'\')"><i data-lucide="check" style="width:12px;height:12px"></i> Validar</button>';
+      else if (validada) entregasHtml += '<span class="pill p-green">Aprovado</span>';
+      else entregasHtml += '<span class="pill p-muted">Pendente</span>';
+      entregasHtml += '</div>';
+    });
+    entregasHtml += '</div></div>';
   }
 
   return '<div class="cli-section">' +
@@ -1823,51 +1834,197 @@ function buildCliProxPassos() {
     _cliPrevNext('proxpassos', false) + '</div>';
 }
 
-function validarEntrega(entregaId) {
+function validarEntrega(faseId) {
   if (!_cliSessao || !_cliSessao.proj) { mostrarFeedback('Projeto não encontrado.'); return; }
   var projs = _ld('projetos_lista', []);
   var pi = projs.findIndex(function(p){ return p.id === _cliSessao.proj.id; });
   if (pi < 0) { mostrarFeedback('Projeto não encontrado.'); return; }
-  var entregas = projs[pi].entregas || [];
-  var ei = entregas.findIndex(function(e){ return e.id === entregaId; });
-  if (ei >= 0) {
-    entregas[ei].status = 'aprovada';
-    entregas[ei].validadoEm = new Date().toLocaleDateString('pt-BR');
+  var fases = projs[pi].fases || [];
+  var fi = fases.findIndex(function(f){ return f.id === faseId; });
+  if (fi >= 0) {
+    fases[fi].status = 'validada';
+    fases[fi].validadoEm = new Date().toLocaleDateString('pt-BR');
   }
-  projs[pi].entregas = entregas;
+  projs[pi].fases = fases;
   _sd('projetos_lista', projs);
   _cliSessao.proj = projs[pi];
-  mostrarFeedback('✅ Entrega validada com sucesso!');
+  mostrarFeedback('✅ Etapa validada com sucesso!');
   renderCliSection('proxpassos');
 }
 
-function abrirModalEntrega() {
-  var modal = document.getElementById('modal-entrega');
-  if (modal) { modal.style.display = 'flex'; }
+// ===== PLANEJAMENTO DE PROJETO =====
+var _planProjId = null;
+var _planFases  = [];
+
+var _planPresets = {
+  'Consultoria Online':              ['Análise do ambiente', 'Paleta de cores personalizada', 'Lista de compras', 'Apresentação final'],
+  'Projeto de Interiores Completo':  ['Levantamento e medições', 'Estudo preliminar', 'Moodboard e conceito', 'Projeto executivo', 'Detalhamentos técnicos', 'Acompanhamento de obra', 'Entrega e vistoria final'],
+  'Decoração de Ambientes':          ['Seleção de mobiliário', 'Moodboard decorativo', 'Lista de itens', 'Instalação e finalização'],
+  'Home Office':                     ['Análise do espaço', 'Conceito e layout', 'Mobiliário e iluminação', 'Entrega final'],
+  'Projeto Comercial':               ['Briefing e levantamento', 'Conceito e identidade', 'Projeto técnico', 'Aprovação e ajustes', 'Execução e entrega'],
+};
+
+function abrirPlanejamento(projId) {
+  var projs = _ld('projetos_lista', []);
+  var proj = projs.find(function(p){ return p.id === projId; });
+  if (!proj) { mostrarFeedback('Projeto não encontrado.'); return; }
+  _planProjId = projId;
+  _planFases  = (proj.fases || []).map(function(f){ return Object.assign({}, f); });
+
+  var proposta = proj.proposta || { link:'', status:'pendente' };
+  var contrato = proj.contrato || { link:'', status:'pendente' };
+
+  var presetOpts = Object.keys(_planPresets).map(function(k){
+    return '<option value="'+k+'">'+k+'</option>';
+  }).join('');
+
+  var modalHtml = '<div id="modal-plan" style="position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 12px">'
+    + '<div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;width:100%;max-width:620px;margin:auto">'
+    // header
+    + '<div style="padding:22px 24px 0;display:flex;justify-content:space-between;align-items:flex-start">'
+      + '<div>'
+        + '<div style="font-size:10px;font-weight:600;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">Planejamento</div>'
+        + '<div style="font-size:17px;font-weight:600;color:var(--text)">' + (proj.clienteNome||'Sem nome') + '</div>'
+        + '<div style="font-size:11px;color:var(--muted);margin-top:2px">' + (proj.servico||'—') + ' · ' + (proj.codigo||proj.id||'—') + '</div>'
+      + '</div>'
+      + '<button onclick="fecharPlanejamento()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted2);padding:4px;line-height:1">✕</button>'
+    + '</div>'
+    // documentos
+    + '<div style="padding:20px 24px;border-bottom:1px solid var(--border2)">'
+      + '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:14px;display:flex;align-items:center;gap:6px">' + ic('file-text',13) + ' Documentos</div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'
+        + _planDocBlock('proposta','Proposta', proposta)
+        + _planDocBlock('contrato','Contrato', contrato)
+      + '</div>'
+    + '</div>'
+    // fases
+    + '<div style="padding:20px 24px">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">'
+        + '<div style="font-size:12px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:6px">' + ic('package',13) + ' Etapas de entrega</div>'
+        + '<div style="display:flex;gap:6px;align-items:center">'
+          + '<select id="plan-preset" class="fi" style="font-size:11px;padding:4px 8px;height:auto"><option value="">Aplicar modelo...</option>' + presetOpts + '</select>'
+          + '<button class="btn btn-sm" style="font-size:10px;padding:4px 8px" onclick="aplicarPresetPlan()">Aplicar</button>'
+        + '</div>'
+      + '</div>'
+      + '<div id="plan-fases-list"></div>'
+      + '<button class="btn btn-sm" style="margin-top:10px;font-size:11px" onclick="adicionarFasePlan()">' + ic('plus',11) + ' Adicionar etapa</button>'
+    + '</div>'
+    // footer
+    + '<div style="padding:16px 24px;border-top:1px solid var(--border2);display:flex;gap:10px">'
+      + '<button class="btn btn-accent" onclick="salvarPlanejamento()">' + ic('save',14) + ' Salvar planejamento</button>'
+      + '<button class="btn btn-sm" onclick="fecharPlanejamento()">Cancelar</button>'
+    + '</div>'
+    + '</div></div>';
+
+  var old = document.getElementById('modal-plan');
+  if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  renderFasesModal();
+  renderIcons();
 }
 
-function salvarEntrega() {
-  var projId = (document.getElementById('me-proj-id')||{value:''}).value;
-  var titulo  = (document.getElementById('me-titulo')||{value:''}).value.trim();
-  var desc    = (document.getElementById('me-descricao')||{value:''}).value.trim();
-  if (!projId) { mostrarFeedback('Selecione um projeto.'); return; }
-  if (!titulo) { mostrarFeedback('Informe o título da entrega.'); return; }
-  var projs = _ld('projetos_lista', []);
-  var pi = projs.findIndex(function(p){ return p.id === projId; });
-  if (pi < 0) { mostrarFeedback('Projeto não encontrado.'); return; }
-  if (!projs[pi].entregas) projs[pi].entregas = [];
-  projs[pi].entregas.push({
-    id: gerarId(),
-    titulo: titulo,
-    descricao: desc,
-    data: new Date().toLocaleDateString('pt-BR'),
-    status: 'pendente'
+function _planDocBlock(tipo, label, doc) {
+  var statusOpts = tipo === 'proposta'
+    ? [['pendente','Pendente'],['enviada','Enviada'],['assinada','Assinada']]
+    : [['pendente','Pendente'],['enviado','Enviado'],['assinado','Assinado']];
+  return '<div>'
+    + '<div style="font-size:11px;font-weight:500;color:var(--text2);margin-bottom:6px">'+label+'</div>'
+    + '<input class="fi" id="plan-'+tipo+'-link" style="font-size:12px;padding:7px 10px;margin-bottom:8px" placeholder="Link Google Drive, ClickSign..." value="'+(doc.link||'')+'">'
+    + '<div style="display:flex;gap:5px">'
+    + statusOpts.map(function(o){
+        var on = doc.status===o[0] ? 'background:var(--accent);color:#fff;border-color:var(--accent)' : '';
+        return '<button class="btn btn-sm plan-doc-status" style="font-size:10px;padding:3px 8px;'+on+'" data-tipo="'+tipo+'" data-val="'+o[0]+'" onclick="selecionarDocStatus(this)">'+o[1]+'</button>';
+      }).join('')
+    + '</div>'
+    + '</div>';
+}
+
+function selecionarDocStatus(btn) {
+  var tipo = btn.dataset.tipo;
+  document.querySelectorAll('.plan-doc-status[data-tipo="'+tipo+'"]').forEach(function(b){
+    b.style.cssText = 'font-size:10px;padding:3px 8px;';
   });
+  btn.style.cssText = 'font-size:10px;padding:3px 8px;background:var(--accent);color:#fff;border-color:var(--accent);';
+}
+
+function renderFasesModal() {
+  var el = document.getElementById('plan-fases-list');
+  if (!el) return;
+  if (!_planFases.length) {
+    el.innerHTML = '<div style="padding:14px;background:var(--bg2);border:1px dashed var(--border);border-radius:8px;text-align:center;font-size:12px;color:var(--muted2)">Nenhuma etapa definida. Adicione ou aplique um modelo.</div>';
+    return;
+  }
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:6px">'
+    + _planFases.map(function(f, i) {
+      var entregue = f.status === 'entregue' || f.status === 'validada';
+      var validada = f.status === 'validada';
+      return '<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px">'
+        + '<div style="cursor:grab;color:var(--muted2);flex-shrink:0">⠿</div>'
+        + '<input style="flex:1;background:none;border:none;font-size:12px;color:var(--text);font-family:inherit;outline:none;" value="'+f.titulo.replace(/"/g,'&quot;')+'" onchange="_planFases['+i+'].titulo=this.value" placeholder="Nome da etapa...">'
+        + '<div style="display:flex;gap:4px;flex-shrink:0">'
+          + '<button class="btn btn-sm" style="font-size:10px;padding:3px 8px;'+(entregue?'background:var(--green);color:#000;border-color:var(--green)':'')+'" onclick="toggleFaseStatus('+i+')">'+(validada?'✓ Validada':entregue?'Entregue':'Pendente')+'</button>'
+          + '<button class="btn btn-sm" style="font-size:10px;padding:3px 8px;color:var(--red);border-color:var(--red)" onclick="removerFasePlan('+i+')">✕</button>'
+        + '</div>'
+        + '</div>';
+    }).join('')
+    + '</div>';
+}
+
+function toggleFaseStatus(i) {
+  var ciclo = ['pendente','entregue','validada'];
+  var cur = _planFases[i].status || 'pendente';
+  var next = ciclo[(ciclo.indexOf(cur)+1) % ciclo.length];
+  _planFases[i].status = next;
+  renderFasesModal();
+}
+
+function adicionarFasePlan() {
+  _planFases.push({ id: gerarId(), titulo: '', status: 'pendente' });
+  renderFasesModal();
+  // focus last input
+  var inputs = document.querySelectorAll('#plan-fases-list input');
+  if (inputs.length) inputs[inputs.length-1].focus();
+}
+
+function removerFasePlan(i) {
+  _planFases.splice(i, 1);
+  renderFasesModal();
+}
+
+function aplicarPresetPlan() {
+  var sel = document.getElementById('plan-preset');
+  if (!sel || !sel.value) return;
+  var preset = _planPresets[sel.value];
+  if (!preset) return;
+  if (_planFases.length && !confirm('Substituir as etapas atuais pelo modelo "'+sel.value+'"?')) return;
+  _planFases = preset.map(function(t){ return { id: gerarId(), titulo: t, status: 'pendente' }; });
+  renderFasesModal();
+  sel.value = '';
+}
+
+function salvarPlanejamento() {
+  if (!_planProjId) return;
+  var propLink = (document.getElementById('plan-proposta-link')||{value:''}).value.trim();
+  var contLink = (document.getElementById('plan-contrato-link')||{value:''}).value.trim();
+  var propStatus = (function(){ var b=document.querySelector('.plan-doc-status[data-tipo="proposta"][style*="var(--accent)"]'); return b?b.dataset.val:'pendente'; })();
+  var contStatus = (function(){ var b=document.querySelector('.plan-doc-status[data-tipo="contrato"][style*="var(--accent)"]'); return b?b.dataset.val:'pendente'; })();
+
+  var projs = _ld('projetos_lista', []);
+  var pi = projs.findIndex(function(p){ return p.id === _planProjId; });
+  if (pi < 0) { mostrarFeedback('Projeto não encontrado.'); return; }
+  projs[pi].proposta = { link: propLink, status: propStatus };
+  projs[pi].contrato = { link: contLink, status: contStatus };
+  projs[pi].fases    = _planFases.filter(function(f){ return f.titulo.trim(); });
   _sd('projetos_lista', projs);
-  var modal = document.getElementById('modal-entrega');
-  if (modal) modal.style.display = 'none';
-  ['me-titulo','me-descricao'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
-  mostrarFeedback('✅ Entrega registrada! O cliente pode validar no portal.');
+  fecharPlanejamento();
+  mostrarFeedback('✅ Planejamento salvo! As etapas estão disponíveis no portal do cliente.');
+  renderPage('proj-lista');
+}
+
+function fecharPlanejamento() {
+  var modal = document.getElementById('modal-plan');
+  if (modal) modal.remove();
+  _planProjId = null; _planFases = [];
 }
 
 // Helpers para chips e paleta no portal
@@ -2156,24 +2313,9 @@ function renderPage(page) {
   } else if (page === 'clientes') {
     html = '<div class="page on"><div class="page-title">Clientes</div><div class="page-sub">Base de clientes e controle de pagamentos.</div>' + buildClientesCompleto() + '</div>';
   } else if (page === 'proj-lista') {
-    html = '<div class="page on"><div class="page-title">Projetos</div><div class="page-sub">Gerencie todos os projetos do escritório.</div>';
+    html = '<div class="page on"><div class="page-title">Projetos</div><div class="page-sub">Gerencie os projetos e defina as etapas de entrega de cada um.</div>';
     html += '<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap"><button class="btn btn-accent">' + ic('plus',14) + ' Novo projeto</button>';
-    html += '<button class="btn" onclick="abrirModalEntrega()">' + ic('package',13) + ' Registrar entrega</button>';
     html += '<button class="btn" style="color:var(--accent);border-color:var(--accent)" onclick="abrirIAProjetoModal()">' + ic('sparkles',13) + ' Gerar Diretrizes</button></div>';
-    html += '<div id="modal-entrega" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center">';
-    html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:28px;width:100%;max-width:480px;margin:16px">';
-    html += '<div style="font-size:16px;font-weight:600;margin-bottom:20px">Registrar entrega</div>';
-    html += '<div class="fg"><label class="fl">Projeto</label><select class="fi" id="me-proj-id">' + (function(){
-      var projs = _ld("projetos_lista",[]);
-      if(!projs.length) return "<option value=''>Nenhum projeto cadastrado</option>";
-      return projs.map(function(p){return "<option value='"+p.id+"'>"+p.clienteNome+" — "+(p.servico||p.codigo||p.id)+"</option>";}).join('');
-    })() + '</select></div>';
-    html += '<div class="fg"><label class="fl">Título da entrega</label><input class="fi" id="me-titulo" placeholder="Ex: Planta humanizada, Moodboard, Render 3D..."></div>';
-    html += '<div class="fg"><label class="fl">Descrição (opcional)</label><textarea class="fi" id="me-descricao" style="min-height:70px" placeholder="Descreva o que está sendo entregue para validação do cliente..."></textarea></div>';
-    html += '<div style="display:flex;gap:10px;margin-top:6px">';
-    html += '<button class="btn btn-accent" onclick="salvarEntrega()">' + ic('save',14) + ' Salvar entrega</button>';
-    html += '<button class="btn btn-sm" onclick="document.getElementById(\'modal-entrega\').style.display=\'none\'">Cancelar</button>';
-    html += '</div></div></div>';
     html += '<div class="g3">' + buildProjectCards() + '</div>';
     html += '<div id="arqia-proj-result" style="display:none;margin-top:14px"></div></div>';
   } else if (page === 'reunioes') {
@@ -2281,16 +2423,32 @@ function buildSelect(options) {
   return '<select class="fs" style="width:auto;margin:0">' + options.map(function(o) { return '<option>' + o + '</option>'; }).join('') + '</select>';
 }
 function buildProjectCards() {
-  var projects = [
-    {i:'SE',n:'Sala Estar — Família [Cliente]',c:'PRJ-001',p:65,bg:'linear-gradient(135deg,#1a3a5c,#0a1a2e)',tc:'#60a5fa'},
-    {i:'CI',n:'Cozinha Integrada — Projeto 02',c:'PRJ-002',p:30,bg:'linear-gradient(135deg,#2d1a3a,#150d1f)',tc:'#a78bfa'},
-    {i:'HO',n:'Home Office — Dr. [Cliente]',c:'PRJ-003',p:90,bg:'linear-gradient(135deg,#1a3a1a,#0a1f0a)',tc:'#4ade80'}
+  var projs = _ld('projetos_lista', []);
+  var palBg = [
+    'linear-gradient(135deg,#1a3a5c,#0a1a2e)', 'linear-gradient(135deg,#2d1a3a,#150d1f)',
+    'linear-gradient(135deg,#1a3a1a,#0a1f0a)', 'linear-gradient(135deg,#3a2a1a,#1f150a)',
+    'linear-gradient(135deg,#2a1a3a,#15091f)', 'linear-gradient(135deg,#1a3030,#0a1f1f)'
   ];
-  return projects.map(function(pr) {
-    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
-      + '<div style="height:80px;background:' + pr.bg + ';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;letter-spacing:2px;color:' + pr.tc + ';position:relative">' + pr.i
-      + '<div style="position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;background:rgba(0,0,0,0.5);color:#fff;padding:2px 7px;border-radius:10px">' + pr.p + '%</div></div>'
-      + '<div style="padding:11px"><div style="font-size:12px;font-weight:600;color:var(--text2)">' + pr.n + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + pr.c + '</div></div></div>';
+  var palTc = ['#60a5fa','#a78bfa','#4ade80','#fb923c','#e879f9','#34d399'];
+  if (!projs.length) return '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted2)"><i data-lucide="folder-open" style="width:32px;height:32px;margin-bottom:10px"></i><div style="font-size:13px">Nenhum projeto cadastrado ainda.</div><div style="font-size:11px;margin-top:4px">Converta um lead no CRM para criar o primeiro projeto.</div></div>';
+  return projs.map(function(pr, i) {
+    var fases = pr.fases || [];
+    var done = fases.filter(function(f){return f.status==='validada';}).length;
+    var pct = fases.length ? Math.round(done/fases.length*100) : 0;
+    var ini = (pr.clienteNome||'?').split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();
+    var bg = palBg[i%palBg.length], tc = palTc[i%palTc.length];
+    var docOk = (pr.proposta&&pr.proposta.link)||(pr.contrato&&pr.contrato.link);
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .15s" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+      + '<div style="height:80px;background:'+bg+';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;letter-spacing:2px;color:'+tc+';position:relative">' + ini
+      + '<div style="position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;background:rgba(0,0,0,0.5);color:#fff;padding:2px 7px;border-radius:10px">' + pct + '%</div>'
+      + (docOk?'<div style="position:absolute;top:8px;left:8px;width:7px;height:7px;border-radius:50%;background:#4ade80"></div>':'')
+      + '</div>'
+      + '<div style="padding:11px 12px">'
+      + '<div style="font-size:12px;font-weight:600;color:var(--text2)">' + (pr.clienteNome||'—') + '</div>'
+      + '<div style="font-size:10px;color:var(--muted);margin-top:1px">' + (pr.servico||'—') + ' · ' + (pr.codigo||pr.id||'—') + '</div>'
+      + '<div style="margin-top:8px;display:flex;gap:6px">'
+      + '<button class="btn btn-sm" style="font-size:10px;padding:4px 8px;flex:1;justify-content:center" onclick="abrirPlanejamento(\''+pr.id+'\')">' + ic('settings-2',11) + ' Planejar</button>'
+      + '</div></div></div>';
   }).join('');
 }
 function buildSWOT() {
