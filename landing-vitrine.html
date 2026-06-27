@@ -1350,7 +1350,21 @@ footer {
     <div class="modal-success" id="modal-success">
       <div class="modal-success-icon">✦</div>
       <h3>Diagnóstico enviado</h3>
-      <p>Obrigada, <span id="success-nome"></span>!<br>Entraremos em contato pelo WhatsApp<br>em até 24 horas.</p>
+      <p>Obrigada, <span id="success-nome"></span>!<br>Já recebemos suas informações e em breve<br>entraremos em contato para conversarmos.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:24px">
+        <a id="success-wpp-btn" href="#" target="_blank" rel="noopener"
+           style="display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;border-radius:12px;padding:14px 20px;font-size:14px;font-weight:500;text-decoration:none;transition:opacity .2s"
+           onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.122 1.528 5.863L0 24l6.306-1.504A11.946 11.946 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.032-1.389l-.36-.214-3.742.892.934-3.634-.235-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+          Iniciar conversa no WhatsApp
+        </a>
+        <button onclick="openClienteLogin()"
+           style="display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--text);border:1px solid var(--border-light);border-radius:12px;padding:12px 20px;font-size:13px;font-weight:400;cursor:pointer;font-family:inherit;transition:border-color .2s"
+           onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border-light)'">
+          Acompanhar meu projeto
+        </button>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:16px">Respondemos em até 24h nos dias úteis.</p>
     </div>
   </div>
 </div>
@@ -1598,6 +1612,20 @@ function submitDiagnostico() {
     localStorage.setItem('crm_leads_v2', JSON.stringify(leads));
   } catch(e) {}
 
+  // Gera link do WhatsApp com mensagem pré-preenchida
+  var cfg = {};
+  try { cfg = JSON.parse(localStorage.getItem('studio_config') || '{}'); } catch(e) {}
+  var wppEstudio = (cfg.whatsapp || '').replace(/\D/g,'');
+  if (wppEstudio) {
+    var ambStr = ambsSel.length ? ambsSel.join(', ') : 'meu espaço';
+    var msg = 'Olá! Sou ' + nome + ' e acabei de preencher o diagnóstico gratuito no site do escritório.\n\n' +
+      '📍 Ambientes: ' + ambStr + '\n' +
+      (objetivo ? '🎯 Objetivo: ' + objetivo + '\n' : '') +
+      '\nGostaria de saber mais sobre como vocês podem me ajudar!';
+    document.getElementById('success-wpp-btn').href = 'https://wa.me/55' + wppEstudio + '?text=' + encodeURIComponent(msg);
+  } else {
+    document.getElementById('success-wpp-btn').style.display = 'none';
+  }
   // Show success
   document.getElementById('modal-form-content').style.display = 'none';
   document.getElementById('modal-success').style.display = 'block';

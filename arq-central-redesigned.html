@@ -1643,7 +1643,12 @@ function switchArea(area, el) {
     } else {
       var b = document.createElement('button');
       b.className = 'sb-item';
-      b.innerHTML = '<i data-lucide="' + item.icon + '" class="sb-icon" style="width:16px;height:16px"></i>' + item.txt;
+      var badge = '';
+      if (item.page === 'diagnosticos') {
+        var novos = getDiagnosticos().filter(function(d){ return d.status === 'Novo'; }).length;
+        if (novos) badge = '<span style="margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;border-radius:100px;padding:1px 7px;min-width:18px;text-align:center">' + novos + '</span>';
+      }
+      b.innerHTML = '<i data-lucide="' + item.icon + '" class="sb-icon" style="width:16px;height:16px"></i>' + item.txt + badge;
       b.setAttribute('data-page', item.page);
       b.onclick = function() {
         document.querySelectorAll('.sb-item').forEach(function(x) { x.classList.remove('on'); });
@@ -2145,6 +2150,7 @@ function buildConfig() {
   return '<div class="fg"><label class="fl">Nome do escritório</label><input class="fi" id="cfg-nome" value="' + (cfg.nome||'') + '" placeholder="Ex: Studio Silva Arquitetura"></div>' +
     '<div class="fg"><label class="fl">Tagline</label><input class="fi" id="cfg-tagline" value="' + (cfg.tagline||'') + '" placeholder="Ex: Arquitetura & Design de Interiores"></div>' +
     '<div class="fg"><label class="fl">Slogan</label><input class="fi" id="cfg-slogan" value="' + (cfg.slogan||'') + '" placeholder="Ex: Do projeto ao sonho realizado."></div>' +
+    '<div class="fg"><label class="fl">WhatsApp do escritório</label><input class="fi" id="cfg-wpp" value="' + (cfg.whatsapp||'') + '" placeholder="(11) 99999-9999 — usado no botão pós-diagnóstico"></div>' +
     '<div class="g2"><div class="fg"><label class="fl">Iniciais (avatar)</label><input class="fi" id="cfg-iniciais" value="' + (cfg.iniciais||'') + '" maxlength="3" placeholder="Ex: SS"></div>' +
     '<div class="fg"><label class="fl">CREA / CAU</label><input class="fi" id="cfg-cau" value="' + (cfg.cau||'') + '" placeholder="CAU A000000-0 BR"></div></div>' +
     '<div class="fg"><label class="fl">Cor de acento</label><div style="display:flex;align-items:center;gap:12px"><input type="color" id="cfg-acento" value="' + (cfg.acento||'#B8865A') + '" style="width:48px;height:36px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:none;padding:2px"><span style="font-size:12px;color:var(--muted)" id="cfg-acento-val">' + (cfg.acento||'#B8865A') + '</span></div></div>' +
@@ -2286,12 +2292,14 @@ function salvarStudioConfig() {
   var iniciais= (document.getElementById('cfg-iniciais')|| {value:''}).value.trim().toUpperCase();
   var cau     = (document.getElementById('cfg-cau')     || {value:''}).value.trim();
   var acento  = (document.getElementById('cfg-acento')  || {value:''}).value;
-  if (nome)     cfg.nome     = nome;
-  if (tagline)  cfg.tagline  = tagline;
-  if (slogan)   cfg.slogan   = slogan;
-  if (iniciais) cfg.iniciais = iniciais;
-  if (cau)      cfg.cau      = cau;
-  if (acento)   cfg.acento   = acento;
+  var wpp     = (document.getElementById('cfg-wpp')     || {value:''}).value.trim();
+  if (nome)     cfg.nome      = nome;
+  if (tagline)  cfg.tagline   = tagline;
+  if (slogan)   cfg.slogan    = slogan;
+  if (iniciais) cfg.iniciais  = iniciais;
+  if (cau)      cfg.cau       = cau;
+  if (acento)   cfg.acento    = acento;
+  cfg.whatsapp = wpp;
   saveStudioConfig(cfg);
   applyStudioBrand();
   mostrarFeedback('✅ Marca do escritório aplicada em todo o sistema!');
