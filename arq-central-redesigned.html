@@ -1514,7 +1514,9 @@ function renderPage(page) {
   var c = document.getElementById('page-content');
   var html = '';
   if (page === 'dashboard') {
-    html = '<div class="page on"><div class="page-title">Bom dia! 👋</div><div class="page-sub">Resumo do escritório hoje.</div>';
+    var _h = new Date().getHours();
+    var _sauda = _h < 12 ? 'Bom dia! ☀️' : _h < 18 ? 'Boa tarde! 🌤️' : 'Boa noite! 🌙';
+    html = '<div class="page on"><div class="page-title">' + _sauda + '</div><div class="page-sub">Resumo do escritório hoje.</div>';
     html += '<div class="g3" style="margin-bottom:20px">';
     html += mkStat('3', 'Projetos ativos', ic('trending-up', 12) + ' +1 este mês');
     html += mkStat('R$ 8.4k', 'Faturamento junho', ic('trending-up', 12) + ' +12%', 'var(--accent)');
@@ -1897,10 +1899,66 @@ function buildGenRender() {
   return '<div class="fg"><label class="fl">Prompt</label><textarea class="fi" style="min-height:80px" placeholder="Ex: sala de estar contemporânea biofílica, luz natural..."></textarea></div><div class="g2"><div class="fg"><label class="fl">Estilo</label>' + buildSelect(['Fotografia realista','Render 3D','Aquarela']) + '</div><div class="fg"><label class="fl">Proporção</label>' + buildSelect(['16:9','1:1','4:3']) + '</div></div><button class="btn btn-accent">' + ic('sparkles',14) + ' Gerar render</button>';
 }
 function buildGenProposta() {
-  return '<div class="g2"><div class="fg"><label class="fl">Cliente</label>' + buildSelect(['[Cliente A]','[Cliente B]','Dr. [Cliente]']) + '</div><div class="fg"><label class="fl">Serviço</label>' + buildSelect(['Consultoria Online — R$ 350','Projeto Completo — R$ 2.800']) + '</div><div class="fg"><label class="fl">Ambientes</label><input class="fi" value="Sala de estar, sala de jantar"></div><div class="fg"><label class="fl">Área (m²)</label><input class="fi" value="48"></div></div><button class="btn btn-accent">' + ic('sparkles',14) + ' Gerar proposta</button>';
+  var leads = getCRMLeads();
+  var nomes = leads.length ? leads.map(function(l){return l.nome;}) : ['(nenhum lead cadastrado)'];
+  return '<div class="g2">' +
+    '<div class="fg"><label class="fl">Cliente</label><input class="fi" id="gp-cliente" placeholder="Nome do cliente" value="' + (nomes[0]||'') + '"></div>' +
+    '<div class="fg"><label class="fl">Serviço</label><input class="fi" id="gp-servico" placeholder="Ex: Projeto Completo de Interiores"></div>' +
+    '<div class="fg"><label class="fl">Ambientes</label><input class="fi" id="gp-ambientes" placeholder="Ex: Sala de estar, suíte master, cozinha"></div>' +
+    '<div class="fg"><label class="fl">Área total (m²)</label><input class="fi" id="gp-area" type="number" placeholder="Ex: 85"></div>' +
+    '<div class="fg"><label class="fl">Valor proposto (R$)</label><input class="fi" id="gp-valor" placeholder="Ex: 3.500,00"></div>' +
+    '<div class="fg"><label class="fl">Prazo de entrega</label><input class="fi" id="gp-prazo" placeholder="Ex: 45 dias corridos"></div>' +
+    '</div>' +
+    '<div class="fg"><label class="fl">Observações / diferenciais</label><textarea class="fi" id="gp-obs" style="min-height:60px" placeholder="Ex: Inclui acompanhamento de obra, prancha 3D..."></textarea></div>' +
+    '<button class="btn btn-accent" onclick="gerarProposta()" style="margin-top:4px">' + ic('sparkles',14) + ' Gerar proposta com IA</button>' +
+    '<div id="arqia-proposta-result" style="margin-top:14px;display:none"></div>';
+}
+function gerarProposta() {
+  var cfg = getStudioConfig();
+  var cliente   = (document.getElementById('gp-cliente')  ||{value:''}).value || 'Cliente';
+  var servico   = (document.getElementById('gp-servico')  ||{value:''}).value || 'Projeto de interiores';
+  var ambientes = (document.getElementById('gp-ambientes')||{value:''}).value || '';
+  var area      = (document.getElementById('gp-area')     ||{value:''}).value || '';
+  var valor     = (document.getElementById('gp-valor')    ||{value:''}).value || '';
+  var prazo     = (document.getElementById('gp-prazo')    ||{value:''}).value || '';
+  var obs       = (document.getElementById('gp-obs')      ||{value:''}).value || '';
+  var prompt = 'Você é um arquiteto de interiores profissional do escritório "' + cfg.nome + '". Redija uma proposta comercial completa e profissional em português brasileiro com as seções:\n\nAPRESENTAÇÃO DO ESCRITÓRIO\nESCOPO DO PROJETO\nMETODOLOGIA\nCRONOGRAMA\nINVESTIMENTO\nCONDIÇÕES DE PAGAMENTO\nPRÓXIMOS PASSOS\n\nDados:\nCliente: ' + cliente + '\nServiço: ' + servico + '\nAmbientes: ' + ambientes + '\nÁrea: ' + area + ' m²\nValor: R$ ' + valor + '\nPrazo: ' + prazo + '\n' + (obs ? 'Obs: ' + obs : '') + '\n\nTom: profissional, caloroso e que transmite confiança. Máximo 600 palavras.';
+  _arqIACall(prompt, 'arqia-proposta-result', 'Proposta Gerada', function(t) {
+    var secoes = ['APRESENTAÇÃO DO ESCRITÓRIO','ESCOPO DO PROJETO','METODOLOGIA','CRONOGRAMA','INVESTIMENTO','CONDIÇÕES DE PAGAMENTO','PRÓXIMOS PASSOS'];
+    return _arqIAParseSecoes(t, secoes);
+  });
 }
 function buildGenContrato() {
-  return '<div class="g2"><div class="fg"><label class="fl">Cliente</label>' + buildSelect(['[Cliente A]','[Cliente B]']) + '</div><div class="fg"><label class="fl">Valor total</label><input class="fi" value="R$ 2.800,00"></div><div class="fg"><label class="fl">Forma de pagamento</label>' + buildSelect(['50% entrada + 50% entrega','3x iguais','À vista']) + '</div><div class="fg"><label class="fl">Prazo</label><input class="fi" value="45 dias corridos"></div></div><button class="btn btn-accent">' + ic('sparkles',14) + ' Gerar contrato</button>';
+  return '<div class="g2">' +
+    '<div class="fg"><label class="fl">Nome do cliente</label><input class="fi" id="gc-cliente" placeholder="Nome completo do cliente"></div>' +
+    '<div class="fg"><label class="fl">CPF / CNPJ do cliente</label><input class="fi" id="gc-cpf" placeholder="000.000.000-00"></div>' +
+    '<div class="fg"><label class="fl">Endereço do imóvel</label><input class="fi" id="gc-end" placeholder="Rua, número, bairro, cidade"></div>' +
+    '<div class="fg"><label class="fl">Serviço contratado</label><input class="fi" id="gc-servico" placeholder="Ex: Projeto completo de interiores"></div>' +
+    '<div class="fg"><label class="fl">Valor total (R$)</label><input class="fi" id="gc-valor" placeholder="Ex: 4.200,00"></div>' +
+    '<div class="fg"><label class="fl">Forma de pagamento</label><input class="fi" id="gc-pgto" placeholder="Ex: 50% entrada + 50% na entrega"></div>' +
+    '<div class="fg"><label class="fl">Prazo de entrega</label><input class="fi" id="gc-prazo" placeholder="Ex: 45 dias corridos após aprovação"></div>' +
+    '<div class="fg"><label class="fl">O que está incluído</label><input class="fi" id="gc-inclui" placeholder="Ex: Projeto executivo, pranchas 3D, memorial"></div>' +
+    '</div>' +
+    '<div class="fg"><label class="fl">Cláusulas especiais (opcional)</label><textarea class="fi" id="gc-clausulas" style="min-height:50px" placeholder="Ex: revisões ilimitadas até aprovação do conceito..."></textarea></div>' +
+    '<button class="btn btn-accent" onclick="gerarContrato()" style="margin-top:4px">' + ic('sparkles',14) + ' Gerar contrato com IA</button>' +
+    '<div id="arqia-contrato-result" style="margin-top:14px;display:none"></div>';
+}
+function gerarContrato() {
+  var cfg = getStudioConfig();
+  var cliente   = (document.getElementById('gc-cliente')  ||{value:''}).value || 'Cliente';
+  var cpf       = (document.getElementById('gc-cpf')      ||{value:''}).value || '';
+  var end       = (document.getElementById('gc-end')      ||{value:''}).value || '';
+  var servico   = (document.getElementById('gc-servico')  ||{value:''}).value || 'Projeto de interiores';
+  var valor     = (document.getElementById('gc-valor')    ||{value:''}).value || '';
+  var pgto      = (document.getElementById('gc-pgto')     ||{value:''}).value || '';
+  var prazo     = (document.getElementById('gc-prazo')    ||{value:''}).value || '';
+  var inclui    = (document.getElementById('gc-inclui')   ||{value:''}).value || '';
+  var clausulas = (document.getElementById('gc-clausulas')||{value:''}).value || '';
+  var prompt = 'Você é advogado especializado em contratos para escritórios de arquitetura e design de interiores. Redija um contrato de prestação de serviços completo em português brasileiro com as cláusulas:\n\nDAS PARTES\nDO OBJETO\nDO ESCOPO\nDO PRAZO\nDO VALOR E PAGAMENTO\nDAS REVISÕES\nDA PROPRIEDADE INTELECTUAL\nDAS RESPONSABILIDADES\nDA RESCISÃO\nDAS DISPOSIÇÕES GERAIS\n\nDados:\nEscritório contratado: ' + cfg.nome + (cfg.cau ? ' — ' + cfg.cau : '') + '\nCliente: ' + cliente + (cpf ? ' — CPF/CNPJ: ' + cpf : '') + '\nImóvel: ' + end + '\nServiço: ' + servico + '\nValor: R$ ' + valor + '\nPagamento: ' + pgto + '\nPrazo: ' + prazo + '\nInclui: ' + inclui + (clausulas ? '\nCláusulas especiais: ' + clausulas : '') + '\n\nUse linguagem jurídica clara, sem rebuscamentos desnecessários. Máximo 700 palavras.';
+  _arqIACall(prompt, 'arqia-contrato-result', 'Contrato Gerado', function(t) {
+    var secoes = ['DAS PARTES','DO OBJETO','DO ESCOPO','DO PRAZO','DO VALOR E PAGAMENTO','DAS REVISÕES','DA PROPRIEDADE INTELECTUAL','DAS RESPONSABILIDADES','DA RESCISÃO','DAS DISPOSIÇÕES GERAIS'];
+    return _arqIAParseSecoes(t, secoes);
+  });
 }
 function buildConfig() {
   var cfg = getStudioConfig();
