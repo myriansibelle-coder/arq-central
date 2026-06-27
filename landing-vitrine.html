@@ -1,19 +1,19 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>[Nome do Escritório] — Arquitetura & Design de Interiores</title>
+<title>[Nome do EscritÃ³rio] â€” Arquitetura & Design de Interiores</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onerror="window._threeErr=true"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" onerror="window._gsapErr=true"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" onerror="window._stErr=true"></script>
 
 <style>
-/* ─── TOKENS ──────────────────────────────────── */
+/* â”€â”€â”€ TOKENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root {
   --warm-white: #FAF8F5;
   --cream: #F4EFE8;
@@ -29,7 +29,7 @@
   --border: rgba(42,26,14,0.1);
 }
 
-/* ─── RESET ───────────────────────────────────── */
+/* â”€â”€â”€ RESET â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior: auto; }
 body {
@@ -40,7 +40,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ─── CUSTOM CURSOR (desktop only) ────────────── */
+/* â”€â”€â”€ CUSTOM CURSOR (desktop only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (hover: hover) and (pointer: fine) {
   body { cursor: none; }
   .cursor {
@@ -71,7 +71,7 @@ body {
   .cursor, .cursor-ring { display: none !important; }
 }
 
-/* ─── NAV ─────────────────────────────────────── */
+/* â”€â”€â”€ NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #nav {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -90,7 +90,7 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .nav-studio {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 18px;
   font-weight: 500;
   color: var(--warm-white);
@@ -144,7 +144,7 @@ body {
   .nav-link-cliente { display:none; }
 }
 
-/* ─── WEBGL CANVAS ────────────────────────────── */
+/* â”€â”€â”€ WEBGL CANVAS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #webgl {
   position: fixed;
   top: 0; left: 0;
@@ -153,7 +153,7 @@ body {
   pointer-events: none;
 }
 
-/* ─── HERO ────────────────────────────────────── */
+/* â”€â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .hero {
   position: relative;
   height: 100vh;
@@ -199,7 +199,7 @@ body {
   margin-bottom: 20px;
 }
 .hero-title {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(52px, 8vw, 100px);
   font-weight: 300;
   line-height: 1.0;
@@ -311,7 +311,7 @@ body {
   .btn-primary, .btn-ghost { width:auto; }
 }
 
-/* ─── MANIFESTO ───────────────────────────────── */
+/* â”€â”€â”€ MANIFESTO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .manifesto {
   position: relative;
   z-index: 1;
@@ -335,7 +335,7 @@ body {
   margin-bottom: 48px;
 }
 .manifesto-text {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(36px, 5.5vw, 68px);
   font-weight: 300;
   line-height: 1.2;
@@ -367,7 +367,7 @@ body {
   .manifesto { padding:80px 20px; }
 }
 
-/* ─── ENVIRONMENTS ────────────────────────────── */
+/* â”€â”€â”€ ENVIRONMENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .environments {
   position: relative;
   z-index: 1;
@@ -379,7 +379,7 @@ body {
   margin-bottom: 64px;
 }
 .env-header h2 {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(40px, 5.5vw, 68px);
   font-weight: 300;
   color: var(--text);
@@ -441,7 +441,7 @@ body {
   margin-bottom: 6px;
 }
 .env-label-name {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 26px;
   font-weight: 400;
   color: var(--warm-white);
@@ -454,7 +454,7 @@ body {
   .env-header { padding:0 20px; margin-bottom:40px; }
 }
 
-/* ─── QUOTE ───────────────────────────────────── */
+/* â”€â”€â”€ QUOTE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .quote-section {
   position: relative;
   z-index: 1;
@@ -467,7 +467,7 @@ body {
   position: absolute;
   top: -60px;
   left: 20px;
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 400px;
   font-weight: 300;
   color: rgba(201,185,168,0.18);
@@ -483,7 +483,7 @@ body {
   z-index: 1;
 }
 .quote-text {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(28px, 4.5vw, 54px);
   font-weight: 300;
   line-height: 1.4;
@@ -514,7 +514,7 @@ body {
   .quote-section::before { font-size:140px; top:-10px; }
 }
 
-/* ─── SERVICES ────────────────────────────────── */
+/* â”€â”€â”€ SERVICES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .services {
   position: relative;
   z-index: 1;
@@ -531,7 +531,7 @@ body {
   margin-bottom: 20px;
 }
 .services-header h2 {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(36px, 5vw, 58px);
   font-weight: 300;
   color: var(--text);
@@ -557,7 +557,7 @@ body {
   box-shadow: 0 8px 32px rgba(42,26,14,0.07);
 }
 .service-number {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 48px;
   font-weight: 300;
   color: rgba(201,185,168,0.5);
@@ -565,7 +565,7 @@ body {
   margin-bottom: 24px;
 }
 .service-name {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 26px;
   font-weight: 400;
   color: var(--text);
@@ -579,7 +579,7 @@ body {
   margin-bottom: 28px;
 }
 .service-price {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 32px;
   font-weight: 400;
   color: var(--text);
@@ -608,7 +608,7 @@ body {
   gap: 10px;
 }
 .service-list li::before {
-  content: '—';
+  content: 'â€”';
   color: var(--accent);
   flex-shrink: 0;
 }
@@ -636,7 +636,7 @@ body {
   .service-card { padding:28px 24px; }
 }
 
-/* ─── PROCESS ─────────────────────────────────── */
+/* â”€â”€â”€ PROCESS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .process {
   position: relative;
   z-index: 1;
@@ -663,7 +663,7 @@ body {
 }
 .process-step {}
 .step-num {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 72px;
   font-weight: 300;
   color: var(--sand);
@@ -671,7 +671,7 @@ body {
   margin-bottom: 24px;
 }
 .step-name {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 22px;
   font-weight: 400;
   color: var(--text);
@@ -690,7 +690,7 @@ body {
   .step-num { font-size:48px; }
 }
 
-/* ─── CTA FINAL ───────────────────────────────── */
+/* â”€â”€â”€ CTA FINAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .cta-section {
   position: relative;
   z-index: 1;
@@ -733,7 +733,7 @@ body {
   margin-bottom: 28px;
 }
 .cta-title {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(42px, 6.5vw, 82px);
   font-weight: 300;
   color: var(--warm-white);
@@ -773,7 +773,7 @@ body {
 }
 .btn-cta svg { width:16px; height:16px; }
 
-/* ─── FOOTER ──────────────────────────────────── */
+/* â”€â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 footer {
   position: relative;
   z-index: 1;
@@ -782,7 +782,7 @@ footer {
   text-align: center;
 }
 .footer-studio {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 22px;
   font-weight: 300;
   color: rgba(250,248,245,0.4);
@@ -820,7 +820,7 @@ footer {
   user-select: none;
 }
 
-/* ─── MODAL DIAGNÓSTICO ───────────────────────── */
+/* â”€â”€â”€ MODAL DIAGNÃ“STICO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -874,7 +874,7 @@ footer {
   margin-bottom: 12px;
 }
 .modal-title {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 34px;
   font-weight: 400;
   color: var(--text);
@@ -977,13 +977,13 @@ footer {
   display: none;
 }
 .modal-success-icon {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 64px;
   color: var(--accent);
   margin-bottom: 20px;
 }
 .modal-success h3 {
-  font-family: 'Fraunces', serif;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 32px;
   font-weight: 400;
   color: var(--text);
@@ -995,7 +995,7 @@ footer {
   .form-grid, .ambientes-grid { grid-template-columns:1fr; }
 }
 
-/* ─── UTILS ───────────────────────────────────── */
+/* â”€â”€â”€ UTILS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
 
 
@@ -1012,11 +1012,11 @@ footer {
 <!-- Navigation -->
 <nav id="nav">
   <div class="nav-studio studio-nome" id="studio-name">
-    Seu Escritório
+    Seu EscritÃ³rio
   </div>
   <div class="nav-right">
     <a href="#ambientes" class="nav-link">Projetos</a>
-    <a href="#servicos" class="nav-link">Serviços</a>
+    <a href="#servicos" class="nav-link">ServiÃ§os</a>
     <a href="javascript:void(0)" class="nav-link nav-link-cliente" onclick="openClienteLogin()">Meu projeto</a>
     <button class="nav-cta" onclick="openDiagnostico()">Iniciar projeto</button>
   </div>
@@ -1025,12 +1025,12 @@ footer {
 <!-- WebGL Canvas -->
 <canvas id="webgl"></canvas>
 
-<!-- ─── HERO ─────────────────────────────────── -->
+<!-- â”€â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <section class="hero" id="inicio">
   <div class="hero-img">
     <img
       src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1920&q=85&auto=format&fit=crop"
-      alt="Sala de estar contemporânea com luz natural"
+      alt="Sala de estar contemporÃ¢nea com luz natural"
       loading="eager"
     >
   </div>
@@ -1041,9 +1041,9 @@ footer {
     <h1 class="hero-title">
       <span class="line"><span class="line-inner">Seu lar</span></span>
       <span class="line"><span class="line-inner"><em>merece</em></span></span>
-      <span class="line"><span class="line-inner">uma história.</span></span>
+      <span class="line"><span class="line-inner">uma histÃ³ria.</span></span>
     </h1>
-    <p class="hero-sub">Do primeiro esboço à entrega final — projetamos ambientes que transformam a maneira como você vive.</p>
+    <p class="hero-sub">Do primeiro esboÃ§o Ã  entrega final â€” projetamos ambientes que transformam a maneira como vocÃª vive.</p>
     <div class="hero-cta-wrap">
       <button class="btn-primary" onclick="openDiagnostico()">
         <span>Descobrir meu projeto</span>
@@ -1052,7 +1052,7 @@ footer {
         </svg>
       </button>
       <button class="btn-ghost" onclick="document.getElementById('servicos').scrollIntoView({behavior:'smooth'})">
-        Ver serviços
+        Ver serviÃ§os
       </button>
     </div>
   </div>
@@ -1063,7 +1063,7 @@ footer {
   </div>
 </section>
 
-<!-- ─── MANIFESTO ─────────────────────────────── -->
+<!-- â”€â”€â”€ MANIFESTO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <section class="manifesto" id="sobre">
   <div class="manifesto-inner">
     <div class="manifesto-label">Nossa filosofia</div>
@@ -1077,21 +1077,21 @@ footer {
       <span class="word"><span class="word-inner">de</span></span>
       <span class="word"><span class="word-inner">um</span></span>
       <span class="word"><span class="word-inner">tecido</span></span>
-      <span class="word"><span class="word-inner">à</span></span>
-      <span class="word"><span class="word-inner">direção</span></span>
+      <span class="word"><span class="word-inner">Ã </span></span>
+      <span class="word"><span class="word-inner">direÃ§Ã£o</span></span>
       <span class="word"><span class="word-inner">da</span></span>
       <span class="word"><span class="word-inner">luz</span></span>
       <span class="word"><span class="word-inner">natural.</span></span>
     </p>
-    <p class="manifesto-sub">Arquitetura de interiores não é sobre decoração. É sobre transformar a forma como você se sente ao chegar em casa.</p>
+    <p class="manifesto-sub">Arquitetura de interiores nÃ£o Ã© sobre decoraÃ§Ã£o. Ã‰ sobre transformar a forma como vocÃª se sente ao chegar em casa.</p>
   </div>
 </section>
 
-<!-- ─── AMBIENTES ──────────────────────────────── -->
+<!-- â”€â”€â”€ AMBIENTES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <section class="environments" id="ambientes">
   <div class="env-header">
     <h2>Ambientes que<br><em>encantam</em></h2>
-    <p>Cada espaço é pensado para ser vivido com prazer, funcionalidade e beleza.</p>
+    <p>Cada espaÃ§o Ã© pensado para ser vivido com prazer, funcionalidade e beleza.</p>
   </div>
 
   <div class="env-grid">
@@ -1129,35 +1129,35 @@ footer {
       <div class="env-img-wrap">
         <img
           src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=900&q=85&auto=format&fit=crop"
-          alt="Suíte master"
+          alt="SuÃ­te master"
           loading="lazy"
         >
       </div>
       <div class="env-overlay"></div>
       <div class="env-label">
         <div class="env-label-tag">03</div>
-        <div class="env-label-name">Suíte</div>
+        <div class="env-label-name">SuÃ­te</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── QUOTE ──────────────────────────────────── -->
+<!-- â”€â”€â”€ QUOTE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <section class="quote-section">
   <div class="quote-inner">
     <p class="quote-text">
-      "Um projeto de arquitetura <em>transforma</em> muito mais do que os ambientes. Ele transforma a forma como você <em>vive</em>."
+      "Um projeto de arquitetura <em>transforma</em> muito mais do que os ambientes. Ele transforma a forma como vocÃª <em>vive</em>."
     </p>
     <div class="quote-line"></div>
-    <p class="quote-author"><span class="studio-nome">Seu Escritório</span> &nbsp;·&nbsp; <span class="studio-tagline-short">Arquitetura de Interiores</span></p>
+    <p class="quote-author"><span class="studio-nome">Seu EscritÃ³rio</span> &nbsp;Â·&nbsp; <span class="studio-tagline-short">Arquitetura de Interiores</span></p>
   </div>
 </section>
 
-<!-- ─── SERVIÇOS ───────────────────────────────── -->
+<!-- â”€â”€â”€ SERVIÃ‡OS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <section class="services" id="servicos">
   <div class="services-header">
     <div class="section-label">O que fazemos</div>
-    <h2>Serviços desenvolvidos<br>para cada etapa do seu sonho</h2>
+    <h2>ServiÃ§os desenvolvidos<br>para cada etapa do seu sonho</h2>
   </div>
   <div class="services-grid" id="services-grid-dynamic">
     <!-- preenchido por renderServicosLanding() -->
@@ -1167,13 +1167,13 @@ footer {
 <script>
 (function renderServicosLanding() {
   var _fallback = [
-    { nome:'Consultoria Online', descricao:'Análise do ambiente com paleta de cores, sugestão de mobiliário e lista de compras — entregue em até 5 dias úteis.', preco:'R$ 350', precoLabel:'por ambiente', status:'disponivel', itens:['Paleta de cores personalizada','Sugestões de mobiliário','Lista de compras orientada','1 revisão incluída'] },
-    { nome:'Projeto Completo',   descricao:'Projeto executivo com levantamento in loco, plantas técnicas, moodboard detalhado e acompanhamento de execução.',   preco:'R$ 2.800', precoLabel:'a partir de',  status:'disponivel', itens:['Levantamento presencial','Plantas e projeto executivo','Moodboard e especificações','Acompanhamento de obra','2 revisões incluídas'] }
+    { nome:'Consultoria Online', descricao:'AnÃ¡lise do ambiente com paleta de cores, sugestÃ£o de mobiliÃ¡rio e lista de compras â€” entregue em atÃ© 5 dias Ãºteis.', preco:'R$ 350', precoLabel:'por ambiente', status:'disponivel', itens:['Paleta de cores personalizada','SugestÃµes de mobiliÃ¡rio','Lista de compras orientada','1 revisÃ£o incluÃ­da'] },
+    { nome:'Projeto Completo',   descricao:'Projeto executivo com levantamento in loco, plantas tÃ©cnicas, moodboard detalhado e acompanhamento de execuÃ§Ã£o.',   preco:'R$ 2.800', precoLabel:'a partir de',  status:'disponivel', itens:['Levantamento presencial','Plantas e projeto executivo','Moodboard e especificaÃ§Ãµes','Acompanhamento de obra','2 revisÃµes incluÃ­das'] }
   ];
   var svcs;
   try { svcs = JSON.parse(localStorage.getItem('servicos_lista') || 'null'); } catch(e) { svcs = null; }
   if (!svcs || !svcs.length) svcs = _fallback;
-  // mostrar só disponíveis e em_breve
+  // mostrar sÃ³ disponÃ­veis e em_breve
   svcs = svcs.filter(function(s){ return s.status !== 'inativo'; });
 
   var grid = document.getElementById('services-grid-dynamic');
@@ -1195,35 +1195,35 @@ footer {
 })();
 </script>
 
-<!-- ─── PROCESSO ───────────────────────────────── -->
+<!-- â”€â”€â”€ PROCESSO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <section class="process">
   <div class="process-header">
     <div class="section-label">Como funciona</div>
-    <h2 style="font-family:'Fraunces',serif;font-size:clamp(36px,5vw,54px);font-weight:300;color:var(--text);letter-spacing:-0.5px;line-height:1.15">
-      Do primeiro contato<br>à casa dos seus sonhos
+    <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,5vw,54px);font-weight:300;color:var(--text);letter-spacing:-0.5px;line-height:1.15">
+      Do primeiro contato<br>Ã  casa dos seus sonhos
     </h2>
   </div>
 
   <div class="process-steps">
     <div class="process-step">
       <div class="step-num">01</div>
-      <div class="step-name">Diagnóstico gratuito</div>
-      <div class="step-desc">Você nos conta sobre seu ambiente, seus desejos e como imagina sua vida naquele espaço. Sem compromisso.</div>
+      <div class="step-name">DiagnÃ³stico gratuito</div>
+      <div class="step-desc">VocÃª nos conta sobre seu ambiente, seus desejos e como imagina sua vida naquele espaÃ§o. Sem compromisso.</div>
     </div>
     <div class="process-step">
       <div class="step-num">02</div>
       <div class="step-name">Projeto & conceito</div>
-      <div class="step-desc">Desenvolvemos o conceito, a paleta, o layout e os materiais — traduzindo sua personalidade em espaço.</div>
+      <div class="step-desc">Desenvolvemos o conceito, a paleta, o layout e os materiais â€” traduzindo sua personalidade em espaÃ§o.</div>
     </div>
     <div class="process-step">
       <div class="step-num">03</div>
       <div class="step-name">Entrega & acompanhamento</div>
-      <div class="step-desc">Acompanhamos cada etapa da execução para garantir que a casa entregue é exatamente o que você imaginou.</div>
+      <div class="step-desc">Acompanhamos cada etapa da execuÃ§Ã£o para garantir que a casa entregue Ã© exatamente o que vocÃª imaginou.</div>
     </div>
   </div>
 </section>
 
-<!-- ─── CTA FINAL ──────────────────────────────── -->
+<!-- â”€â”€â”€ CTA FINAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <section class="cta-section">
   <div class="cta-bg">
     <img
@@ -1234,12 +1234,12 @@ footer {
   </div>
   <div class="cta-overlay"></div>
   <div class="cta-content">
-    <div class="cta-label">Pronto para começar?</div>
-    <h2 class="cta-title">O lar que você<br>sempre <em>imaginou</em><br>começa aqui.</h2>
-    <p class="cta-sub">Um diagnóstico gratuito e sem compromisso. Nos conte sobre seu espaço e descobrimos juntos o que ele pode se tornar.</p>
+    <div class="cta-label">Pronto para comeÃ§ar?</div>
+    <h2 class="cta-title">O lar que vocÃª<br>sempre <em>imaginou</em><br>comeÃ§a aqui.</h2>
+    <p class="cta-sub">Um diagnÃ³stico gratuito e sem compromisso. Nos conte sobre seu espaÃ§o e descobrimos juntos o que ele pode se tornar.</p>
     <div class="cta-btn-wrap">
       <button class="btn-cta" onclick="openDiagnostico()">
-        <span>Quero meu diagnóstico gratuito</span>
+        <span>Quero meu diagnÃ³stico gratuito</span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M5 12h14M12 5l7 7-7 7"/>
         </svg>
@@ -1248,13 +1248,13 @@ footer {
   </div>
 </section>
 
-<!-- ─── BARRA DE ACESSO ─────────────────────────── -->
+<!-- â”€â”€â”€ BARRA DE ACESSO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div style="background:var(--charcoal);padding:32px 40px;text-align:center;border-top:1px solid rgba(255,255,255,0.06)">
-  <p style="font-family:'Fraunces',serif;font-size:22px;font-weight:300;color:rgba(250,248,245,0.5);margin-bottom:8px;letter-spacing:.3px">
-    Já contratou? Acesse sua área.
+  <p style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:300;color:rgba(250,248,245,0.5);margin-bottom:8px;letter-spacing:.3px">
+    JÃ¡ contratou? Acesse sua Ã¡rea.
   </p>
   <p style="font-size:13px;font-weight:300;color:rgba(250,248,245,0.3);margin-bottom:24px">
-    Acompanhe o andamento do seu projeto ou entre na área da equipe.
+    Acompanhe o andamento do seu projeto ou entre na Ã¡rea da equipe.
   </p>
   <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
     <button onclick="openClienteLogin()" style="font-family:'Syne',sans-serif;font-size:13px;font-weight:400;color:rgba(250,248,245,0.8);background:rgba(250,248,245,0.06);border:1px solid rgba(250,248,245,0.18);border-radius:100px;padding:11px 24px;cursor:pointer;transition:all .3s;letter-spacing:.3px"
@@ -1268,25 +1268,25 @@ footer {
   </div>
 </div>
 
-<!-- ─── FOOTER ──────────────────────────────────── -->
+<!-- â”€â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <footer>
-  <div class="footer-studio studio-nome">Seu Escritório</div>
+  <div class="footer-studio studio-nome">Seu EscritÃ³rio</div>
   <div class="footer-credit">ARQ|CENTRAL</div>
 </footer>
 
-<!-- ─── MODAL DIAGNÓSTICO ──────────────────────── -->
+<!-- â”€â”€â”€ MODAL DIAGNÃ“STICO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div class="modal-overlay" id="modal-diagnostico">
   <div class="modal-box" style="position:relative">
-    <button class="modal-close" onclick="closeDiagnostico()" aria-label="Fechar">×</button>
+    <button class="modal-close" onclick="closeDiagnostico()" aria-label="Fechar">Ã—</button>
 
     <div id="modal-form-content">
-      <div class="modal-eyebrow">Diagnóstico Gratuito</div>
-      <h2 class="modal-title">Vamos entender<br>o seu espaço</h2>
-      <p class="modal-sub">Grátis · 2 minutos · Sem compromisso</p>
+      <div class="modal-eyebrow">DiagnÃ³stico Gratuito</div>
+      <h2 class="modal-title">Vamos entender<br>o seu espaÃ§o</h2>
+      <p class="modal-sub">GrÃ¡tis Â· 2 minutos Â· Sem compromisso</p>
 
       <div class="form-group">
         <label class="form-label">Seu nome</label>
-        <input class="form-input" id="d-nome" type="text" placeholder="Como você se chama?">
+        <input class="form-input" id="d-nome" type="text" placeholder="Como vocÃª se chama?">
       </div>
       <div class="form-grid">
         <div class="form-group">
@@ -1300,12 +1300,12 @@ footer {
       </div>
 
       <div class="form-group">
-        <label class="form-label">Qual ambiente você quer transformar?</label>
+        <label class="form-label">Qual ambiente vocÃª quer transformar?</label>
         <div class="ambientes-grid">
           <label class="amb-label"><input type="checkbox" class="d-amb" value="Sala de Estar"> Sala de Estar</label>
           <label class="amb-label"><input type="checkbox" class="d-amb" value="Sala de Jantar"> Sala de Jantar</label>
           <label class="amb-label"><input type="checkbox" class="d-amb" value="Cozinha"> Cozinha</label>
-          <label class="amb-label"><input type="checkbox" class="d-amb" value="Suíte"> Suíte</label>
+          <label class="amb-label"><input type="checkbox" class="d-amb" value="SuÃ­te"> SuÃ­te</label>
           <label class="amb-label"><input type="checkbox" class="d-amb" value="Banheiro"> Banheiro</label>
           <label class="amb-label"><input type="checkbox" class="d-amb" value="Home Office"> Home Office</label>
           <label class="amb-label"><input type="checkbox" class="d-amb" value="Varanda"> Varanda</label>
@@ -1314,8 +1314,8 @@ footer {
       </div>
 
       <div class="form-group">
-        <label class="form-label">Como você quer se sentir no seu espaço?</label>
-        <textarea class="form-textarea" id="d-objetivo" placeholder="Me conta sobre o ambiente dos seus sonhos — materiais, sensações, referências..."></textarea>
+        <label class="form-label">Como vocÃª quer se sentir no seu espaÃ§o?</label>
+        <textarea class="form-textarea" id="d-objetivo" placeholder="Me conta sobre o ambiente dos seus sonhos â€” materiais, sensaÃ§Ãµes, referÃªncias..."></textarea>
       </div>
 
       <div class="form-grid">
@@ -1323,9 +1323,9 @@ footer {
           <label class="form-label">Prazo desejado</label>
           <select class="form-select" id="d-prazo">
             <option value="">Selecione</option>
-            <option>Urgente — até 1 mês</option>
-            <option>Curto — 1 a 3 meses</option>
-            <option>Médio — 3 a 6 meses</option>
+            <option>Urgente â€” atÃ© 1 mÃªs</option>
+            <option>Curto â€” 1 a 3 meses</option>
+            <option>MÃ©dio â€” 3 a 6 meses</option>
             <option>Sem pressa</option>
           </select>
         </div>
@@ -1333,7 +1333,7 @@ footer {
           <label class="form-label">Investimento previsto</label>
           <select class="form-select" id="d-inv">
             <option value="">Selecione</option>
-            <option>Até R$ 2.000</option>
+            <option>AtÃ© R$ 2.000</option>
             <option>R$ 2.000 a R$ 5.000</option>
             <option>R$ 5.000 a R$ 10.000</option>
             <option>Acima de R$ 10.000</option>
@@ -1342,16 +1342,16 @@ footer {
       </div>
 
       <button class="modal-submit" onclick="submitDiagnostico()">
-        <span>Enviar diagnóstico gratuito</span>
+        <span>Enviar diagnÃ³stico gratuito</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
-      <p class="modal-note">Ao enviar, você autoriza o contato pelo WhatsApp informado.<br>Sem spam. Respondemos em até 24h.</p>
+      <p class="modal-note">Ao enviar, vocÃª autoriza o contato pelo WhatsApp informado.<br>Sem spam. Respondemos em atÃ© 24h.</p>
     </div>
 
     <div class="modal-success" id="modal-success">
-      <div class="modal-success-icon">✦</div>
-      <h3>Diagnóstico enviado</h3>
-      <p>Obrigada, <span id="success-nome"></span>!<br>Já recebemos suas informações e em breve<br>entraremos em contato para conversarmos.</p>
+      <div class="modal-success-icon">âœ¦</div>
+      <h3>DiagnÃ³stico enviado</h3>
+      <p>Obrigada, <span id="success-nome"></span>!<br>JÃ¡ recebemos suas informaÃ§Ãµes e em breve<br>entraremos em contato para conversarmos.</p>
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:24px">
         <a id="success-wpp-btn" href="#" target="_blank" rel="noopener"
            style="display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;border-radius:12px;padding:14px 20px;font-size:14px;font-weight:500;text-decoration:none;transition:opacity .2s"
@@ -1365,14 +1365,14 @@ footer {
           Acompanhar meu projeto
         </button>
       </div>
-      <p style="font-size:11px;color:var(--text-muted);margin-top:16px">Respondemos em até 24h nos dias úteis.</p>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:16px">Respondemos em atÃ© 24h nos dias Ãºteis.</p>
     </div>
   </div>
 </div>
 
-<!-- ─── SCRIPTS ─────────────────────────────────── -->
+<!-- â”€â”€â”€ SCRIPTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <script>
-// ─── CURSOR (desktop only) ─────────────────────────────────────────────────
+// â”€â”€â”€ CURSOR (desktop only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 (function() {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   var cursor = document.getElementById('cursor');
@@ -1396,7 +1396,7 @@ footer {
 </script>
 
 <script>
-// ─── NAV SCROLL ────────────────────────────────────────────────────────────
+// â”€â”€â”€ NAV SCROLL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 window.addEventListener('scroll', function() {
   var nav = document.getElementById('nav');
   if (!nav) return;
@@ -1405,7 +1405,7 @@ window.addEventListener('scroll', function() {
 </script>
 
 <script>
-// ─── THREE.JS HERO (desktop only, non-blocking) ─────────────────────────────
+// â”€â”€â”€ THREE.JS HERO (desktop only, non-blocking) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 (function() {
   try {
     if (typeof THREE === 'undefined') return;
@@ -1465,7 +1465,7 @@ window.addEventListener('scroll', function() {
 </script>
 
 <script>
-// ─── GSAP SCROLL ANIMATIONS (enhancement only) ─────────────────────────────
+// â”€â”€â”€ GSAP SCROLL ANIMATIONS (enhancement only) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 (function() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
   gsap.registerPlugin(ScrollTrigger);
@@ -1575,7 +1575,7 @@ function submitDiagnostico() {
   const ambsSel = Array.from(document.querySelectorAll('.d-amb:checked')).map(c => c.value);
   const email = document.getElementById('d-email').value;
   const objetivo = document.getElementById('d-objetivo').value;
-  const servico = ambsSel.join(', ') || 'Diagnóstico Landing';
+  const servico = ambsSel.join(', ') || 'DiagnÃ³stico Landing';
   const diag = {
     id: Date.now().toString(36),
     nome, whatsapp: wpp,
@@ -1613,16 +1613,16 @@ function submitDiagnostico() {
     localStorage.setItem('crm_leads_v2', JSON.stringify(leads));
   } catch(e) {}
 
-  // Gera link do WhatsApp com mensagem pré-preenchida
+  // Gera link do WhatsApp com mensagem prÃ©-preenchida
   var cfg = {};
   try { cfg = JSON.parse(localStorage.getItem('studio_config') || '{}'); } catch(e) {}
   var wppEstudio = (cfg.whatsapp || '').replace(/\D/g,'');
   if (wppEstudio) {
-    var ambStr = ambsSel.length ? ambsSel.join(', ') : 'meu espaço';
-    var msg = 'Olá! Sou ' + nome + ' e acabei de preencher o diagnóstico gratuito no site do escritório.\n\n' +
-      '📍 Ambientes: ' + ambStr + '\n' +
-      (objetivo ? '🎯 Objetivo: ' + objetivo + '\n' : '') +
-      '\nGostaria de saber mais sobre como vocês podem me ajudar!';
+    var ambStr = ambsSel.length ? ambsSel.join(', ') : 'meu espaÃ§o';
+    var msg = 'OlÃ¡! Sou ' + nome + ' e acabei de preencher o diagnÃ³stico gratuito no site do escritÃ³rio.\n\n' +
+      'ðŸ“ Ambientes: ' + ambStr + '\n' +
+      (objetivo ? 'ðŸŽ¯ Objetivo: ' + objetivo + '\n' : '') +
+      '\nGostaria de saber mais sobre como vocÃªs podem me ajudar!';
     document.getElementById('success-wpp-btn').href = 'https://wa.me/55' + wppEstudio + '?text=' + encodeURIComponent(msg);
   } else {
     document.getElementById('success-wpp-btn').style.display = 'none';
@@ -1644,7 +1644,7 @@ function openArqLogin() {
 </script>
 
 <script>
-// ===== WHITE-LABEL: aplica marca do escritório =====
+// ===== WHITE-LABEL: aplica marca do escritÃ³rio =====
 (function applyStudioBrand() {
   var cfg;
   try { cfg = JSON.parse(localStorage.getItem('studio_config') || '{}'); } catch(e) { cfg = {}; }
@@ -1671,3 +1671,4 @@ function openArqLogin() {
 
 </body>
 </html>
+
