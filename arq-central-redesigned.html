@@ -602,6 +602,76 @@ button, [onclick], .mode-card, .kb-card, .port-card,
 .icon-btn, label[onclick] {
   cursor: pointer !important;
 }
+
+/* ===== PORTAL DO CLIENTE — NOVO LAYOUT ===== */
+.cli-layout { display:flex; height:100vh; overflow:hidden; }
+.cli-sidebar { width:220px; min-width:220px; background:#1A140E; display:flex; flex-direction:column; flex-shrink:0; }
+.cli-sb-logo { padding:24px 20px 18px; border-bottom:1px solid rgba(255,255,255,0.07); }
+.cli-sb-logo-name { font-family:'Fraunces',serif; font-size:16px; font-weight:400; color:#F5EDE0; letter-spacing:.5px; }
+.cli-sb-logo-sub { font-size:10px; color:rgba(245,237,224,0.3); margin-top:3px; letter-spacing:1px; text-transform:uppercase; }
+.cli-sb-nav { flex:1; padding:10px 8px; overflow-y:auto; display:flex; flex-direction:column; gap:2px; }
+.cli-nav-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:8px; cursor:pointer; color:rgba(245,237,224,0.4); font-size:13px; font-weight:400; transition:all .15s; border:none; background:none; width:100%; text-align:left; font-family:inherit; }
+.cli-nav-item:hover { color:rgba(245,237,224,0.8); background:rgba(255,255,255,0.04); }
+.cli-nav-item.on { background:rgba(184,134,90,0.15); color:#D4A876; }
+.cli-nav-item.done { color:rgba(245,237,224,0.6); }
+.cli-nav-check { width:16px; height:16px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1px solid rgba(255,255,255,0.15); font-size:9px; color:transparent; transition:all .2s; }
+.cli-nav-item.done .cli-nav-check { background:rgba(74,222,128,0.2); border-color:rgba(74,222,128,0.4); color:#4ade80; }
+.cli-nav-item.on .cli-nav-check { border-color:rgba(184,134,90,0.5); }
+.cli-sb-footer { padding:14px 16px; border-top:1px solid rgba(255,255,255,0.07); }
+.cli-sb-client { font-size:12px; color:rgba(245,237,224,0.55); margin-bottom:8px; }
+.cli-sb-client strong { display:block; color:rgba(245,237,224,0.85); font-weight:500; }
+.cli-main { flex:1; overflow-y:auto; }
+/* Welcome section */
+.cli-welcome { display:grid; grid-template-columns:1fr 1fr; min-height:100vh; }
+.cli-welcome-left { padding:60px 48px; display:flex; flex-direction:column; justify-content:space-between; background:var(--bg); }
+.cli-welcome-right { background:linear-gradient(160deg,#2C1810,#1A140E); position:relative; overflow:hidden; }
+.cli-welcome-right img { width:100%; height:100%; object-fit:cover; opacity:.6; }
+.cli-welcome-eyebrow { font-size:11px; font-weight:500; color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; }
+.cli-welcome-title { font-family:'Fraunces',serif; font-size:clamp(32px,4vw,48px); font-weight:300; color:var(--text); line-height:1.15; margin-bottom:14px; }
+.cli-welcome-title em { color:var(--accent); font-style:normal; }
+.cli-welcome-sub { font-size:15px; color:var(--muted); line-height:1.6; margin-bottom:36px; }
+.cli-welcome-trust { display:flex; gap:28px; margin-top:auto; padding-top:32px; border-top:1px solid var(--border2); }
+.cli-trust-item { display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; font-size:11px; color:var(--muted2); }
+/* Section layout */
+.cli-section { max-width:680px; margin:0 auto; padding:48px 32px; }
+.cli-section-eyebrow { font-size:10px; font-weight:600; color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
+.cli-section-title { font-family:'Fraunces',serif; font-size:28px; font-weight:300; color:var(--text); line-height:1.2; margin-bottom:6px; }
+.cli-section-sub { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:32px; }
+.cli-question { margin-bottom:26px; }
+.cli-question label { display:block; font-size:13px; font-weight:500; color:var(--text2); margin-bottom:10px; }
+/* Style cards grid */
+.style-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-bottom:12px; }
+.style-card { border-radius:10px; overflow:hidden; cursor:pointer; border:2px solid transparent; transition:all .2s; background:var(--bg2); }
+.style-card:hover { border-color:var(--muted2); }
+.style-card.on { border-color:var(--accent); box-shadow:0 0 0 3px rgba(184,134,90,0.15); }
+.style-card-img { height:100px; display:flex; align-items:center; justify-content:center; font-size:28px; }
+.style-card-label { padding:8px 10px 10px; font-size:11px; font-weight:500; color:var(--text2); }
+.style-card-desc { font-size:10px; color:var(--muted2); margin-top:1px; }
+/* Color palette */
+.palette-grid { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+.palette-item { display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; }
+.palette-swatch { width:44px; height:44px; border-radius:50%; border:3px solid transparent; transition:all .15s; }
+.palette-item.on .palette-swatch { border-color:var(--accent); box-shadow:0 0 0 2px rgba(184,134,90,0.3); }
+.palette-label { font-size:10px; color:var(--muted); }
+/* Choice chips */
+.chip-grid { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+.chip { padding:7px 14px; border-radius:100px; border:1px solid var(--border); background:var(--bg2); font-size:12px; color:var(--text2); cursor:pointer; transition:all .15s; font-family:inherit; }
+.chip:hover { border-color:var(--muted2); }
+.chip.on { background:rgba(184,134,90,0.12); border-color:var(--accent); color:var(--accent); }
+/* Nav footer */
+.cli-section-nav { display:flex; align-items:center; justify-content:space-between; margin-top:36px; padding-top:24px; border-top:1px solid var(--border2); }
+/* Mobile */
+@media(max-width:768px) {
+  .cli-layout { flex-direction:column; }
+  .cli-sidebar { width:100%; min-width:0; flex-direction:row; flex-wrap:wrap; }
+  .cli-sb-logo { padding:12px 16px; border-bottom:none; border-right:1px solid rgba(255,255,255,0.07); }
+  .cli-sb-nav { flex-direction:row; flex-wrap:nowrap; overflow-x:auto; padding:6px; gap:4px; }
+  .cli-nav-item { padding:6px 10px; font-size:11px; white-space:nowrap; }
+  .cli-sb-footer { display:none; }
+  .cli-welcome { grid-template-columns:1fr; }
+  .cli-welcome-right { display:none; }
+  .cli-section { padding:32px 20px; }
+}
 </style>
 
 <script>
@@ -1145,122 +1215,26 @@ function renderIcons() {
 
 </div>
 
-<!-- PORTAL MEU PROJETO -->
+<!-- PORTAL MEU PROJETO — novo layout com sidebar -->
 <div class="portal-wrap hidden" id="portal-projeto">
-  <div class="portal-header">
-    <div class="portal-logo studio-nome">Seu Escritório</div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <button class="icon-btn" onclick="toggleTheme()">
-        <i data-lucide="sun" id="proj-theme-icon" style="width:15px;height:15px"></i>
-      </button>
-      <button class="btn btn-sm" onclick="goHome()">
-        <i data-lucide="log-out" style="width:13px;height:13px"></i> Sair
-      </button>
-    </div>
-  </div>
-  <div class="portal-body">
-    <div class="portal-inner">
-      <div style="margin-bottom:18px">
-        <div style="font-size:12px;color:var(--muted);margin-bottom:3px">Olá! 👋</div>
-        <div style="font-size:20px;font-weight:700">Meu Projeto</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:2px">Consultoria Online · Pedido #0042</div>
+  <div class="cli-layout">
+    <aside class="cli-sidebar">
+      <div class="cli-sb-logo">
+        <div class="cli-sb-logo-name studio-nome">Seu Escritório</div>
+        <div class="cli-sb-logo-sub">Portal do cliente</div>
       </div>
-      <div style="display:flex;gap:0;margin-bottom:18px;background:var(--bg2);border:1px solid var(--border2);border-radius:9px;padding:3px;overflow-x:auto">
-        <button class="btn btn-accent btn-sm" style="flex:1;justify-content:center;white-space:nowrap" onclick="switchPortalTab(this,'ptab-status')">Projeto</button>
-        <button class="btn btn-sm" style="flex:1;justify-content:center;white-space:nowrap" onclick="switchPortalTab(this,'ptab-briefing')">Briefing</button>
-        <button class="btn btn-sm" style="flex:1;justify-content:center;white-space:nowrap" onclick="switchPortalTab(this,'ptab-docs')">Documentos</button>
-        <button class="btn btn-sm" style="flex:1;justify-content:center;white-space:nowrap" onclick="switchPortalTab(this,'ptab-pgto')">Pagamentos</button>
-        <button class="btn btn-sm" style="flex:1;justify-content:center;white-space:nowrap" onclick="switchPortalTab(this,'ptab-aprov')">Aprovações</button>
+      <nav class="cli-sb-nav" id="cli-nav"></nav>
+      <div class="cli-sb-footer">
+        <div class="cli-sb-client">
+          <span style="font-size:10px;color:rgba(245,237,224,0.3);text-transform:uppercase;letter-spacing:.5px">Projeto de</span>
+          <strong id="cli-footer-nome">—</strong>
+        </div>
+        <button onclick="goHome()" style="background:none;border:none;color:rgba(245,237,224,0.35);font-size:11px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;padding:0;transition:color .15s" onmouseover="this.style.color='rgba(245,237,224,0.7)'" onmouseout="this.style.color='rgba(245,237,224,0.35)'">
+          <i data-lucide="log-out" style="width:12px;height:12px"></i> Sair
+        </button>
       </div>
-      <div id="ptab-status">
-        <div class="card">
-          <div class="card-title"><i data-lucide="activity" style="width:15px;height:15px"></i> Status do projeto</div>
-          <div class="tl">
-            <div class="tli"><div class="tld done"></div><div class="tlt">Briefing recebido</div><div class="tls">02/06/2026 às 14:32</div></div>
-            <div class="tli"><div class="tld now"></div><div class="tlt">Em análise</div><div class="tls">Sua arquiteta está analisando as fotos e o briefing</div></div>
-            <div class="tli"><div class="tld"></div><div class="tlt" style="color:var(--muted)">Proposta enviada</div><div class="tls">Previsão: até 07/06/2026</div></div>
-            <div class="tli"><div class="tld"></div><div class="tlt" style="color:var(--muted)">Aprovação</div></div>
-            <div class="tli" style="margin-bottom:0"><div class="tld"></div><div class="tlt" style="color:var(--muted)">Entrega final</div></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title"><i data-lucide="folder-open" style="width:15px;height:15px"></i> Drive do projeto</div>
-          <div style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:12px">
-            <i data-lucide="folder-open" style="width:22px;height:22px;color:var(--accent)"></i>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">Pasta do projeto no Google Drive</div><div style="font-size:11px;color:var(--muted)">Fotos, plantas e documentos organizados</div></div>
-            <button class="btn btn-accent btn-sm"><i data-lucide="external-link" style="width:13px;height:13px"></i> Abrir</button>
-          </div>
-        </div>
-        <div style="text-align:center;margin-top:10px">
-          <button class="btn btn-sm" onclick="showPosVenda()"><i data-lucide="star" style="width:13px;height:13px"></i> Avaliar atendimento</button>
-        </div>
-      </div>
-      <div id="ptab-briefing" style="display:none">
-        <div class="card">
-          <div class="card-title"><i data-lucide="clipboard-list" style="width:15px;height:15px"></i> Briefing do projeto</div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Preencha para ajudarmos a entender melhor suas necessidades.</div>
-          <div class="fg"><label class="fl">Ambientes a reformar</label><input class="fi" id="cli-brief-amb" placeholder="Ex: Sala de estar, cozinha, quarto principal"></div>
-          <div class="fg"><label class="fl">O que mais incomoda atualmente?</label><textarea class="fi" id="cli-brief-dor" style="min-height:70px" placeholder="Descreva os problemas do seu ambiente atual..."></textarea></div>
-          <div class="fg"><label class="fl">Como você imagina o resultado ideal?</label><textarea class="fi" id="cli-brief-obj" style="min-height:70px" placeholder="Descreva o que você quer conquistar..."></textarea></div>
-          <div class="fg"><label class="fl">Referências de estilo</label><input class="fi" id="cli-brief-ref" placeholder="Link do Pinterest, Instagram ou descrição do estilo"></div>
-          <div class="fg"><label class="fl">Alguma restrição importante?</label><textarea class="fi" id="cli-brief-rest" style="min-height:60px" placeholder="Orçamento limite, móveis que devem ser mantidos..."></textarea></div>
-          <button class="btn btn-accent" onclick="salvarBriefingCliente()"><i data-lucide="send" style="width:14px;height:14px"></i> Enviar briefing</button>
-        </div>
-      </div>
-      <div id="ptab-docs" style="display:none">
-        <div class="card">
-          <div class="card-title"><i data-lucide="files" style="width:15px;height:15px"></i> Documentos do projeto</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:8px">
-              <i data-lucide="file-text" style="width:18px;height:18px;color:var(--accent)"></i>
-              <div style="flex:1"><div style="font-size:12px;font-weight:500">Contrato assinado</div><div style="font-size:11px;color:var(--muted)">02/06/2026 · PDF</div></div>
-              <button class="btn btn-sm"><i data-lucide="download" style="width:12px;height:12px"></i></button>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:8px">
-              <i data-lucide="file-text" style="width:18px;height:18px;color:var(--muted2)"></i>
-              <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--muted)">Proposta comercial</div><div style="font-size:11px;color:var(--muted2)">Aguardando envio</div></div>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:8px">
-              <i data-lucide="image" style="width:18px;height:18px;color:var(--muted2)"></i>
-              <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--muted)">Projeto executivo</div><div style="font-size:11px;color:var(--muted2)">Em desenvolvimento</div></div>
-            </div>
-          </div>
-          <div style="margin-top:14px">
-            <div style="font-size:11px;font-weight:600;margin-bottom:8px">Enviar arquivo</div>
-            <label style="cursor:pointer"><input type="file" style="display:none" onchange="uploadArqCliente(this)"><span class="btn btn-sm"><i data-lucide="upload" style="width:12px;height:12px"></i> Selecionar arquivo</span></label>
-          </div>
-        </div>
-      </div>
-      <div id="ptab-pgto" style="display:none">
-        <div class="card">
-          <div class="card-title"><i data-lucide="receipt" style="width:15px;height:15px"></i> Pagamentos</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg2);border-radius:8px">
-              <div><div style="font-size:12px;font-weight:600">Parcela 1/2 — Entrada</div><div style="font-size:11px;color:var(--muted)">Vencimento: 02/06/2026</div></div>
-              <div style="text-align:right"><div style="font-size:13px;font-weight:700">R$ 175,00</div><span class="pill p-green">Pago</span></div>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg2);border-radius:8px">
-              <div><div style="font-size:12px;font-weight:600">Parcela 2/2 — Entrega</div><div style="font-size:11px;color:var(--muted)">Vencimento: 30/06/2026</div></div>
-              <div style="text-align:right"><div style="font-size:13px;font-weight:700">R$ 175,00</div><span class="pill p-amber">Pendente</span></div>
-            </div>
-          </div>
-          <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center">
-            <span style="font-size:12px;color:var(--muted)">Total do contrato</span>
-            <span style="font-size:15px;font-weight:700">R$ 350,00</span>
-          </div>
-        </div>
-      </div>
-      <div id="ptab-aprov" style="display:none">
-        <div class="card">
-          <div class="card-title"><i data-lucide="check-square" style="width:15px;height:15px"></i> Aprovações pendentes</div>
-          <div style="text-align:center;padding:24px;color:var(--muted2)">
-            <i data-lucide="inbox" style="width:28px;height:28px;margin-bottom:10px"></i>
-            <div style="font-size:12px">Nenhuma aprovação pendente no momento.</div>
-            <div style="font-size:11px;margin-top:4px">Quando houver itens para aprovar, eles aparecerão aqui.</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </aside>
+    <main class="cli-main" id="cli-main-content"></main>
   </div>
 </div>
 
@@ -1393,15 +1367,26 @@ function showVitrine() { hideAll(); document.getElementById('portal-vitrine').cl
 // ===== SESSÃO DO CLIENTE =====
 var _cliSessao = null;
 
+// ===== PORTAL DO CLIENTE — novo layout com sidebar =====
+
+var _cliNavItems = [
+  { id:'welcome',      icon:'home',           label:'Boas-vindas'    },
+  { id:'sobre',        icon:'user',           label:'Sobre você'     },
+  { id:'projeto',      icon:'layout',         label:'Seu projeto'    },
+  { id:'preferencias', icon:'palette',        label:'Preferências'   },
+  { id:'referencias',  icon:'image',          label:'Referências'    },
+  { id:'documentos',   icon:'files',          label:'Documentos'     },
+  { id:'pagamentos',   icon:'receipt',        label:'Pagamentos'     },
+  { id:'proxpassos',   icon:'calendar-check', label:'Próximos passos'},
+];
+
 function showMeuProjeto() {
-  // Tenta identificar o cliente pelo e-mail ou WPP digitado no login
   var emailEl = document.querySelector('#scr-cli input[type="email"]');
   var emailVal = emailEl ? emailEl.value.trim().toLowerCase() : '';
   var projs = _ld('projetos_lista', []);
   var leads = getCRMLeads();
   var briefings = _ld('briefings_lista', []);
 
-  // Procura projeto pelo e-mail; fallback: projeto mais recente
   var proj = null;
   if (emailVal) {
     proj = projs.find(function(p) { return (p.clienteEmail||'').toLowerCase() === emailVal; });
@@ -1411,116 +1396,410 @@ function showMeuProjeto() {
 
   var briefing = proj ? briefings.find(function(b) { return b.id === proj.briefingId; }) : null;
   var lead = proj ? leads.find(function(l) { return l.nome === proj.clienteNome || (proj.clienteEmail && l.email === proj.clienteEmail); }) : null;
-  _cliSessao = { proj: proj, briefing: briefing, lead: lead };
+  _cliSessao = { proj: proj, briefing: briefing, lead: lead, secoes: {} };
 
   hideAll();
   document.getElementById('portal-projeto').classList.remove('hidden');
+  applyStudioBrand();
+  _renderCliNav('welcome');
+  renderCliSection('welcome');
   renderIcons();
-  renderPortalCliente();
 }
 
-function renderPortalCliente() {
+function _renderCliNav(activeId) {
   var s = _cliSessao || {};
-  var proj = s.proj, briefing = s.briefing, lead = s.lead;
-
-  // Cabeçalho do portal
-  var headerEl = document.querySelector('#portal-projeto .portal-inner > div:first-child');
-  if (headerEl) {
-    var primeiroNome = proj ? proj.clienteNome.split(' ')[0] : 'Bem-vindo';
-    var servico = proj ? (proj.servico || 'Projeto de Interiores') : '—';
-    var codigo  = proj ? (proj.codigo  || '—') : '—';
-    headerEl.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-bottom:3px">Olá, ' + primeiroNome + '! 👋</div>' +
-      '<div style="font-size:20px;font-weight:700">' + servico + '</div>' +
-      '<div style="font-size:12px;color:var(--muted);margin-top:2px">Código: ' + codigo + (proj ? ' · Iniciado em ' + proj.criadoEm : '') + '</div>';
+  var secoes = s.secoes || {};
+  var nav = document.getElementById('cli-nav');
+  if (!nav) return;
+  nav.innerHTML = _cliNavItems.map(function(item) {
+    var done = secoes[item.id] === 'done';
+    var on   = item.id === activeId;
+    var cls  = 'cli-nav-item' + (on?' on':'') + (done&&!on?' done':'');
+    return '<button class="' + cls + '" onclick="renderCliSection(\'' + item.id + '\')">' +
+      '<div class="cli-nav-check">' + (done?'✓':'') + '</div>' +
+      '<span>' + item.label + '</span></button>';
+  }).join('');
+  // footer
+  var nomeEl = document.getElementById('cli-footer-nome');
+  if (nomeEl) {
+    var nome = s.proj ? s.proj.clienteNome : (s.lead ? s.lead.nome : '—');
+    nomeEl.textContent = nome || '—';
   }
-
-  // Timeline baseada no estágio do CRM
-  var estagios = ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA','CONTRATO','CLIENTE'];
-  var estagio = lead ? lead.estagio : (proj ? 'BRIEFING' : 'LEAD');
-  var idx = estagios.indexOf(estagio);
-  var tlEl = document.querySelector('#ptab-status .tl');
-  if (tlEl) {
-    var etapas = [
-      { label: 'Diagnóstico recebido',    sub: proj ? proj.criadoEm : '—' },
-      { label: 'Briefing analisado',       sub: briefing ? (briefing.criadoEm || '—') : 'Aguardando preenchimento' },
-      { label: 'Proposta enviada',          sub: idx >= 3 ? 'Proposta gerada pelo escritório' : 'Aguardando aprovação do briefing' },
-      { label: 'Contrato assinado',         sub: idx >= 4 ? 'Contrato em vigor' : 'Após aprovação da proposta' },
-      { label: 'Projeto em andamento',      sub: idx >= 5 ? 'Acompanhe abaixo' : 'Após assinatura do contrato' },
-    ];
-    tlEl.innerHTML = etapas.map(function(e, i) {
-      var done = i < idx, now = i === idx;
-      return '<div class="tli"><div class="tld' + (done?' done':now?' now':'') + '"></div>' +
-        '<div><div class="tlt"' + (i > idx ? ' style="color:var(--muted)"' : '') + '>' + e.label + '</div>' +
-        '<div class="tls">' + e.sub + '</div></div></div>';
-    }).join('');
-  }
-
-  // Pré-preenche briefing se cliente já enviou antes
-  var respostas = briefing && briefing.clienteRespostas ? briefing.clienteRespostas : null;
-  if (respostas) {
-    var map = { 'cli-brief-amb': respostas.ambientes, 'cli-brief-dor': respostas.dor,
-                'cli-brief-obj': respostas.objetivo,  'cli-brief-ref': respostas.referencias,
-                'cli-brief-rest': respostas.restricoes };
-    Object.keys(map).forEach(function(id) {
-      var el = document.getElementById(id);
-      if (el && map[id]) el.value = map[id];
-    });
-    var btnEnv = document.querySelector('#ptab-briefing button');
-    if (btnEnv) { btnEnv.textContent = '✅ Briefing já enviado — atualizar'; }
-  }
-
-  // Pagamentos
-  var pgtoEl = document.getElementById('ptab-pgto');
-  if (pgtoEl && (proj || lead)) {
-    var inv = lead ? (lead.investimento || '') : '';
-    var valorNum = parseFloat(inv.replace(/[^\d,]/g,'').replace(',','.')) || 0;
-    var metade = valorNum ? 'R$ ' + (valorNum/2).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—';
-    var total  = valorNum ? 'R$ ' + valorNum.toLocaleString('pt-BR',{minimumFractionDigits:2}) : inv || '—';
-    var pgto   = lead ? (lead.pgto || lead.obs || '') : '';
-    pgtoEl.innerHTML = '<div class="card"><div class="card-title"><i data-lucide="receipt" style="width:15px;height:15px"></i> Pagamentos</div>' +
-      '<div style="display:flex;flex-direction:column;gap:8px">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg2);border-radius:8px">' +
-          '<div><div style="font-size:12px;font-weight:600">Entrada (50%)</div><div style="font-size:11px;color:var(--muted)">Na assinatura do contrato</div></div>' +
-          '<div style="text-align:right"><div style="font-size:13px;font-weight:700">' + metade + '</div>' +
-          '<span class="pill ' + (idx>=4?'p-green':'p-amber') + '">' + (idx>=4?'Pago':'Pendente') + '</span></div></div>' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg2);border-radius:8px">' +
-          '<div><div style="font-size:12px;font-weight:600">Final (50%)</div><div style="font-size:11px;color:var(--muted)">Na entrega do projeto</div></div>' +
-          '<div style="text-align:right"><div style="font-size:13px;font-weight:700">' + metade + '</div>' +
-          '<span class="pill p-amber">Pendente</span></div></div>' +
-      '</div><div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center">' +
-        '<span style="font-size:12px;color:var(--muted)">Total do contrato</span>' +
-        '<span style="font-size:15px;font-weight:700">' + total + '</span></div>' +
-      '<div style="margin-top:12px"><button class="btn btn-accent" style="width:100%;justify-content:center" onclick="showCheckout()">' +
-        '<i data-lucide="credit-card" style="width:14px;height:14px"></i> Ver formas de pagamento</button></div></div>';
-    renderIcons();
-  }
+  renderIcons();
 }
 
-function salvarBriefingCliente() {
-  var dados = {
-    ambientes:   (document.getElementById('cli-brief-amb') ||{value:''}).value,
-    dor:         (document.getElementById('cli-brief-dor') ||{value:''}).value,
-    objetivo:    (document.getElementById('cli-brief-obj') ||{value:''}).value,
-    referencias: (document.getElementById('cli-brief-ref') ||{value:''}).value,
-    restricoes:  (document.getElementById('cli-brief-rest')||{value:''}).value
+function renderCliSection(id) {
+  var el = document.getElementById('cli-main-content');
+  if (!el) return;
+  var builders = {
+    welcome:      buildCliWelcome,
+    sobre:        buildCliSobreVoce,
+    projeto:      buildCliSeuProjeto,
+    preferencias: buildCliPreferencias,
+    referencias:  buildCliReferencias,
+    documentos:   buildCliDocs,
+    pagamentos:   buildCliPagamentos,
+    proxpassos:   buildCliProxPassos,
   };
-  // Vincula ao briefing do arquiteto se existir
-  if (_cliSessao && _cliSessao.briefing) {
+  var fn = builders[id];
+  if (fn) el.innerHTML = fn();
+  _renderCliNav(id);
+  el.scrollTop = 0;
+  renderIcons();
+}
+
+function _cliPrevNext(currentId, saveId) {
+  var ids = _cliNavItems.map(function(n){return n.id;});
+  var i = ids.indexOf(currentId);
+  var prev = i > 0 ? ids[i-1] : null;
+  var next = i < ids.length-1 ? ids[i+1] : null;
+  var btns = '';
+  if (prev) btns += '<button class="btn btn-sm" onclick="renderCliSection(\'' + prev + '\')">← Voltar</button>';
+  if (next) btns += '<button class="btn btn-accent" onclick="_cliSalvarEAvancar(\'' + currentId + '\',\'' + next + '\')">Continuar →</button>';
+  if (saveId && !next) btns += '<button class="btn btn-accent" onclick="_cliSalvarEAvancar(\'' + currentId + '\',null)">Salvar ✓</button>';
+  return '<div class="cli-section-nav">' + btns + '</div>';
+}
+
+function _cliSalvarEAvancar(fromId, nextId) {
+  if (_cliSessao) {
+    if (!_cliSessao.secoes) _cliSessao.secoes = {};
+    _cliSessao.secoes[fromId] = 'done';
+    _salvarRespostasBriefing();
+  }
+  if (nextId) renderCliSection(nextId);
+  else { mostrarFeedback('✅ Briefing salvo com sucesso!'); renderCliSection(fromId); }
+}
+
+function _salvarRespostasBriefing() {
+  if (!_cliSessao) return;
+  function gv(id) { var e=document.getElementById(id); return e?e.value:''; }
+  function gc(sel) {
+    var chips = document.querySelectorAll(sel+'.on');
+    return Array.from(chips).map(function(c){return c.dataset.val||c.textContent.trim();});
+  }
+  var dados = {
+    // Sobre você
+    familia:        gc('.chip-familia'),
+    numPessoas:     gv('cli-num-pessoas'),
+    pets:           gv('cli-pets'),
+    homeOffice:     gv('cli-home-office'),
+    descEstilo:     gv('cli-desc-estilo'),
+    frustracao:     gv('cli-frustracao'),
+    // Seu projeto
+    cidade:         gv('cli-cidade'),
+    tipoImovel:     gc('.chip-imovel')[0]||'',
+    area:           gv('cli-area'),
+    ambientes:      gc('.chip-amb'),
+    orcamento:      gc('.chip-orc')[0]||'',
+    prazo:          gc('.chip-prazo')[0]||'',
+    // Preferências
+    estilos:        gc('.chip-estilo-sel'),
+    paletaCores:    (function(){ var p=document.querySelector('.palette-item.on'); return p?p.dataset.val:''; })(),
+    materiais:      gc('.chip-mat'),
+    // Referências
+    pinterest:      gv('cli-pinterest'),
+    instagram:      gv('cli-instagram'),
+    descReferencia: gv('cli-desc-ref'),
+  };
+  if (_cliSessao.briefing) {
     var briefings = _ld('briefings_lista', []);
-    var idx = briefings.findIndex(function(b) { return b.id === _cliSessao.briefing.id; });
-    if (idx >= 0) {
+    var idx = briefings.findIndex(function(b){return b.id===_cliSessao.briefing.id;});
+    if (idx>=0) {
       briefings[idx].clienteRespostas = dados;
-      briefings[idx].status = 'Concluído';
+      if (!briefings[idx].status || briefings[idx].status !== 'Concluído') briefings[idx].status = 'Em andamento';
       _sd('briefings_lista', briefings);
       _cliSessao.briefing = briefings[idx];
     }
   }
-  // Salva também na chave genérica para compatibilidade
   _sd('briefing_cliente', dados);
-  mostrarFeedback('✅ Briefing enviado com sucesso!');
-  var btnEnv = document.querySelector('#ptab-briefing button');
-  if (btnEnv) btnEnv.textContent = '✅ Briefing já enviado — atualizar';
 }
+
+// --- SECTION BUILDERS ---
+
+function buildCliWelcome() {
+  var s = _cliSessao || {};
+  var proj = s.proj, lead = s.lead;
+  var primeiroNome = proj ? proj.clienteNome.split(' ')[0] : (lead ? lead.nome.split(' ')[0] : 'bem-vindo');
+  var cfg = getStudioConfig();
+  return '<div class="cli-welcome">' +
+    '<div class="cli-welcome-left">' +
+      '<div>' +
+        '<div class="cli-welcome-eyebrow">Portal do cliente</div>' +
+        '<h1 class="cli-welcome-title">Bem-vindo,<br><em>' + primeiroNome + '</em>.</h1>' +
+        '<p class="cli-welcome-sub">Vamos criar algo incrível juntos.<br>Use o menu à esquerda para navegar pelas etapas do seu projeto.</p>' +
+        '<button class="btn btn-accent" style="padding:12px 28px;font-size:14px" onclick="renderCliSection(\'sobre\')">Vamos começar →</button>' +
+      '</div>' +
+      '<div class="cli-welcome-trust">' +
+        '<div class="cli-trust-item"><i data-lucide="user-check" style="width:20px;height:20px;color:var(--accent)"></i><span>Experiência<br>personalizada</span></div>' +
+        '<div class="cli-trust-item"><i data-lucide="shield-check" style="width:20px;height:20px;color:var(--accent)"></i><span>Processo claro<br>e seguro</span></div>' +
+        '<div class="cli-trust-item"><i data-lucide="lock" style="width:20px;height:20px;color:var(--accent)"></i><span>Seus dados<br>protegidos</span></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="cli-welcome-right" style="background:linear-gradient(160deg,#2C1810 0%,#1A140E 100%);display:flex;align-items:flex-end;padding:40px">' +
+      '<div style="color:rgba(245,237,224,0.15);font-family:\'Fraunces\',serif;font-size:clamp(60px,8vw,120px);line-height:1;font-weight:300;letter-spacing:-2px;user-select:none">' +
+        (cfg.iniciais||'✦') +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function buildCliSobreVoce() {
+  var r = (_cliSessao && _cliSessao.briefing && _cliSessao.briefing.clienteRespostas) || {};
+  var familiaOps = ['Moro sozinho(a)','Casal sem filhos','Casal com filhos','Família com adolescentes','Compartilho com amigos','Outros'];
+  return '<div class="cli-section">' +
+    '<div class="cli-section-eyebrow">Etapa 1 de 4</div>' +
+    '<h2 class="cli-section-title">Sobre você</h2>' +
+    '<p class="cli-section-sub">Nos conte um pouco sobre quem vai viver nesse espaço. Isso nos ajuda a criar algo verdadeiramente seu.</p>' +
+    '<div class="cli-question"><label>Quem mora na casa?</label>' +
+      '<div class="chip-grid">' + familiaOps.map(function(o){
+        var on = r.familia&&r.familia.indexOf(o)>=0?' on':'';
+        return '<button class="chip chip-familia'+on+'" data-val="'+o+'" onclick="toggleChip(this)">'+o+'</button>';
+      }).join('') + '</div></div>' +
+    '<div class="cli-question"><label>Quantas pessoas usarão o espaço com frequência?</label>' +
+      '<div class="chip-grid">' + ['1','2','3','4','5+'].map(function(n){
+        return '<button class="chip chip-npessoas" data-val="'+n+'" onclick="singleChip(this,\'.chip-npessoas\')">'+n+'</button>';
+      }).join('') + '</div>' +
+      '<input class="fi" id="cli-num-pessoas" style="margin-top:8px" placeholder="Ou descreva..." value="'+(r.numPessoas||'')+'"></div>' +
+    '<div class="cli-question"><label>Tem pets?</label>' +
+      '<div class="chip-grid">' +
+        '<button class="chip chip-pets'+(r.pets==='Sim'?' on':'')+'" data-val="Sim" onclick="singleChip(this,\'.chip-pets\')">Sim, tenho pets</button>' +
+        '<button class="chip chip-pets'+(r.pets==='Não'?' on':'')+'" data-val="Não" onclick="singleChip(this,\'.chip-pets\')">Não tenho</button>' +
+      '</div></div>' +
+    '<div class="cli-question"><label>Trabalha em casa?</label>' +
+      '<div class="chip-grid">' +
+        '<button class="chip chip-ho'+(r.homeOffice==='Sim, home office'?' on':'')+'" data-val="Sim, home office" onclick="singleChip(this,\'.chip-ho\')">Sim, home office</button>' +
+        '<button class="chip chip-ho'+(r.homeOffice==='Às vezes'?' on':'')+'" data-val="Às vezes" onclick="singleChip(this,\'.chip-ho\')">Às vezes</button>' +
+        '<button class="chip chip-ho'+(r.homeOffice==='Não'?' on':'')+'" data-val="Não" onclick="singleChip(this,\'.chip-ho\')">Não</button>' +
+      '</div></div>' +
+    '<div class="cli-question"><label>Como você descreveria seu estilo de vida?</label>' +
+      '<textarea class="fi" id="cli-desc-estilo" style="min-height:80px" placeholder="Ex: Gosto de receber amigos, preciso de espaços para relaxar, tenho rotina agitada...">'+(r.descEstilo||'')+'</textarea></div>' +
+    '<div class="cli-question"><label>O que mais te incomoda no seu espaço atual?</label>' +
+      '<textarea class="fi" id="cli-frustracao" style="min-height:80px" placeholder="Descreva o que te frustra ou o que sente falta...">'+(r.frustracao||'')+'</textarea></div>' +
+    _cliPrevNext('sobre', true) + '</div>';
+}
+
+function buildCliSeuProjeto() {
+  var r = (_cliSessao && _cliSessao.briefing && _cliSessao.briefing.clienteRespostas) || {};
+  var proj = _cliSessao && _cliSessao.proj;
+  var ambs = (typeof AMBIENTES_LISTA !== 'undefined') ? AMBIENTES_LISTA : ['Sala de estar','Sala de jantar','Cozinha','Quarto principal','Quarto de hóspedes','Escritório','Banheiro social','Banheiro suíte','Lavabo','Área gourmet','Área de serviço','Varanda','Corredor','Hall de entrada','Home theater','Academia','Closet','Garage'];
+  var orcamentos = ['Até R$ 5.000','R$ 5.000–15.000','R$ 15.000–30.000','R$ 30.000–60.000','Acima de R$ 60.000','Prefiro discutir'];
+  var prazos = ['1–2 meses','2–4 meses','4–6 meses','Mais de 6 meses','Flexível'];
+  var tiposImovel = ['Apartamento','Casa','Studio / Loft','Cobertura','Comercial'];
+  return '<div class="cli-section">' +
+    '<div class="cli-section-eyebrow">Etapa 2 de 4</div>' +
+    '<h2 class="cli-section-title">Seu projeto</h2>' +
+    '<p class="cli-section-sub">Agora vamos entender melhor o espaço e o que você quer transformar.</p>' +
+    '<div class="cli-question"><label>Tipo de imóvel</label>' +
+      '<div class="chip-grid">' + tiposImovel.map(function(t){
+        var on = r.tipoImovel===t?' on':'';
+        return '<button class="chip chip-imovel'+on+'" data-val="'+t+'" onclick="singleChip(this,\'.chip-imovel\')">'+t+'</button>';
+      }).join('') + '</div></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">' +
+      '<div class="cli-question"><label>Cidade</label><input class="fi" id="cli-cidade" value="'+(r.cidade||proj&&proj.cidade||'')+'" placeholder="Sua cidade"></div>' +
+      '<div class="cli-question"><label>Área total (m²)</label><input class="fi" id="cli-area" type="number" value="'+(r.area||'')+'" placeholder="Ex: 85"></div>' +
+    '</div>' +
+    '<div class="cli-question"><label>Quais ambientes deseja projetar?</label><div style="font-size:11px;color:var(--muted2);margin-bottom:8px">Selecione todos que se aplicam</div>' +
+      '<div class="chip-grid">' + ambs.map(function(a){
+        var on = r.ambientes&&r.ambientes.indexOf(a)>=0?' on':'';
+        return '<button class="chip chip-amb'+on+'" data-val="'+a+'" onclick="toggleChip(this)">'+a+'</button>';
+      }).join('') + '</div></div>' +
+    '<div class="cli-question"><label>Faixa de investimento</label>' +
+      '<div class="chip-grid">' + orcamentos.map(function(o){
+        var on = r.orcamento===o?' on':'';
+        return '<button class="chip chip-orc'+on+'" data-val="'+o+'" onclick="singleChip(this,\'.chip-orc\')">'+o+'</button>';
+      }).join('') + '</div></div>' +
+    '<div class="cli-question"><label>Prazo desejado para conclusão</label>' +
+      '<div class="chip-grid">' + prazos.map(function(p){
+        var on = r.prazo===p?' on':'';
+        return '<button class="chip chip-prazo'+on+'" data-val="'+p+'" onclick="singleChip(this,\'.chip-prazo\')">'+p+'</button>';
+      }).join('') + '</div></div>' +
+    _cliPrevNext('projeto', true) + '</div>';
+}
+
+function buildCliPreferencias() {
+  var r = (_cliSessao && _cliSessao.briefing && _cliSessao.briefing.clienteRespostas) || {};
+  var estilos = [
+    { id:'minimalista',   label:'Minimalista',    desc:'Menos é mais',        grad:'linear-gradient(135deg,#F5F0EB,#E0D8CF)' },
+    { id:'contemporaneo', label:'Contemporâneo',  desc:'Limpo e funcional',   grad:'linear-gradient(135deg,#E8E4E0,#C8BFB8)' },
+    { id:'classico',      label:'Clássico',       desc:'Elegância atemporal', grad:'linear-gradient(135deg,#F0E8D5,#D4B896)' },
+    { id:'industrial',    label:'Industrial',     desc:'Bruto e autêntico',   grad:'linear-gradient(135deg,#3A3530,#5A5550)'  },
+    { id:'escandinavo',   label:'Escandinavo',    desc:'Aconchego nórdico',   grad:'linear-gradient(135deg,#EEF0F3,#D0D8E4)' },
+    { id:'boho',          label:'Boho',           desc:'Livre e texturas',    grad:'linear-gradient(135deg,#C07850,#A06030)'  },
+    { id:'japandi',       label:'Japandi',        desc:'Harmonia zen',        grad:'linear-gradient(135deg,#C8CCBC,#A8AE9C)'  },
+    { id:'biofílico',     label:'Biofílico',      desc:'Natureza em casa',    grad:'linear-gradient(135deg,#7A9F6A,#5A8050)'  },
+  ];
+  var paletas = [
+    { val:'neutros-quentes', label:'Neutros quentes', swatches:['#F5EDE0','#D4B896','#A07850','#6A4830'] },
+    { val:'neutros-frios',   label:'Neutros frios',   swatches:['#F0F2F5','#C8D0DC','#8090A8','#405068'] },
+    { val:'terrosos',        label:'Terrosos',        swatches:['#D4906A','#A06040','#7A4030','#4A2818'] },
+    { val:'verde',           label:'Verde & natureza',swatches:['#C8DCBC','#8AB08A','#507050','#304830'] },
+    { val:'azul',            label:'Azul & mar',      swatches:['#C0D4E8','#7098C0','#304870','#182840'] },
+    { val:'pb',              label:'P&B + accent',    swatches:['#F5F5F5','#C0C0C0','#404040','#101010'] },
+  ];
+  var materiais = ['Madeira clara','Madeira escura','Mármore','Cimento','Couro','Veludo','Rattan','Metal','Pedra natural','Vidro'];
+  return '<div class="cli-section">' +
+    '<div class="cli-section-eyebrow">Etapa 3 de 4</div>' +
+    '<h2 class="cli-section-title">Preferências</h2>' +
+    '<p class="cli-section-sub">Escolhas visuais que vão guiar toda a linguagem do projeto.</p>' +
+    '<div class="cli-question"><label>Com qual estilo você mais se identifica?</label><div style="font-size:11px;color:var(--muted2);margin-bottom:10px">Pode escolher mais de um</div>' +
+      '<div class="style-grid">' + estilos.map(function(e){
+        var on = r.estilos&&r.estilos.indexOf(e.id)>=0?' on':'';
+        return '<div class="style-card'+on+'" data-val="'+e.id+'" onclick="toggleChip(this,\'chip-estilo-sel\')">' +
+          '<div class="style-card-img" style="background:'+e.grad+'"></div>' +
+          '<div class="style-card-label">'+e.label+'<div class="style-card-desc">'+e.desc+'</div></div></div>';
+      }).join('') + '</div></div>' +
+    '<div class="cli-question"><label>Paleta de cores preferida</label>' +
+      '<div class="palette-grid">' + paletas.map(function(p){
+        var on = r.paletaCores===p.val?' on':'';
+        return '<div class="palette-item'+on+'" data-val="'+p.val+'" onclick="singlePaleta(this)">' +
+          '<div style="display:flex;gap:3px">' + p.swatches.map(function(c,i){
+            return '<div class="palette-swatch" style="width:18px;height:18px;'+(i===0?'border-radius:50% 0 0 50%;':'')+(i===p.swatches.length-1?'border-radius:0 50% 50% 0;':'')+' background:'+c+';border:none"></div>';
+          }).join('') + '</div>' +
+          '<div class="palette-label">'+p.label+'</div></div>';
+      }).join('') + '</div></div>' +
+    '<div class="cli-question"><label>Materiais favoritos</label><div style="font-size:11px;color:var(--muted2);margin-bottom:8px">Selecione os que mais gosta</div>' +
+      '<div class="chip-grid">' + materiais.map(function(m){
+        var on = r.materiais&&r.materiais.indexOf(m)>=0?' on':'';
+        return '<button class="chip chip-mat'+on+'" data-val="'+m+'" onclick="toggleChip(this)">'+m+'</button>';
+      }).join('') + '</div></div>' +
+    _cliPrevNext('preferencias', true) + '</div>';
+}
+
+function buildCliReferencias() {
+  var r = (_cliSessao && _cliSessao.briefing && _cliSessao.briefing.clienteRespostas) || {};
+  return '<div class="cli-section">' +
+    '<div class="cli-section-eyebrow">Etapa 4 de 4</div>' +
+    '<h2 class="cli-section-title">Referências</h2>' +
+    '<p class="cli-section-sub">Compartilhe imagens e links que inspiram você. Qualquer coisa que capture o que você sente — não precisa ser arquitetura.</p>' +
+    '<div class="cli-question"><label>Link do Pinterest (pasta ou pin)</label>' +
+      '<input class="fi" id="cli-pinterest" value="'+(r.pinterest||'')+'" placeholder="https://pinterest.com/..."></div>' +
+    '<div class="cli-question"><label>Perfil ou post do Instagram</label>' +
+      '<input class="fi" id="cli-instagram" value="'+(r.instagram||'')+'" placeholder="@perfil ou https://instagram.com/..."></div>' +
+    '<div class="cli-question"><label>Descreva com suas palavras o que você imagina</label>' +
+      '<textarea class="fi" id="cli-desc-ref" style="min-height:120px" placeholder="Ex: Quero algo que parece que fui para um hotel, com aquela sensação de leveza, sem bagunça visual, mas com aconchego...">'+(r.descReferencia||'')+'</textarea></div>' +
+    '<div style="background:var(--bg2);border:1px dashed var(--border);border-radius:10px;padding:20px;text-align:center;color:var(--muted2);font-size:12px;margin-bottom:24px">' +
+      '<i data-lucide="image-plus" style="width:24px;height:24px;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto"></i>' +
+      'Seu arquiteto poderá solicitar fotos do espaço atual por WhatsApp' +
+    '</div>' +
+    _cliPrevNext('referencias', true) + '</div>';
+}
+
+function buildCliDocs() {
+  var s = _cliSessao || {};
+  var proj = s.proj, lead = s.lead;
+  var estagio = lead ? lead.estagio : 'BRIEFING';
+  var estagios = ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA','CONTRATO','CLIENTE'];
+  var idx = estagios.indexOf(estagio);
+  function docRow(icon, label, sub, avail, btnLabel, onclick) {
+    return '<div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border2)">' +
+      '<i data-lucide="'+icon+'" style="width:20px;height:20px;color:'+(avail?'var(--accent)':'var(--muted2)')+'"></i>' +
+      '<div style="flex:1"><div style="font-size:13px;font-weight:500;color:'+(avail?'var(--text)':'var(--muted)')+'">'+label+'</div>' +
+        '<div style="font-size:11px;color:var(--muted2)">'+sub+'</div></div>' +
+      (avail?'<button class="btn btn-sm" onclick="'+onclick+'"><i data-lucide="external-link" style="width:12px;height:12px"></i> '+btnLabel+'</button>':'') +
+    '</div>';
+  }
+  return '<div class="cli-section">' +
+    '<h2 class="cli-section-title">Documentos</h2>' +
+    '<p class="cli-section-sub">Todos os arquivos do seu projeto em um só lugar.</p>' +
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">' +
+      docRow('file-text','Proposta comercial', idx>=3?'Enviada pelo escritório':'Aguardando briefing completo', idx>=3,'Ver','mostrarFeedback("Baixe a proposta pelo link enviado no WhatsApp")') +
+      docRow('pen-tool','Contrato',            idx>=4?'Em vigor':'Aguardando aprovação da proposta',             idx>=4,'Ver','mostrarFeedback("Contrato disponível após assinatura")') +
+      docRow('layers','Projeto executivo',     idx>=5?'Em desenvolvimento':'Após assinatura do contrato',         idx>=5,'Ver','mostrarFeedback("Seu arquiteto irá compartilhar pelo Drive")') +
+      docRow('folder','Drive do projeto',      idx>=5?'Pasta compartilhada':'Disponível após início do projeto',  idx>=5,'Abrir','mostrarFeedback("Link do Drive será enviado por WhatsApp")') +
+    '</div>' +
+    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:16px">' +
+      '<div style="font-size:12px;font-weight:600;margin-bottom:10px">Enviar arquivo ao escritório</div>' +
+      '<label style="cursor:pointer"><input type="file" style="display:none" onchange="uploadArqCliente(this)">' +
+        '<span class="btn btn-sm"><i data-lucide="upload" style="width:12px;height:12px"></i> Selecionar arquivo</span>' +
+      '</label>' +
+      '<div style="font-size:11px;color:var(--muted2);margin-top:8px">Fotos do imóvel, plantas, medidas...</div>' +
+    '</div>' +
+    _cliPrevNext('documentos', false) + '</div>';
+}
+
+function buildCliPagamentos() {
+  var s = _cliSessao || {};
+  var proj = s.proj, lead = s.lead;
+  var estagio = lead ? lead.estagio : 'BRIEFING';
+  var estagios = ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA','CONTRATO','CLIENTE'];
+  var idx = estagios.indexOf(estagio);
+  var inv = lead ? (lead.investimento || '') : '';
+  var valorNum = parseFloat(inv.replace(/[^\d,]/g,'').replace(',','.')) || 0;
+  var metade = valorNum ? 'R$ ' + (valorNum/2).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—';
+  var total   = valorNum ? 'R$ ' + valorNum.toLocaleString('pt-BR',{minimumFractionDigits:2}) : inv || '—';
+  return '<div class="cli-section">' +
+    '<h2 class="cli-section-title">Pagamentos</h2>' +
+    '<p class="cli-section-sub">Condições financeiras do seu projeto.</p>' +
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">' +
+      '<div style="padding:16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center">' +
+        '<div><div style="font-size:13px;font-weight:600">Entrada — 50%</div><div style="font-size:11px;color:var(--muted)">Na assinatura do contrato</div></div>' +
+        '<div style="text-align:right"><div style="font-size:15px;font-weight:700">'+metade+'</div><span class="pill '+(idx>=4?'p-green':'p-amber')+'">'+(idx>=4?'Pago':'Pendente')+'</span></div>' +
+      '</div>' +
+      '<div style="padding:16px;background:var(--bg2);border-radius:10px;border:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center">' +
+        '<div><div style="font-size:13px;font-weight:600">Final — 50%</div><div style="font-size:11px;color:var(--muted)">Na entrega do projeto</div></div>' +
+        '<div style="text-align:right"><div style="font-size:15px;font-weight:700">'+metade+'</div><span class="pill p-amber">Pendente</span></div>' +
+      '</div>' +
+    '</div>' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);margin-bottom:20px">' +
+      '<span style="font-size:13px;color:var(--muted)">Total do projeto</span>' +
+      '<span style="font-size:18px;font-weight:700;font-family:\'Fraunces\',serif">'+total+'</span>' +
+    '</div>' +
+    '<button class="btn btn-accent" style="width:100%;justify-content:center" onclick="showCheckout()">' +
+      '<i data-lucide="credit-card" style="width:14px;height:14px"></i> Ver formas de pagamento</button>' +
+    _cliPrevNext('pagamentos', false) + '</div>';
+}
+
+function buildCliProxPassos() {
+  var s = _cliSessao || {};
+  var lead = s.lead;
+  var estagio = lead ? lead.estagio : 'BRIEFING';
+  var estagios = ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA','CONTRATO','CLIENTE'];
+  var idx = estagios.indexOf(estagio);
+  var etapas = [
+    { label:'Diagnóstico',      sub:'Recebemos suas informações iniciais',              done: idx>=1 },
+    { label:'Briefing',         sub:'Você preencheu as etapas do seu projeto',          done: idx>=2 },
+    { label:'Proposta',         sub:'O escritório prepara a proposta personalizada',    done: idx>=3 },
+    { label:'Contrato',         sub:'Assinatura e início do projeto',                  done: idx>=4 },
+    { label:'Projeto em curso', sub:'Desenvolvimento e apresentações parciais',         done: idx>=5 },
+    { label:'Entrega final',    sub:'Projeto concluído e documentação entregue',        done: false   },
+  ];
+  var cfg = getStudioConfig();
+  return '<div class="cli-section">' +
+    '<h2 class="cli-section-title">Próximos passos</h2>' +
+    '<p class="cli-section-sub">Acompanhe onde estamos na jornada do seu projeto.</p>' +
+    '<div class="tl" style="margin-bottom:28px">' + etapas.map(function(e,i){
+      var isCurrent = i===idx;
+      return '<div class="tli"><div class="tld'+(e.done?' done':isCurrent?' now':'')+'"></div>' +
+        '<div><div class="tlt"'+((!e.done&&!isCurrent)?' style="color:var(--muted)"':'')+'>'+e.label+'</div>' +
+        '<div class="tls">'+e.sub+'</div></div></div>';
+    }).join('') + '</div>' +
+    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:20px">' +
+      '<div style="font-size:12px;font-weight:600;margin-bottom:6px">Dúvidas? Fale diretamente com o escritório</div>' +
+      (cfg.whatsapp ? '<a href="https://wa.me/55' + cfg.whatsapp.replace(/\D/g,'') + '?text=' + encodeURIComponent('Olá! Tenho uma dúvida sobre meu projeto.') + '" target="_blank" class="btn btn-accent" style="margin-top:8px"><i data-lucide="message-circle" style="width:14px;height:14px"></i> Abrir WhatsApp</a>' : '<div style="font-size:12px;color:var(--muted2)">Contato disponível via WhatsApp</div>') +
+    '</div>' +
+    '<div style="margin-top:16px;text-align:center">' +
+      '<button class="btn btn-sm" onclick="showPosVenda()"><i data-lucide="star" style="width:13px;height:13px"></i> Avaliar atendimento</button>' +
+    '</div>' +
+    _cliPrevNext('proxpassos', false) + '</div>';
+}
+
+// Helpers para chips e paleta no portal
+function toggleChip(el, addClass) {
+  if (addClass) el.classList.toggle('chip-estilo-sel');
+  el.classList.toggle('on');
+}
+function singleChip(el, sel) {
+  document.querySelectorAll(sel).forEach(function(c){c.classList.remove('on');});
+  el.classList.add('on');
+}
+function singlePaleta(el) {
+  document.querySelectorAll('.palette-item').forEach(function(p){p.classList.remove('on');});
+  el.classList.add('on');
+}
+
+// Manter renderPortalCliente como alias (compatibilidade)
+function renderPortalCliente() { _renderCliNav('welcome'); renderCliSection('welcome'); }
+
 
 function showBoasVindas() {
   hideAll();
@@ -2642,19 +2921,6 @@ function toggleFAQ(header) {
   var sign = header.querySelector('span:last-child');
   body.style.display = open ? 'none' : 'block';
   if (sign) sign.textContent = open ? '+' : '−';
-}
-function switchPortalTab(btn, tabId) {
-  var tabs = ['ptab-status','ptab-briefing','ptab-docs','ptab-pgto','ptab-aprov'];
-  tabs.forEach(function(t) { var el = document.getElementById(t); if (el) el.style.display = 'none'; });
-  var el = document.getElementById(tabId); if (el) el.style.display = 'block';
-  var allBtns = btn.parentElement.querySelectorAll('button');
-  allBtns.forEach(function(b) { b.className = 'btn btn-sm'; b.style.flex='1'; b.style.justifyContent='center'; b.style.whiteSpace='nowrap'; });
-  btn.className = 'btn btn-accent btn-sm'; btn.style.flex='1'; btn.style.justifyContent='center'; btn.style.whiteSpace='nowrap';
-}
-function salvarBriefingCliente() {
-  var dados = {ambientes:(document.getElementById('cli-brief-amb')||{value:''}).value,dor:(document.getElementById('cli-brief-dor')||{value:''}).value,objetivo:(document.getElementById('cli-brief-obj')||{value:''}).value};
-  _sd('briefing_cliente', dados);
-  alert('✅ Briefing enviado com sucesso!');
 }
 function uploadArqCliente(input) {
   if (!input.files || !input.files[0]) return;
