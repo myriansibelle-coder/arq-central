@@ -1377,7 +1377,7 @@ var _cliNavItems = [
   { id:'referencias',  icon:'image',          label:'Referências'    },
   { id:'documentos',   icon:'files',          label:'Documentos'     },
   { id:'pagamentos',   icon:'receipt',        label:'Pagamentos'     },
-  { id:'proxpassos',   icon:'calendar-check', label:'Próximos passos'},
+  { id:'proxpassos',   icon:'calendar-check', label:'Acompanhamento' },
 ];
 
 function showMeuProjeto() {
@@ -1492,6 +1492,7 @@ function _salvarRespostasBriefing() {
     ambientes:      gc('.chip-amb'),
     orcamento:      gc('.chip-orc')[0]||'',
     prazo:          gc('.chip-prazo')[0]||'',
+    objetivo:       gv('cli-objetivo'),
     // Preferências
     estilos:        gc('.chip-estilo-sel'),
     paletaCores:    (function(){ var p=document.querySelector('.palette-item.on'); return p?p.dataset.val:''; })(),
@@ -1500,6 +1501,7 @@ function _salvarRespostasBriefing() {
     pinterest:      gv('cli-pinterest'),
     instagram:      gv('cli-instagram'),
     descReferencia: gv('cli-desc-ref'),
+    restricoes:     gv('cli-restricoes'),
   };
   if (_cliSessao.briefing) {
     var briefings = _ld('briefings_lista', []);
@@ -1613,6 +1615,8 @@ function buildCliSeuProjeto() {
         var on = r.prazo===p?' on':'';
         return '<button class="chip chip-prazo'+on+'" data-val="'+p+'" onclick="singleChip(this,\'.chip-prazo\')">'+p+'</button>';
       }).join('') + '</div></div>' +
+    '<div class="cli-question"><label>O que você quer conquistar com esse projeto?</label>' +
+      '<textarea class="fi" id="cli-objetivo" style="min-height:90px" placeholder="Ex: Quero finalmente ter uma casa que parece minha, um espaço de descanso de verdade...">'+(r.objetivo||'')+'</textarea></div>' +
     _cliPrevNext('projeto', true) + '</div>';
 }
 
@@ -1677,6 +1681,8 @@ function buildCliReferencias() {
       '<input class="fi" id="cli-instagram" value="'+(r.instagram||'')+'" placeholder="@perfil ou https://instagram.com/..."></div>' +
     '<div class="cli-question"><label>Descreva com suas palavras o que você imagina</label>' +
       '<textarea class="fi" id="cli-desc-ref" style="min-height:120px" placeholder="Ex: Quero algo que parece que fui para um hotel, com aquela sensação de leveza, sem bagunça visual, mas com aconchego...">'+(r.descReferencia||'')+'</textarea></div>' +
+    '<div class="cli-question"><label>Há algo que você definitivamente não quer?</label>' +
+      '<textarea class="fi" id="cli-restricoes" style="min-height:80px" placeholder="Ex: Nada de cortinas pesadas, quero evitar mármore branco, não gosto de espaços escuros...">'+(r.restricoes||'')+'</textarea></div>' +
     '<div style="background:var(--bg2);border:1px dashed var(--border);border-radius:10px;padding:20px;text-align:center;color:var(--muted2);font-size:12px;margin-bottom:24px">' +
       '<i data-lucide="image-plus" style="width:24px;height:24px;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto"></i>' +
       'Seu arquiteto poderá solicitar fotos do espaço atual por WhatsApp' +
@@ -1751,36 +1757,117 @@ function buildCliPagamentos() {
 
 function buildCliProxPassos() {
   var s = _cliSessao || {};
-  var lead = s.lead;
+  var proj = s.proj, lead = s.lead;
   var estagio = lead ? lead.estagio : 'BRIEFING';
   var estagios = ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA','CONTRATO','CLIENTE'];
   var idx = estagios.indexOf(estagio);
   var etapas = [
-    { label:'Diagnóstico',      sub:'Recebemos suas informações iniciais',              done: idx>=1 },
-    { label:'Briefing',         sub:'Você preencheu as etapas do seu projeto',          done: idx>=2 },
-    { label:'Proposta',         sub:'O escritório prepara a proposta personalizada',    done: idx>=3 },
-    { label:'Contrato',         sub:'Assinatura e início do projeto',                  done: idx>=4 },
-    { label:'Projeto em curso', sub:'Desenvolvimento e apresentações parciais',         done: idx>=5 },
-    { label:'Entrega final',    sub:'Projeto concluído e documentação entregue',        done: false   },
+    { label:'Diagnóstico',      sub:'Recebemos suas informações iniciais',           done: idx>=1 },
+    { label:'Briefing',         sub:'Você preencheu as etapas do seu projeto',       done: idx>=2 },
+    { label:'Proposta',         sub:'O escritório prepara a proposta personalizada', done: idx>=3 },
+    { label:'Contrato',         sub:'Assinatura e início do projeto',                done: idx>=4 },
+    { label:'Projeto em curso', sub:'Desenvolvimento e apresentações parciais',      done: idx>=5 },
+    { label:'Entrega final',    sub:'Projeto concluído e documentação entregue',     done: false   },
   ];
   var cfg = getStudioConfig();
+
+  // Bloco de entregas para validação
+  var entregas = (proj && proj.entregas) ? proj.entregas : [];
+  var entregasHtml = '';
+  if (idx >= 5) {
+    entregasHtml += '<div style="margin-bottom:28px">';
+    entregasHtml += '<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:12px;display:flex;align-items:center;gap:6px"><i data-lucide="package-check" style="width:14px;height:14px;color:var(--accent)"></i> Entregas para validação</div>';
+    if (!entregas.length) {
+      entregasHtml += '<div style="padding:16px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;font-size:12px;color:var(--muted2);text-align:center">Nenhuma entrega registrada ainda.</div>';
+    } else {
+      entregasHtml += '<div style="display:flex;flex-direction:column;gap:8px">';
+      entregas.forEach(function(e) {
+        var aprovada = e.status === 'aprovada';
+        entregasHtml += '<div style="padding:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;display:flex;align-items:center;gap:12px">';
+        entregasHtml += '<div style="width:32px;height:32px;border-radius:50%;background:' + (aprovada ? 'rgba(74,222,128,0.15)' : 'rgba(184,134,90,0.12)') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0">';
+        entregasHtml += '<i data-lucide="' + (aprovada ? 'check-circle-2' : 'clock') + '" style="width:16px;height:16px;color:' + (aprovada ? 'var(--green)' : 'var(--accent)') + '"></i></div>';
+        entregasHtml += '<div style="flex:1">';
+        entregasHtml += '<div style="font-size:13px;font-weight:500;color:' + (aprovada ? 'var(--muted)' : 'var(--text)') + '">' + (e.titulo || 'Entrega') + (aprovada ? ' <span style="text-decoration:line-through"></span>' : '') + '</div>';
+        if (e.descricao) entregasHtml += '<div style="font-size:11px;color:var(--muted2);margin-top:2px">' + e.descricao + '</div>';
+        entregasHtml += '<div style="font-size:10px;color:var(--muted2);margin-top:2px">' + (e.data || '') + (aprovada ? ' · Validado por você ✓' : '') + '</div>';
+        entregasHtml += '</div>';
+        if (!aprovada) {
+          entregasHtml += '<button class="btn btn-accent btn-sm" onclick="validarEntrega(\'' + e.id + '\')"><i data-lucide="check" style="width:12px;height:12px"></i> Validar</button>';
+        } else {
+          entregasHtml += '<span class="pill p-green">Aprovado</span>';
+        }
+        entregasHtml += '</div>';
+      });
+      entregasHtml += '</div>';
+    }
+    entregasHtml += '</div>';
+  }
+
   return '<div class="cli-section">' +
-    '<h2 class="cli-section-title">Próximos passos</h2>' +
-    '<p class="cli-section-sub">Acompanhe onde estamos na jornada do seu projeto.</p>' +
+    '<h2 class="cli-section-title">Acompanhamento</h2>' +
+    '<p class="cli-section-sub">Veja onde estamos e valide as entregas do seu projeto.</p>' +
     '<div class="tl" style="margin-bottom:28px">' + etapas.map(function(e,i){
       var isCurrent = i===idx;
       return '<div class="tli"><div class="tld'+(e.done?' done':isCurrent?' now':'')+'"></div>' +
         '<div><div class="tlt"'+((!e.done&&!isCurrent)?' style="color:var(--muted)"':'')+'>'+e.label+'</div>' +
         '<div class="tls">'+e.sub+'</div></div></div>';
     }).join('') + '</div>' +
-    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:20px">' +
+    entregasHtml +
+    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:20px;margin-bottom:16px">' +
       '<div style="font-size:12px;font-weight:600;margin-bottom:6px">Dúvidas? Fale diretamente com o escritório</div>' +
       (cfg.whatsapp ? '<a href="https://wa.me/55' + cfg.whatsapp.replace(/\D/g,'') + '?text=' + encodeURIComponent('Olá! Tenho uma dúvida sobre meu projeto.') + '" target="_blank" class="btn btn-accent" style="margin-top:8px"><i data-lucide="message-circle" style="width:14px;height:14px"></i> Abrir WhatsApp</a>' : '<div style="font-size:12px;color:var(--muted2)">Contato disponível via WhatsApp</div>') +
     '</div>' +
-    '<div style="margin-top:16px;text-align:center">' +
+    '<div style="text-align:center">' +
       '<button class="btn btn-sm" onclick="showPosVenda()"><i data-lucide="star" style="width:13px;height:13px"></i> Avaliar atendimento</button>' +
     '</div>' +
     _cliPrevNext('proxpassos', false) + '</div>';
+}
+
+function validarEntrega(entregaId) {
+  if (!_cliSessao || !_cliSessao.proj) { mostrarFeedback('Projeto não encontrado.'); return; }
+  var projs = _ld('projetos_lista', []);
+  var pi = projs.findIndex(function(p){ return p.id === _cliSessao.proj.id; });
+  if (pi < 0) { mostrarFeedback('Projeto não encontrado.'); return; }
+  var entregas = projs[pi].entregas || [];
+  var ei = entregas.findIndex(function(e){ return e.id === entregaId; });
+  if (ei >= 0) {
+    entregas[ei].status = 'aprovada';
+    entregas[ei].validadoEm = new Date().toLocaleDateString('pt-BR');
+  }
+  projs[pi].entregas = entregas;
+  _sd('projetos_lista', projs);
+  _cliSessao.proj = projs[pi];
+  mostrarFeedback('✅ Entrega validada com sucesso!');
+  renderCliSection('proxpassos');
+}
+
+function abrirModalEntrega() {
+  var modal = document.getElementById('modal-entrega');
+  if (modal) { modal.style.display = 'flex'; }
+}
+
+function salvarEntrega() {
+  var projId = (document.getElementById('me-proj-id')||{value:''}).value;
+  var titulo  = (document.getElementById('me-titulo')||{value:''}).value.trim();
+  var desc    = (document.getElementById('me-descricao')||{value:''}).value.trim();
+  if (!projId) { mostrarFeedback('Selecione um projeto.'); return; }
+  if (!titulo) { mostrarFeedback('Informe o título da entrega.'); return; }
+  var projs = _ld('projetos_lista', []);
+  var pi = projs.findIndex(function(p){ return p.id === projId; });
+  if (pi < 0) { mostrarFeedback('Projeto não encontrado.'); return; }
+  if (!projs[pi].entregas) projs[pi].entregas = [];
+  projs[pi].entregas.push({
+    id: gerarId(),
+    titulo: titulo,
+    descricao: desc,
+    data: new Date().toLocaleDateString('pt-BR'),
+    status: 'pendente'
+  });
+  _sd('projetos_lista', projs);
+  var modal = document.getElementById('modal-entrega');
+  if (modal) modal.style.display = 'none';
+  ['me-titulo','me-descricao'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  mostrarFeedback('✅ Entrega registrada! O cliente pode validar no portal.');
 }
 
 // Helpers para chips e paleta no portal
@@ -2071,7 +2158,22 @@ function renderPage(page) {
   } else if (page === 'proj-lista') {
     html = '<div class="page on"><div class="page-title">Projetos</div><div class="page-sub">Gerencie todos os projetos do escritório.</div>';
     html += '<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap"><button class="btn btn-accent">' + ic('plus',14) + ' Novo projeto</button>';
+    html += '<button class="btn" onclick="abrirModalEntrega()">' + ic('package',13) + ' Registrar entrega</button>';
     html += '<button class="btn" style="color:var(--accent);border-color:var(--accent)" onclick="abrirIAProjetoModal()">' + ic('sparkles',13) + ' Gerar Diretrizes</button></div>';
+    html += '<div id="modal-entrega" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center">';
+    html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:28px;width:100%;max-width:480px;margin:16px">';
+    html += '<div style="font-size:16px;font-weight:600;margin-bottom:20px">Registrar entrega</div>';
+    html += '<div class="fg"><label class="fl">Projeto</label><select class="fi" id="me-proj-id">' + (function(){
+      var projs = _ld("projetos_lista",[]);
+      if(!projs.length) return "<option value=''>Nenhum projeto cadastrado</option>";
+      return projs.map(function(p){return "<option value='"+p.id+"'>"+p.clienteNome+" — "+(p.servico||p.codigo||p.id)+"</option>";}).join('');
+    })() + '</select></div>';
+    html += '<div class="fg"><label class="fl">Título da entrega</label><input class="fi" id="me-titulo" placeholder="Ex: Planta humanizada, Moodboard, Render 3D..."></div>';
+    html += '<div class="fg"><label class="fl">Descrição (opcional)</label><textarea class="fi" id="me-descricao" style="min-height:70px" placeholder="Descreva o que está sendo entregue para validação do cliente..."></textarea></div>';
+    html += '<div style="display:flex;gap:10px;margin-top:6px">';
+    html += '<button class="btn btn-accent" onclick="salvarEntrega()">' + ic('save',14) + ' Salvar entrega</button>';
+    html += '<button class="btn btn-sm" onclick="document.getElementById(\'modal-entrega\').style.display=\'none\'">Cancelar</button>';
+    html += '</div></div></div>';
     html += '<div class="g3">' + buildProjectCards() + '</div>';
     html += '<div id="arqia-proj-result" style="display:none;margin-top:14px"></div></div>';
   } else if (page === 'reunioes') {
