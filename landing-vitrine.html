@@ -1159,40 +1159,41 @@ footer {
     <div class="section-label">O que fazemos</div>
     <h2>Serviços desenvolvidos<br>para cada etapa do seu sonho</h2>
   </div>
-
-  <div class="services-grid">
-    <div class="service-card">
-      <div class="service-number">01</div>
-      <div class="service-name">Consultoria Online</div>
-      <div class="service-desc">Análise do ambiente com paleta de cores, sugestão de mobiliário e lista de compras — entregue em até 5 dias úteis.</div>
-      <div class="service-price">R$ 350</div>
-      <div class="service-price-label">por ambiente</div>
-      <ul class="service-list">
-        <li>Paleta de cores personalizada</li>
-        <li>Sugestões de mobiliário</li>
-        <li>Lista de compras orientada</li>
-        <li>1 revisão incluída</li>
-      </ul>
-      <button class="btn-service" onclick="openDiagnostico()">Solicitar consultoria</button>
-    </div>
-
-    <div class="service-card">
-      <div class="service-number">02</div>
-      <div class="service-name">Projeto Completo</div>
-      <div class="service-desc">Projeto executivo com levantamento in loco, plantas técnicas, moodboard detalhado e acompanhamento de execução.</div>
-      <div class="service-price">R$ 2.800</div>
-      <div class="service-price-label">a partir de</div>
-      <ul class="service-list">
-        <li>Levantamento presencial</li>
-        <li>Plantas e projeto executivo</li>
-        <li>Moodboard e especificações</li>
-        <li>Acompanhamento de obra</li>
-        <li>2 revisões incluídas</li>
-      </ul>
-      <button class="btn-service" onclick="openDiagnostico()">Começar projeto</button>
-    </div>
+  <div class="services-grid" id="services-grid-dynamic">
+    <!-- preenchido por renderServicosLanding() -->
   </div>
 </section>
+
+<script>
+(function renderServicosLanding() {
+  var _fallback = [
+    { nome:'Consultoria Online', descricao:'Análise do ambiente com paleta de cores, sugestão de mobiliário e lista de compras — entregue em até 5 dias úteis.', preco:'R$ 350', precoLabel:'por ambiente', status:'disponivel', itens:['Paleta de cores personalizada','Sugestões de mobiliário','Lista de compras orientada','1 revisão incluída'] },
+    { nome:'Projeto Completo',   descricao:'Projeto executivo com levantamento in loco, plantas técnicas, moodboard detalhado e acompanhamento de execução.',   preco:'R$ 2.800', precoLabel:'a partir de',  status:'disponivel', itens:['Levantamento presencial','Plantas e projeto executivo','Moodboard e especificações','Acompanhamento de obra','2 revisões incluídas'] }
+  ];
+  var svcs;
+  try { svcs = JSON.parse(localStorage.getItem('servicos_lista') || 'null'); } catch(e) { svcs = null; }
+  if (!svcs || !svcs.length) svcs = _fallback;
+  // mostrar só disponíveis e em_breve
+  svcs = svcs.filter(function(s){ return s.status !== 'inativo'; });
+
+  var grid = document.getElementById('services-grid-dynamic');
+  if (!grid) return;
+  grid.innerHTML = svcs.map(function(s, i) {
+    var emBreve = s.status === 'em_breve';
+    return '<div class="service-card">'
+      + '<div class="service-number">' + (i+1).toString().padStart(2,'0') + '</div>'
+      + '<div class="service-name">' + s.nome + '</div>'
+      + (emBreve ? '<span style="display:inline-block;background:rgba(184,134,90,0.15);color:#B8865A;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:10px;letter-spacing:.5px">EM BREVE</span>' : '')
+      + '<div class="service-desc">' + (s.descricao||'') + '</div>'
+      + (s.preco ? '<div class="service-price">' + s.preco + '</div><div class="service-price-label">' + (s.precoLabel||'') + '</div>' : '')
+      + (s.itens && s.itens.length ? '<ul class="service-list">' + s.itens.map(function(it){ return '<li>'+it+'</li>'; }).join('') + '</ul>' : '')
+      + (emBreve
+        ? '<button class="btn-service" style="opacity:.5;cursor:not-allowed" disabled>Em breve</button>'
+        : '<button class="btn-service" onclick="openDiagnostico()">Solicitar ' + (i===0?'consultoria':'projeto') + '</button>')
+      + '</div>';
+  }).join('');
+})();
+</script>
 
 <!-- ─── PROCESSO ───────────────────────────────── -->
 <section class="process">

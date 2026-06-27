@@ -1029,56 +1029,10 @@ function renderIcons() {
         </div>
       </div>
 
-      <!-- ── SERVIÇOS ── -->
-      <div style="margin-bottom:32px">
+      <!-- ── SERVIÇOS (dinâmico) ── -->
+      <div style="margin-bottom:32px" id="vit-servicos-wrap">
         <div class="vit-section-label">O que posso fazer pelo seu espaço</div>
-
-        <div class="vitrine-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <div style="font-size:15px;font-weight:700">Consultoria Online</div>
-            <span class="pill p-green">Disponível</span>
-          </div>
-          <div class="v-price">R$ 350</div>
-          <div class="v-desc">Análise do ambiente com paleta de cores, mobiliário e lista de compras em até 5 dias úteis.</div>
-          <ul class="v-list">
-            <li>Paleta de cores personalizada</li>
-            <li>Lista de compras sugerida</li>
-            <li>1 revisão incluída</li>
-          </ul>
-          <button class="btn-vo btn-vo-primary" onclick="abrirDiagnosticoExpress()">
-            <i data-lucide="sparkles" style="width:13px;height:13px"></i> Quero este serviço
-          </button>
-        </div>
-
-        <div class="vitrine-card">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <div style="font-size:15px;font-weight:700">Projeto de Interiores Completo</div>
-            <span class="pill p-green">Disponível</span>
-          </div>
-          <div class="v-price">R$ 2.800</div>
-          <div class="v-desc">Projeto executivo completo com plantas, moodboard e acompanhamento de obra.</div>
-          <ul class="v-list">
-            <li>Levantamento in loco</li>
-            <li>Plantas e projeto executivo</li>
-            <li>2 revisões incluídas</li>
-            <li>Acompanhamento de obra</li>
-          </ul>
-          <button class="btn-vo btn-vo-primary" onclick="abrirDiagnosticoExpress()">
-            <i data-lucide="sparkles" style="width:13px;height:13px"></i> Quero este serviço
-          </button>
-        </div>
-
-        <div class="vitrine-card" style="opacity:.75">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <div style="font-size:15px;font-weight:700">Decoração de Ambientes</div>
-            <span class="pill p-amber">Em breve</span>
-          </div>
-          <div class="v-price">R$ 1.200</div>
-          <div class="v-desc">Seleção de mobiliário e objetos decorativos para ambientes já reformados.</div>
-          <button class="btn-vo btn-vo-secondary" style="opacity:.5;pointer-events:none">
-            <i data-lucide="clock" style="width:13px;height:13px"></i> Em breve
-          </button>
-        </div>
+        <div id="vit-servicos-list"></div>
       </div>
 
       <!-- ── DIFERENCIAIS ── -->
@@ -1363,7 +1317,37 @@ function goHome() { hideAll(); document.getElementById('home').classList.remove(
 function showArqLogin() { hideAll(); document.getElementById('scr-arq').classList.remove('hidden'); renderIcons(); }
 function showCliChoice() { hideAll(); document.getElementById('scr-cli-choice').classList.remove('hidden'); renderIcons(); }
 function showCliLogin() { hideAll(); document.getElementById('scr-cli').classList.remove('hidden'); renderIcons(); }
-function showVitrine() { hideAll(); document.getElementById('portal-vitrine').classList.remove('hidden'); renderIcons(); }
+function showVitrine() {
+  hideAll();
+  document.getElementById('portal-vitrine').classList.remove('hidden');
+  renderServicosVitrine();
+  applyStudioBrand();
+  renderIcons();
+}
+
+function renderServicosVitrine() {
+  var el = document.getElementById('vit-servicos-list');
+  if (!el) return;
+  var svcs = getServicos().filter(function(s){ return s.status !== 'inativo'; });
+  var statusMap = { disponivel:['p-green','Disponível'], em_breve:['p-amber','Em breve'] };
+  el.innerHTML = svcs.map(function(s) {
+    var st = statusMap[s.status] || ['p-muted','—'];
+    var emBreve = s.status === 'em_breve';
+    return '<div class="vitrine-card"' + (emBreve?' style="opacity:.8"':'') + '>'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+        + '<div style="font-size:15px;font-weight:700">' + s.nome + '</div>'
+        + '<span class="pill ' + st[0] + '">' + st[1] + '</span>'
+      + '</div>'
+      + (s.preco ? '<div class="v-price">' + s.preco + '</div>' : '')
+      + '<div class="v-desc">' + (s.descricao||'') + '</div>'
+      + (s.itens&&s.itens.length ? '<ul class="v-list">' + s.itens.map(function(it){ return '<li>'+it+'</li>'; }).join('') + '</ul>' : '')
+      + (emBreve
+        ? '<button class="btn-vo btn-vo-secondary" style="opacity:.5;pointer-events:none"><i data-lucide="clock" style="width:13px;height:13px"></i> Em breve</button>'
+        : '<button class="btn-vo btn-vo-primary" onclick="abrirDiagnosticoExpress()"><i data-lucide="sparkles" style="width:13px;height:13px"></i> Quero este serviço</button>')
+      + '</div>';
+  }).join('');
+  renderIcons();
+}
 // ===== SESSÃO DO CLIENTE =====
 var _cliSessao = null;
 
@@ -2131,6 +2115,7 @@ var navConfigs = {
     {lbl:'VISÃO GERAL'},
     {icon:'layout-dashboard',txt:'Dashboard',      page:'dashboard'},
     {lbl:'GESTÃO'},
+    {icon:'package-2',      txt:'Serviços',          page:'servicos'},
     {icon:'receipt',        txt:'Financeiro',        page:'financeiro'},
     {icon:'badge',          txt:'Equipe',            page:'funcoes'},
     {icon:'check-square',   txt:'Tarefas',           page:'tarefas'},
@@ -2312,6 +2297,10 @@ function renderPage(page) {
     html = '<div class="page on"><div class="page-title">Objetivos e Metas</div><div class="page-sub">OKRs e planos de ação.</div>' + mkCard('Objetivos 2026', 'target', buildMetas()) + '</div>';
   } else if (page === 'clientes') {
     html = '<div class="page on"><div class="page-title">Clientes</div><div class="page-sub">Base de clientes e controle de pagamentos.</div>' + buildClientesCompleto() + '</div>';
+  } else if (page === 'servicos') {
+    html = '<div class="page on"><div class="page-title">Serviços</div><div class="page-sub">Defina o que você oferece — essas informações aparecem automaticamente na sua landing page.</div>';
+    html += '<div style="display:flex;gap:8px;margin-bottom:18px"><button class="btn btn-accent" onclick="abrirModalServico(null)">' + ic('plus',14) + ' Novo serviço</button></div>';
+    html += '<div id="servicos-lista">' + buildServicosLista() + '</div></div>';
   } else if (page === 'proj-lista') {
     html = '<div class="page on"><div class="page-title">Projetos</div><div class="page-sub">Gerencie os projetos e defina as etapas de entrega de cada um.</div>';
     html += '<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap"><button class="btn btn-accent">' + ic('plus',14) + ' Novo projeto</button>';
@@ -2422,6 +2411,166 @@ function buildField(type, val, opts) {
 function buildSelect(options) {
   return '<select class="fs" style="width:auto;margin:0">' + options.map(function(o) { return '<option>' + o + '</option>'; }).join('') + '</select>';
 }
+// ===== SERVIÇOS =====
+function getServicos() {
+  return _ld('servicos_lista', [
+    {
+      id:'svc-01', nome:'Consultoria Online', descricao:'Análise do ambiente com paleta de cores, sugestão de mobiliário e lista de compras em até 5 dias úteis.',
+      preco:'R$ 350', precoLabel:'por ambiente', status:'disponivel',
+      itens:['Paleta de cores personalizada','Sugestões de mobiliário','Lista de compras orientada','1 revisão incluída'],
+      fases:['Análise do ambiente','Paleta de cores personalizada','Lista de compras','Apresentação final']
+    },
+    {
+      id:'svc-02', nome:'Projeto de Interiores Completo', descricao:'Projeto executivo com levantamento in loco, plantas técnicas, moodboard detalhado e acompanhamento de execução.',
+      preco:'R$ 2.800', precoLabel:'a partir de', status:'disponivel',
+      itens:['Levantamento presencial','Plantas e projeto executivo','Moodboard e especificações','Acompanhamento de obra','2 revisões incluídas'],
+      fases:['Levantamento e medições','Estudo preliminar','Moodboard e conceito','Projeto executivo','Detalhamentos técnicos','Acompanhamento de obra','Entrega e vistoria final']
+    }
+  ]);
+}
+
+function buildServicosLista() {
+  var svcs = getServicos();
+  if (!svcs.length) return '<div style="text-align:center;padding:40px;color:var(--muted2)"><i data-lucide="package-open" style="width:32px;height:32px;margin-bottom:10px"></i><div>Nenhum serviço cadastrado ainda.</div></div>';
+  var statusMap = { disponivel:['p-green','Disponível'], em_breve:['p-amber','Em breve'], inativo:['p-muted','Inativo'] };
+  return '<div style="display:flex;flex-direction:column;gap:10px">'
+    + svcs.map(function(s, i) {
+      var st = statusMap[s.status] || ['p-muted','—'];
+      return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px">'
+        + '<div style="display:flex;align-items:flex-start;gap:12px">'
+          + '<div style="width:36px;height:36px;border-radius:8px;background:rgba(184,134,90,0.12);display:flex;align-items:center;justify-content:center;font-family:\'Fraunces\',serif;font-size:14px;color:var(--accent);flex-shrink:0">' + (i+1).toString().padStart(2,'0') + '</div>'
+          + '<div style="flex:1;min-width:0">'
+            + '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">'
+              + '<div style="font-size:14px;font-weight:600">' + s.nome + '</div>'
+              + '<span class="pill ' + st[0] + '">' + st[1] + '</span>'
+            + '</div>'
+            + '<div style="font-size:12px;color:var(--muted);margin-bottom:8px">' + (s.descricao||'—') + '</div>'
+            + '<div style="display:flex;gap:16px;font-size:12px;color:var(--text2)">'
+              + '<span><strong>' + (s.preco||'—') + '</strong> ' + (s.precoLabel||'') + '</span>'
+              + '<span>' + (s.fases||[]).length + ' etapas de entrega</span>'
+              + '<span>' + (s.itens||[]).length + ' itens incluídos</span>'
+            + '</div>'
+          + '</div>'
+          + '<div style="display:flex;gap:6px;flex-shrink:0">'
+            + '<button class="btn btn-sm" onclick="abrirModalServico(\'' + s.id + '\')">' + ic('pencil',12) + ' Editar</button>'
+            + '<button class="btn btn-sm" style="color:var(--red);border-color:var(--red)" onclick="excluirServico(\'' + s.id + '\')">' + ic('trash-2',12) + '</button>'
+          + '</div>'
+        + '</div>'
+        + '</div>';
+    }).join('')
+    + '</div>';
+}
+
+function abrirModalServico(id) {
+  var svcs = getServicos();
+  var s = id ? svcs.find(function(x){ return x.id===id; }) : null;
+  var isNew = !s;
+  if (!s) s = { id: gerarId(), nome:'', descricao:'', preco:'', precoLabel:'a partir de', status:'disponivel', itens:[], fases:[] };
+
+  var precoLabels = ['a partir de','por ambiente','por hora','por projeto','fixo','a combinar'];
+  var statusOpts  = [['disponivel','Disponível'],['em_breve','Em breve'],['inativo','Inativo']];
+
+  var html = '<div id="modal-servico" style="position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 12px">'
+    + '<div style="background:var(--bg);border:1px solid var(--border);border-radius:16px;width:100%;max-width:640px;margin:auto">'
+    // header
+    + '<div style="padding:22px 24px 0;display:flex;justify-content:space-between;align-items:center">'
+      + '<div style="font-size:16px;font-weight:600">' + (isNew ? 'Novo serviço' : 'Editar serviço') + '</div>'
+      + '<button onclick="fecharModalServico()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted2);padding:4px;line-height:1">✕</button>'
+    + '</div>'
+    // body
+    + '<div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px">'
+      // nome + status
+      + '<div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end">'
+        + '<div class="fg" style="margin:0"><label class="fl">Nome do serviço</label><input class="fi" id="sv-nome" value="' + s.nome + '" placeholder="Ex: Consultoria Online"></div>'
+        + '<div class="fg" style="margin:0"><label class="fl">Status</label><select class="fi" id="sv-status">'
+          + statusOpts.map(function(o){ return '<option value="'+o[0]+'"'+(s.status===o[0]?' selected':'')+'>'+o[1]+'</option>'; }).join('')
+          + '</select></div>'
+      + '</div>'
+      // descrição
+      + '<div class="fg" style="margin:0"><label class="fl">Descrição (aparece na landing page)</label><textarea class="fi" id="sv-desc" style="min-height:70px" placeholder="Descreva o que está incluso e o diferencial deste serviço...">' + s.descricao + '</textarea></div>'
+      // preço
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'
+        + '<div class="fg" style="margin:0"><label class="fl">Preço</label><input class="fi" id="sv-preco" value="' + s.preco + '" placeholder="R$ 350"></div>'
+        + '<div class="fg" style="margin:0"><label class="fl">Rótulo do preço</label><select class="fi" id="sv-precol">'
+          + precoLabels.map(function(l){ return '<option'+(s.precoLabel===l?' selected':'')+'>'+l+'</option>'; }).join('')
+          + '</select></div>'
+      + '</div>'
+      // itens inclusos
+      + '<div>'
+        + '<label class="fl">O que está incluído <span style="color:var(--muted2);font-weight:400">(um por linha)</span></label>'
+        + '<textarea class="fi" id="sv-itens" style="min-height:90px;font-size:12px" placeholder="Paleta de cores personalizada&#10;Lista de compras&#10;1 revisão incluída">' + (s.itens||[]).join('\n') + '</textarea>'
+      + '</div>'
+      // fases
+      + '<div>'
+        + '<label class="fl">Etapas de entrega <span style="color:var(--muted2);font-weight:400">(uma por linha — usadas no planejamento de projetos)</span></label>'
+        + '<textarea class="fi" id="sv-fases" style="min-height:90px;font-size:12px" placeholder="Análise do ambiente&#10;Paleta de cores&#10;Apresentação final">' + (s.fases||[]).join('\n') + '</textarea>'
+        + '<div style="font-size:11px;color:var(--muted2);margin-top:4px">Ao planejar um projeto com este serviço, essas etapas serão sugeridas automaticamente.</div>'
+      + '</div>'
+    + '</div>'
+    // footer
+    + '<div style="padding:16px 24px;border-top:1px solid var(--border2);display:flex;gap:10px">'
+      + '<button class="btn btn-accent" onclick="salvarServico(\'' + s.id + '\','+isNew+')">' + ic('save',14) + ' Salvar serviço</button>'
+      + '<button class="btn btn-sm" onclick="fecharModalServico()">Cancelar</button>'
+    + '</div>'
+    + '</div></div>';
+
+  var old = document.getElementById('modal-servico');
+  if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', html);
+  renderIcons();
+}
+
+function salvarServico(id, isNew) {
+  function gv(eid) { var e=document.getElementById(eid); return e?e.value.trim():''; }
+  function glines(eid) { return gv(eid).split('\n').map(function(l){return l.trim();}).filter(Boolean); }
+  var svc = {
+    id: id, nome: gv('sv-nome'), descricao: gv('sv-desc'),
+    preco: gv('sv-preco'), precoLabel: gv('sv-precol'),
+    status: gv('sv-status'),
+    itens: glines('sv-itens'),
+    fases: glines('sv-fases')
+  };
+  if (!svc.nome) { mostrarFeedback('Informe o nome do serviço.'); return; }
+  var svcs = getServicos();
+  if (isNew) {
+    svcs.push(svc);
+  } else {
+    var i = svcs.findIndex(function(x){ return x.id===id; });
+    if (i>=0) svcs[i] = svc; else svcs.push(svc);
+  }
+  _sd('servicos_lista', svcs);
+  fecharModalServico();
+  // Atualiza lista e presets
+  var el = document.getElementById('servicos-lista');
+  if (el) { el.innerHTML = buildServicosLista(); renderIcons(); }
+  _atualizarPlanPresets();
+  mostrarFeedback('✅ Serviço salvo! A landing page já reflete a mudança.');
+}
+
+function excluirServico(id) {
+  if (!confirm('Excluir este serviço? Ele será removido da landing page.')) return;
+  var svcs = getServicos().filter(function(s){ return s.id!==id; });
+  _sd('servicos_lista', svcs);
+  var el = document.getElementById('servicos-lista');
+  if (el) { el.innerHTML = buildServicosLista(); renderIcons(); }
+  _atualizarPlanPresets();
+  mostrarFeedback('Serviço removido.');
+}
+
+function fecharModalServico() {
+  var m = document.getElementById('modal-servico');
+  if (m) m.remove();
+}
+
+function _atualizarPlanPresets() {
+  var svcs = getServicos();
+  _planPresets = {};
+  svcs.forEach(function(s){ if (s.fases&&s.fases.length) _planPresets[s.nome] = s.fases; });
+}
+
+// Init: sincroniza presets com serviços cadastrados ao carregar
+(function(){ _atualizarPlanPresets(); })();
+
 function buildProjectCards() {
   var projs = _ld('projetos_lista', []);
   var palBg = [
