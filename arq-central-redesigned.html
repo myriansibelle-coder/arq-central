@@ -724,9 +724,9 @@ function renderIcons() {
       Voltar ao site
     </a>
 
-    <div class="home-eyebrow">Plataforma de Gestão</div>
-    <div class="home-logo-text">ARQ<span class="sep">|</span>CENTRAL</div>
-    <div class="home-tagline">Do primeiro contato à entrega final — tudo em um só lugar.</div>
+    <div class="home-eyebrow studio-tagline">Arquitetura & Design de Interiores</div>
+    <div class="home-logo-text studio-nome">Seu Escritório</div>
+    <div class="home-tagline studio-slogan">Do primeiro contato à entrega final — tudo em um só lugar.</div>
 
     <div class="mode-grid">
       <div class="mode-card" onclick="showVitrine()">
@@ -761,7 +761,7 @@ function renderIcons() {
       <i data-lucide="arrow-left" style="width:15px;height:15px"></i> Voltar ao site
     </button>
     <div class="login-logo">
-      <div class="name">ARQ<span class="sep">|</span>CENTRAL</div>
+      <div class="name studio-nome">Seu Escritório</div>
       <div class="sub">Área do Arquiteto</div>
     </div>
     <div class="login-title">Entrar na plataforma</div>
@@ -786,7 +786,7 @@ function renderIcons() {
       <i data-lucide="arrow-left" style="width:15px;height:15px"></i> Voltar
     </button>
     <div class="login-logo">
-      <div class="name">ARQ<span class="sep">|</span>CENTRAL</div>
+      <div class="name studio-nome">Seu Escritório</div>
       <div class="sub">O que você quer fazer?</div>
     </div>
     <div class="choice-card" onclick="showVitrine()">
@@ -815,7 +815,7 @@ function renderIcons() {
       <i data-lucide="arrow-left" style="width:15px;height:15px"></i> Voltar ao site
     </button>
     <div class="login-logo">
-      <div class="name">ARQ<span class="sep">|</span>CENTRAL</div>
+      <div class="name studio-nome">Seu Escritório</div>
       <div class="sub">Acompanhamento de Projeto</div>
     </div>
     <div class="login-title">Entrar no portal</div>
@@ -837,8 +837,8 @@ function renderIcons() {
 
   <!-- HEADER -->
   <div class="portal-header" style="background:var(--bg);border-bottom:1px solid var(--border2)">
-    <div style="font-size:14px;font-weight:700;color:var(--text);letter-spacing:.5px" id="studio-name-header">
-      [Nome do Seu Escritório]
+    <div style="font-size:14px;font-weight:700;color:var(--text);letter-spacing:.5px" id="studio-name-header" class="studio-nome">
+      Seu Escritório
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <button class="btn-vo btn-vo-primary btn-vo-sm" onclick="abrirDiagnosticoExpress()">
@@ -1148,7 +1148,7 @@ function renderIcons() {
 <!-- PORTAL MEU PROJETO -->
 <div class="portal-wrap hidden" id="portal-projeto">
   <div class="portal-header">
-    <div class="portal-logo">ARQ<span class="sep">|</span>CENTRAL</div>
+    <div class="portal-logo studio-nome">Seu Escritório</div>
     <div style="display:flex;align-items:center;gap:8px">
       <button class="icon-btn" onclick="toggleTheme()">
         <i data-lucide="sun" id="proj-theme-icon" style="width:15px;height:15px"></i>
@@ -1268,7 +1268,7 @@ function renderIcons() {
 <div class="app hidden" id="app">
   <div class="sidebar">
     <div class="sb-top">
-      <div class="sb-logo">ARQ<span class="sep">|</span>CENTRAL</div>
+      <div class="sb-logo" id="sb-logo-text">Seu Escritório</div>
     </div>
     <div class="area-tabs">
       <button class="atab on" onclick="switchArea('captacao',this)">Captação</button>
@@ -1277,7 +1277,7 @@ function renderIcons() {
     </div>
     <div class="sb-scroll" id="sb-nav"></div>
     <div class="sb-footer">
-      <div class="avatar">AR</div>
+      <div class="avatar" id="sb-avatar-ini">SE</div>
       <div>
         <div style="font-size:12px;font-weight:600;color:var(--text)">[Seu Nome]</div>
         <div style="font-size:11px;color:var(--muted)">Arquiteta · Admin</div>
@@ -1290,7 +1290,7 @@ function renderIcons() {
         <button class="btn-hamburger" onclick="toggleSidebar()" id="btn-hamburger" aria-label="Menu">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l16 0"/><path d="M4 12l16 0"/><path d="M4 18l16 0"/></svg>
         </button>
-        <span class="topbar-logo">ARQ<span style="color:var(--muted2)">|</span>CENTRAL</span>
+        <span class="topbar-logo" id="topbar-logo-text">Seu Escritório</span>
         <span class="area-badge" id="area-badge">CAPTAÇÃO</span>
       </div>
       <div class="topbar-right">
@@ -1314,7 +1314,7 @@ function renderIcons() {
 <!-- CHECKOUT -->
 <div class="portal-wrap hidden" id="portal-checkout">
   <div class="portal-header">
-    <div class="portal-logo">ARQ<span class="sep">|</span>CENTRAL</div>
+    <div class="portal-logo studio-nome">Seu Escritório</div>
     <div style="display:flex;align-items:center;gap:8px">
       <button class="icon-btn" onclick="toggleTheme()"><i data-lucide="sun" style="width:15px;height:15px"></i></button>
       <button class="btn btn-sm" onclick="showVitrine()"><i data-lucide="arrow-left" style="width:13px;height:13px"></i> Voltar</button>
@@ -1326,7 +1326,7 @@ function renderIcons() {
 <!-- BOAS-VINDAS -->
 <div class="portal-wrap hidden" id="portal-boasvindas">
   <div class="portal-header">
-    <div class="portal-logo">ARQ<span class="sep">|</span>CENTRAL</div>
+    <div class="portal-logo studio-nome">Seu Escritório</div>
     <div style="display:flex;align-items:center;gap:8px">
       <button class="btn btn-sm" onclick="showMeuProjeto()"><i data-lucide="arrow-right" style="width:13px;height:13px"></i> Ir para meu projeto</button>
     </div>
@@ -1337,7 +1337,7 @@ function renderIcons() {
 <!-- PÓS-VENDA -->
 <div class="portal-wrap hidden" id="portal-posvenda">
   <div class="portal-header">
-    <div class="portal-logo">ARQ<span class="sep">|</span>CENTRAL</div>
+    <div class="portal-logo studio-nome">Seu Escritório</div>
     <div style="display:flex;align-items:center;gap:8px">
       <button class="btn btn-sm" onclick="showMeuProjeto()"><i data-lucide="arrow-left" style="width:13px;height:13px"></i> Meu projeto</button>
     </div>
@@ -1680,7 +1680,7 @@ function renderPage(page) {
   } else if (page === 'gen-video') {
     html = '<div class="page on"><div class="page-title">Vídeo com IA</div><div class="page-sub">Em breve.</div></div>';
   } else if (page === 'config') {
-    html = '<div class="page on"><div class="page-title">Dados do Escritório</div><div class="page-sub">Configurações gerais.</div>' + mkCard('Configurações', 'settings', buildConfig()) + '</div>';
+    html = '<div class="page on"><div class="page-title">Dados do Escritório</div><div class="page-sub">Personalize a identidade do seu escritório em toda a plataforma.</div>' + mkCard('Marca do escritório', 'settings', buildConfig()) + '</div>';
   } else if (page === 'calculadora') {
     html = '<div class="page on"><div class="page-title">Calculadora</div><div class="page-sub">Orçamento com fórmulas reais.</div><div class="card"><div style="text-align:center;padding:24px;color:var(--muted2)">' + ic('calculator',28) + '<div style="font-size:12px;margin-top:10px">Em desenvolvimento</div></div></div></div>';
   } else {
@@ -1689,6 +1689,22 @@ function renderPage(page) {
   c.innerHTML = html;
   c.querySelectorAll('.toggle').forEach(function(t) { t.addEventListener('click', function() { this.classList.toggle('on'); }); });
   renderIcons();
+  // Live preview para página de config
+  if (page === 'config') {
+    var bind = function(id, previewId) {
+      var el = document.getElementById(id), pr = document.getElementById(previewId);
+      if (el && pr) el.addEventListener('input', function() { pr.textContent = this.value; });
+    };
+    bind('cfg-nome', 'cfg-prev-nome');
+    bind('cfg-tagline', 'cfg-prev-tagline');
+    bind('cfg-slogan', 'cfg-prev-slogan');
+    var colorEl = document.getElementById('cfg-acento');
+    if (colorEl) colorEl.addEventListener('input', function() {
+      var v = document.getElementById('cfg-acento-val');
+      if (v) v.textContent = this.value;
+      document.documentElement.style.setProperty('--accent', this.value);
+    });
+  }
 }
 
 // ===== BUILDERS =====
@@ -1887,7 +1903,20 @@ function buildGenContrato() {
   return '<div class="g2"><div class="fg"><label class="fl">Cliente</label>' + buildSelect(['[Cliente A]','[Cliente B]']) + '</div><div class="fg"><label class="fl">Valor total</label><input class="fi" value="R$ 2.800,00"></div><div class="fg"><label class="fl">Forma de pagamento</label>' + buildSelect(['50% entrada + 50% entrega','3x iguais','À vista']) + '</div><div class="fg"><label class="fl">Prazo</label><input class="fi" value="45 dias corridos"></div></div><button class="btn btn-accent">' + ic('sparkles',14) + ' Gerar contrato</button>';
 }
 function buildConfig() {
-  return '<div class="fg"><label class="fl">CREA / CAU</label><input class="fi" placeholder="CAU A000000-0 BR"></div><div style="margin-top:14px"><button class="btn btn-accent">' + ic('save',14) + ' Salvar</button></div>';
+  var cfg = getStudioConfig();
+  return '<div class="fg"><label class="fl">Nome do escritório</label><input class="fi" id="cfg-nome" value="' + (cfg.nome||'') + '" placeholder="Ex: Studio Silva Arquitetura"></div>' +
+    '<div class="fg"><label class="fl">Tagline</label><input class="fi" id="cfg-tagline" value="' + (cfg.tagline||'') + '" placeholder="Ex: Arquitetura & Design de Interiores"></div>' +
+    '<div class="fg"><label class="fl">Slogan</label><input class="fi" id="cfg-slogan" value="' + (cfg.slogan||'') + '" placeholder="Ex: Do projeto ao sonho realizado."></div>' +
+    '<div class="g2"><div class="fg"><label class="fl">Iniciais (avatar)</label><input class="fi" id="cfg-iniciais" value="' + (cfg.iniciais||'') + '" maxlength="3" placeholder="Ex: SS"></div>' +
+    '<div class="fg"><label class="fl">CREA / CAU</label><input class="fi" id="cfg-cau" value="' + (cfg.cau||'') + '" placeholder="CAU A000000-0 BR"></div></div>' +
+    '<div class="fg"><label class="fl">Cor de acento</label><div style="display:flex;align-items:center;gap:12px"><input type="color" id="cfg-acento" value="' + (cfg.acento||'#B8865A') + '" style="width:48px;height:36px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:none;padding:2px"><span style="font-size:12px;color:var(--muted)" id="cfg-acento-val">' + (cfg.acento||'#B8865A') + '</span></div></div>' +
+    '<div style="margin-top:6px;padding:14px;background:var(--bg2);border-radius:8px;border:1px solid var(--border2)">' +
+      '<div style="font-size:9px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Pré-visualização</div>' +
+      '<div style="font-family:\'Cormorant Garamond\',serif;font-size:22px;font-weight:400;color:var(--text)" id="cfg-prev-nome">' + (cfg.nome||'Seu Escritório') + '</div>' +
+      '<div style="font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:1px" id="cfg-prev-tagline">' + (cfg.tagline||'Arquitetura & Design de Interiores') + '</div>' +
+      '<div style="font-size:12px;color:var(--muted2);margin-top:4px;font-style:italic" id="cfg-prev-slogan">' + (cfg.slogan||'') + '</div>' +
+    '</div>' +
+    '<div style="margin-top:14px"><button class="btn btn-accent" onclick="salvarStudioConfig()">' + ic('save',14) + ' Salvar e aplicar em todo o sistema</button></div>';
 }
 function buildBoasVindas() {
   return '<div style="background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;gap:10px"><div style="color:var(--green)">' + ic('check-circle',22) + '</div><div><div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:4px">Pagamento confirmado!</div><div style="font-size:13px;color:var(--muted)">Um e-mail de boas-vindas foi enviado com seu acesso ao portal.</div></div></div>';
@@ -1907,6 +1936,59 @@ var DETALHES_CAMPOS = [{id:'manter',label:'O que será mantido?'},{id:'substitui
 
 function _ld(key, def) { try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch(e) { return def; } }
 function _sd(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+
+// ===== STUDIO CONFIG (white-label) =====
+function getStudioConfig() {
+  return _ld('studio_config', {
+    nome: 'Seu Escritório',
+    tagline: 'Arquitetura & Design de Interiores',
+    slogan: 'Do primeiro contato à entrega final — tudo em um só lugar.',
+    iniciais: 'SE',
+    acento: '#B8865A',
+    cau: ''
+  });
+}
+function saveStudioConfig(cfg) { _sd('studio_config', cfg); }
+
+function applyStudioBrand() {
+  var cfg = getStudioConfig();
+  // Sidebar logo
+  var sb = document.getElementById('sb-logo-text');
+  if (sb) sb.textContent = cfg.nome;
+  // Topbar logo
+  var tb = document.getElementById('topbar-logo-text');
+  if (tb) tb.textContent = cfg.nome;
+  // Avatar initials
+  var av = document.getElementById('sb-avatar-ini');
+  if (av) av.textContent = cfg.iniciais || cfg.nome.substring(0,2).toUpperCase();
+  // Todos os elementos .studio-nome (login boxes, portal logos, home, vitrine header)
+  document.querySelectorAll('.studio-nome').forEach(function(el) { el.textContent = cfg.nome; });
+  // Tagline (home eyebrow, login subs que se aplicam)
+  document.querySelectorAll('.studio-tagline').forEach(function(el) { el.textContent = cfg.tagline; });
+  // Slogan (home tagline)
+  document.querySelectorAll('.studio-slogan').forEach(function(el) { el.textContent = cfg.slogan; });
+  // Cor de acento
+  if (cfg.acento) document.documentElement.style.setProperty('--accent', cfg.acento);
+}
+
+function salvarStudioConfig() {
+  var cfg = getStudioConfig();
+  var nome    = (document.getElementById('cfg-nome')    || {value:''}).value.trim();
+  var tagline = (document.getElementById('cfg-tagline') || {value:''}).value.trim();
+  var slogan  = (document.getElementById('cfg-slogan')  || {value:''}).value.trim();
+  var iniciais= (document.getElementById('cfg-iniciais')|| {value:''}).value.trim().toUpperCase();
+  var cau     = (document.getElementById('cfg-cau')     || {value:''}).value.trim();
+  var acento  = (document.getElementById('cfg-acento')  || {value:''}).value;
+  if (nome)     cfg.nome     = nome;
+  if (tagline)  cfg.tagline  = tagline;
+  if (slogan)   cfg.slogan   = slogan;
+  if (iniciais) cfg.iniciais = iniciais;
+  if (cau)      cfg.cau      = cau;
+  if (acento)   cfg.acento   = acento;
+  saveStudioConfig(cfg);
+  applyStudioBrand();
+  mostrarFeedback('✅ Marca do escritório aplicada em todo o sistema!');
+}
 function getDiagnosticos() { return _ld('diagnosticos_lista', []); }
 function salvarDiagnosticos(lista) { _sd('diagnosticos_lista', lista); }
 function getCRMLeads() { return _ld('crm_leads_v2', []); }
@@ -2303,9 +2385,9 @@ function concluirDiagnosticoExpress() {
 
 // ===== INIT =====
 window.addEventListener('load', function() {
-  // Lê destino enviado pela landing page
+  applyStudioBrand();
   var destino = localStorage.getItem('arq_portal_destino');
-  localStorage.removeItem('arq_portal_destino'); // limpa após uso
+  localStorage.removeItem('arq_portal_destino');
   if (destino === 'cliente') {
     showCliLogin();
   } else if (destino === 'arquiteto') {

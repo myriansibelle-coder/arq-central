@@ -1011,8 +1011,8 @@ footer {
 
 <!-- Navigation -->
 <nav id="nav">
-  <div class="nav-studio" id="studio-name">
-    [Nome do Escritório]
+  <div class="nav-studio studio-nome" id="studio-name">
+    Seu Escritório
   </div>
   <div class="nav-right">
     <a href="#ambientes" class="nav-link">Projetos</a>
@@ -1037,7 +1037,7 @@ footer {
   <div class="hero-vignette"></div>
 
   <div class="hero-content">
-    <div class="hero-eyebrow">Arquitetura & Design de Interiores</div>
+    <div class="hero-eyebrow studio-tagline">Arquitetura & Design de Interiores</div>
     <h1 class="hero-title">
       <span class="line"><span class="line-inner">Seu lar</span></span>
       <span class="line"><span class="line-inner"><em>merece</em></span></span>
@@ -1149,7 +1149,7 @@ footer {
       "Um projeto de arquitetura <em>transforma</em> muito mais do que os ambientes. Ele transforma a forma como você <em>vive</em>."
     </p>
     <div class="quote-line"></div>
-    <p class="quote-author">[Nome do Escritório] &nbsp;·&nbsp; Arquitetura de Interiores</p>
+    <p class="quote-author"><span class="studio-nome">Seu Escritório</span> &nbsp;·&nbsp; <span class="studio-tagline-short">Arquitetura de Interiores</span></p>
   </div>
 </section>
 
@@ -1269,7 +1269,7 @@ footer {
 
 <!-- ─── FOOTER ──────────────────────────────────── -->
 <footer>
-  <div class="footer-studio">[Nome do Escritório]</div>
+  <div class="footer-studio studio-nome">Seu Escritório</div>
   <div class="footer-credit">ARQ|CENTRAL</div>
 </footer>
 
@@ -1612,6 +1612,32 @@ function openArqLogin() {
   localStorage.setItem('arq_portal_destino', 'arquiteto');
   window.location.href = 'arq-central-redesigned.html';
 }
+</script>
+
+<script>
+// ===== WHITE-LABEL: aplica marca do escritório =====
+(function applyStudioBrand() {
+  var cfg;
+  try { cfg = JSON.parse(localStorage.getItem('studio_config') || '{}'); } catch(e) { cfg = {}; }
+  var nome    = cfg.nome    || '';
+  var tagline = cfg.tagline || '';
+  var slogan  = cfg.slogan  || '';
+  var acento  = cfg.acento  || '';
+  if (nome) {
+    document.querySelectorAll('.studio-nome').forEach(function(el) { el.textContent = nome; });
+  }
+  if (tagline) {
+    document.querySelectorAll('.studio-tagline').forEach(function(el) { el.textContent = tagline; });
+    document.querySelectorAll('.studio-tagline-short').forEach(function(el) { el.textContent = tagline; });
+  }
+  if (slogan) {
+    document.querySelectorAll('.studio-slogan').forEach(function(el) { el.textContent = slogan; });
+  }
+  if (acento) {
+    document.documentElement.style.setProperty('--accent', acento);
+    document.documentElement.style.setProperty('--accent2', acento);
+  }
+})();
 </script>
 
 </body>
