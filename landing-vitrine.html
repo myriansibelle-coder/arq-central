@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>[Nome do Escritório] — Arquitetura & Design de Interiores</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onerror="window._threeErr=true"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" onerror="window._gsapErr=true"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" onerror="window._stErr=true"></script>
+
+<style>
+/* ─── TOKENS ──────────────────────────────────── */
+:root {
+  --warm-white: #FAF8F5;
+  --cream: #F4EFE8;
+  --sand: #E6DDD2;
+  --beige: #C9B9A8;
+  --wood: #A07850;
+  --dark: #1A140E;
+  --charcoal: #2C2218;
+  --text: #2A1A0E;
+  --text-body: #4A3828;
+  --text-muted: #8C7A6B;
+  --accent: #B8865A;
+  --border: rgba(42,26,14,0.1);
+}
+
+/* ─── RESET ───────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: auto; }
+body {
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ─── CUSTOM CURSOR (desktop only) ────────────── */
+@media (hover: hover) and (pointer: fine) {
+  body { cursor: none; }
+  .cursor {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(184,134,90,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, border-color 0.3s;
+  }
+  .hovering .cursor-ring { width:52px; height:52px; border-color:rgba(184,134,90,0.6); }
+}
+@media (hover: none) {
+  .cursor, .cursor-ring { display: none !important; }
+}
+
+/* ─── NAV ─────────────────────────────────────── */
+#nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 24px 40px;
+  padding-top: max(24px, env(safe-area-inset-top));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.4s, padding 0.4s;
+}
+#nav.scrolled {
+  background: rgba(250,248,245,0.92);
+  backdrop-filter: blur(12px);
+  padding: 16px 40px;
+  border-bottom: 1px solid var(--border);
+}
+.nav-studio {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--warm-white);
+  letter-spacing: 0.5px;
+  transition: color 0.4s;
+}
+#nav.scrolled .nav-studio { color: var(--text); }
+.nav-right { display:flex; align-items:center; gap:32px; }
+.nav-link {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(250,248,245,0.7);
+  text-decoration: none;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+.nav-link:hover { color: var(--warm-white); }
+#nav.scrolled .nav-link { color: var(--text-muted); }
+#nav.scrolled .nav-link:hover { color: var(--text); }
+.nav-link-cliente {
+  border: 1px solid rgba(250,248,245,0.25);
+  border-radius: 100px;
+  padding: 5px 14px;
+}
+#nav.scrolled .nav-link-cliente { border-color: var(--border); }
+.nav-cta {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--warm-white);
+  background: transparent;
+  border: 1px solid rgba(250,248,245,0.4);
+  border-radius: 100px;
+  padding: 9px 20px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.nav-cta:hover { background: var(--warm-white); color: var(--dark); }
+#nav.scrolled .nav-cta { color: var(--text); border-color: var(--border); }
+#nav.scrolled .nav-cta:hover { background: var(--dark); color: var(--warm-white); }
+@media(max-width:640px){
+  #nav { padding:14px 16px; }
+  .nav-right .nav-link:not(.nav-link-cliente) { display:none; }
+  .nav-cta { display:none; }
+  .nav-studio { font-size:15px; }
+}
+@media(max-width:360px){
+  .nav-link-cliente { display:none; }
+}
+
+/* ─── WEBGL CANVAS ────────────────────────────── */
+#webgl {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ─── HERO ────────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 40px 72px;
+  overflow: hidden;
+  z-index: 1;
+}
+.hero-img {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.hero-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.62) saturate(0.85);
+  transform: scale(1.05);
+  transform-origin: center;
+}
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(to top, rgba(26,20,14,0.85) 0%, rgba(26,20,14,0.1) 50%, transparent 100%),
+    linear-gradient(to right, rgba(26,20,14,0.2) 0%, transparent 50%);
+}
+.hero-content {
+  position: relative;
+  z-index: 3;
+  max-width: 760px;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(250,248,245,0.55);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(52px, 8vw, 100px);
+  font-weight: 300;
+  line-height: 1.0;
+  color: var(--warm-white);
+  letter-spacing: -1px;
+  margin-bottom: 28px;
+}
+.hero-title em {
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(250,248,245,0.75);
+}
+.hero-title .line { display:block; overflow:hidden; }
+.hero-title .line-inner {
+  display: block;
+}
+.hero-sub {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(250,248,245,0.65);
+  line-height: 1.7;
+  max-width: 420px;
+  margin-bottom: 40px;
+}
+.hero-cta-wrap {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--dark);
+  background: var(--warm-white);
+  border: none;
+  border-radius: 100px;
+  padding: 14px 28px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-primary:hover { background: var(--cream); transform: translateY(-1px); }
+.btn-primary svg { width:14px; height:14px; transition: transform 0.3s; }
+.btn-primary:hover svg { transform: translateX(4px); }
+.btn-ghost {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(250,248,245,0.7);
+  background: none;
+  border: none;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(250,248,245,0.3);
+  transition: color 0.3s;
+}
+.btn-ghost:hover { color: var(--warm-white); }
+.hero-scroll {
+  position: absolute;
+  bottom: 36px;
+  right: 40px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.scroll-line {
+  width: 1px;
+  height: 50px;
+  background: rgba(250,248,245,0.3);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-line::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(250,248,245,0.8);
+  animation: scrollLine 2s ease-in-out infinite;
+}
+@keyframes scrollLine {
+  0% { top:-100%; }
+  50% { top:100%; }
+  51% { top:-100%; }
+  100% { top:-100%; }
+}
+.scroll-label {
+  font-size: 10px;
+  color: rgba(250,248,245,0.4);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+}
+@media(max-width:640px){
+  .hero { padding:0 20px 72px; }
+  .hero-scroll { display:none; }
+  .hero-sub { font-size:14px; max-width:100%; }
+  .hero-cta-wrap { flex-direction:column; align-items:flex-start; gap:14px; }
+  .btn-primary, .btn-ghost { width:auto; }
+}
+
+/* ─── MANIFESTO ───────────────────────────────── */
+.manifesto {
+  position: relative;
+  z-index: 1;
+  background: var(--charcoal);
+  padding: 120px 40px;
+  overflow: hidden;
+}
+.manifesto::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(160,120,80,0.08) 0%, transparent 60%);
+}
+.manifesto-inner { max-width: 900px; margin: 0 auto; }
+.manifesto-label {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 48px;
+}
+.manifesto-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 5.5vw, 68px);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--warm-white);
+  letter-spacing: -0.5px;
+  margin-bottom: 48px;
+}
+.manifesto-text .word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  margin-right: 0.25em;
+}
+.manifesto-text .word-inner {
+  display: inline-block;
+}
+.manifesto-text em {
+  font-style: italic;
+  color: rgba(250,248,245,0.55);
+}
+.manifesto-sub {
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(250,248,245,0.45);
+  max-width: 480px;
+  line-height: 1.8;
+}
+@media(max-width:640px){
+  .manifesto { padding:80px 20px; }
+}
+
+/* ─── ENVIRONMENTS ────────────────────────────── */
+.environments {
+  position: relative;
+  z-index: 1;
+  background: var(--cream);
+  padding: 100px 0 0;
+}
+.env-header {
+  padding: 0 40px;
+  margin-bottom: 64px;
+}
+.env-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 5.5vw, 68px);
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin-bottom: 16px;
+}
+.env-header h2 em { font-style: italic; color: var(--accent); }
+.env-header p {
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--text-muted);
+  max-width: 360px;
+  line-height: 1.7;
+}
+.env-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+}
+.env-item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  height: 56vh;
+  min-height: 300px;
+}
+.env-img-wrap {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.6s ease;
+  will-change: transform;
+}
+.env-item:hover .env-img-wrap { transform: scale(1.03); }
+.env-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.9) brightness(0.85);
+}
+.env-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(26,20,14,0.65) 0%, transparent 50%);
+  z-index: 1;
+}
+.env-label {
+  position: absolute;
+  bottom: 28px;
+  left: 28px;
+  z-index: 2;
+}
+.env-label-tag {
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(250,248,245,0.5);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.env-label-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--warm-white);
+  letter-spacing: 0.3px;
+}
+@media(max-width:768px){
+  .env-grid { grid-template-columns:1fr; }
+  .env-item { height:55vw; min-height:240px; }
+  .environments { padding: 60px 0 0; }
+  .env-header { padding:0 20px; margin-bottom:40px; }
+}
+
+/* ─── QUOTE ───────────────────────────────────── */
+.quote-section {
+  position: relative;
+  z-index: 1;
+  background: var(--warm-white);
+  padding: 140px 40px;
+  overflow: hidden;
+}
+.quote-section::before {
+  content: '"';
+  position: absolute;
+  top: -60px;
+  left: 20px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 400px;
+  font-weight: 300;
+  color: rgba(201,185,168,0.18);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+.quote-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.quote-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 4.5vw, 54px);
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--text);
+  letter-spacing: -0.3px;
+  margin-bottom: 36px;
+}
+.quote-text em { font-style: italic; color: var(--accent); }
+.quote-line {
+  width: 40px;
+  height: 1px;
+  background: var(--beige);
+  margin: 0 auto 24px;
+}
+.quote-author {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0;
+}
+@media(max-width:640px){
+  .manifesto { padding:64px 20px; }
+}
+@media(max-width:640px){
+  .quote-section { padding:80px 20px; }
+  .quote-section::before { font-size:140px; top:-10px; }
+}
+
+/* ─── SERVICES ────────────────────────────────── */
+.services {
+  position: relative;
+  z-index: 1;
+  background: var(--cream);
+  padding: 100px 40px;
+}
+.services-header { margin-bottom: 64px; }
+.section-label {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.services-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 920px;
+}
+.service-card {
+  background: var(--warm-white);
+  border: 1px solid var(--sand);
+  border-radius: 4px;
+  padding: 44px 40px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+.service-card:hover {
+  border-color: var(--beige);
+  box-shadow: 0 8px 32px rgba(42,26,14,0.07);
+}
+.service-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  font-weight: 300;
+  color: rgba(201,185,168,0.5);
+  line-height: 1;
+  margin-bottom: 24px;
+}
+.service-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.service-desc {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin-bottom: 28px;
+}
+.service-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.service-price-label {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.service-list {
+  list-style: none;
+  margin-bottom: 36px;
+}
+.service-list li {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-body);
+  line-height: 1.6;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--sand);
+  display: flex;
+  gap: 10px;
+}
+.service-list li::before {
+  content: '—';
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.btn-service {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--beige);
+  border-radius: 100px;
+  padding: 11px 24px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-service:hover {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: var(--warm-white);
+}
+@media(max-width:768px){
+  .services { padding:60px 20px; }
+  .services-grid { grid-template-columns:1fr; }
+  .service-card { padding:28px 24px; }
+}
+
+/* ─── PROCESS ─────────────────────────────────── */
+.process {
+  position: relative;
+  z-index: 1;
+  background: var(--warm-white);
+  padding: 100px 40px;
+  overflow: hidden;
+}
+.process::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--sand) 20%, var(--sand) 80%, transparent);
+}
+.process-header { margin-bottom: 72px; }
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+}
+.process-step {}
+.step-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  font-weight: 300;
+  color: var(--sand);
+  line-height: 1;
+  margin-bottom: 24px;
+}
+.step-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.step-desc {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+@media(max-width:768px){
+  .process { padding:60px 20px; }
+  .process::before { display:none; }
+  .process-steps { grid-template-columns:1fr; gap:32px; }
+  .step-num { font-size:48px; }
+}
+
+/* ─── CTA FINAL ───────────────────────────────── */
+.cta-section {
+  position: relative;
+  z-index: 1;
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+}
+.cta-bg {
+  position: absolute;
+  inset: 0;
+}
+.cta-bg img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  filter: brightness(0.45) saturate(0.7);
+  transform: scale(1.05);
+}
+.cta-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(26,20,14,0.6) 0%, rgba(42,26,14,0.3) 100%);
+}
+.cta-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 40px;
+  max-width: 700px;
+}
+.cta-label {
+  font-size: 10px;
+  font-weight: 400;
+  color: rgba(250,248,245,0.5);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.cta-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 6.5vw, 82px);
+  font-weight: 300;
+  color: var(--warm-white);
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 36px;
+}
+.cta-title em { font-style: italic; color: rgba(250,248,245,0.65); }
+.cta-sub {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(250,248,245,0.55);
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+.cta-btn-wrap {}
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--dark);
+  background: var(--warm-white);
+  border: none;
+  border-radius: 100px;
+  padding: 18px 36px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-cta:hover {
+  background: var(--cream);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+}
+.btn-cta svg { width:16px; height:16px; }
+
+/* ─── FOOTER ──────────────────────────────────── */
+footer {
+  position: relative;
+  z-index: 1;
+  background: var(--dark);
+  padding: 48px 40px 36px;
+  text-align: center;
+}
+.footer-studio {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: rgba(250,248,245,0.4);
+  letter-spacing: 1px;
+  margin-bottom: 32px;
+}
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.footer-link {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(250,248,245,0.45);
+  text-decoration: none;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.3s;
+  border: 1px solid rgba(250,248,245,0.15);
+  border-radius: 100px;
+  padding: 8px 18px;
+}
+.footer-link:hover { color: rgba(250,248,245,0.85); border-color: rgba(250,248,245,0.35); }
+.footer-sep { color: rgba(250,248,245,0.1); font-size: 10px; }
+.footer-credit {
+  font-size: 9px;
+  color: rgba(250,248,245,0.08);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* ─── MODAL DIAGNÓSTICO ───────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(26,20,14,0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 20px 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+  padding: 20px;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: var(--warm-white);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 560px;
+  margin: auto;
+  padding: 48px;
+  transform: translateY(24px);
+  transition: transform 0.4s;
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+.modal-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 36px; height: 36px;
+  background: var(--sand);
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: var(--beige); }
+.modal-eyebrow {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.modal-sub {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: var(--cream);
+  border: 1px solid var(--sand);
+  border-radius: 3px;
+  padding: 12px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+  cursor: text;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--beige); }
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
+.form-textarea { min-height: 90px; resize: vertical; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ambientes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+.amb-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-body);
+  padding: 10px 14px;
+  background: var(--cream);
+  border: 1px solid var(--sand);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.amb-label input { cursor: pointer; }
+.amb-label:hover { border-color: var(--beige); }
+.amb-label:has(input:checked) {
+  background: rgba(184,134,90,0.08);
+  border-color: var(--accent);
+  color: var(--text);
+}
+.modal-submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--warm-white);
+  background: var(--dark);
+  border: none;
+  border-radius: 100px;
+  padding: 16px 32px;
+  margin-top: 32px;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.3s;
+}
+.modal-submit:hover { background: var(--charcoal); }
+.modal-note {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 16px;
+  line-height: 1.5;
+}
+.modal-success {
+  text-align: center;
+  padding: 20px 0;
+  display: none;
+}
+.modal-success-icon {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 64px;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+.modal-success h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.modal-success p { font-size:14px; font-weight:300; color:var(--text-muted); line-height:1.7; }
+@media(max-width:640px){
+  .modal-box { padding:32px 24px; }
+  .form-grid, .ambientes-grid { grid-template-columns:1fr; }
+}
+
+/* ─── UTILS ───────────────────────────────────── */
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+
+
+
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- Navigation -->
+<nav id="nav">
+  <div class="nav-studio" id="studio-name">
+    [Nome do Escritório]
+  </div>
+  <div class="nav-right">
+    <a href="#ambientes" class="nav-link">Projetos</a>
+    <a href="#servicos" class="nav-link">Serviços</a>
+    <a href="javascript:void(0)" class="nav-link nav-link-cliente" onclick="openClienteLogin()">Meu projeto</a>
+    <button class="nav-cta" onclick="openDiagnostico()">Iniciar projeto</button>
+  </div>
+</nav>
+
+<!-- WebGL Canvas -->
+<canvas id="webgl"></canvas>
+
+<!-- ─── HERO ─────────────────────────────────── -->
+<section class="hero" id="inicio">
+  <div class="hero-img">
+    <img
+      src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1920&q=85&auto=format&fit=crop"
+      alt="Sala de estar contemporânea com luz natural"
+      loading="eager"
+    >
+  </div>
+  <div class="hero-vignette"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Arquitetura & Design de Interiores</div>
+    <h1 class="hero-title">
+      <span class="line"><span class="line-inner">Seu lar</span></span>
+      <span class="line"><span class="line-inner"><em>merece</em></span></span>
+      <span class="line"><span class="line-inner">uma história.</span></span>
+    </h1>
+    <p class="hero-sub">Do primeiro esboço à entrega final — projetamos ambientes que transformam a maneira como você vive.</p>
+    <div class="hero-cta-wrap">
+      <button class="btn-primary" onclick="openDiagnostico()">
+        <span>Descobrir meu projeto</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <button class="btn-ghost" onclick="document.getElementById('servicos').scrollIntoView({behavior:'smooth'})">
+        Ver serviços
+      </button>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span class="scroll-label">descobrir</span>
+  </div>
+</section>
+
+<!-- ─── MANIFESTO ─────────────────────────────── -->
+<section class="manifesto" id="sobre">
+  <div class="manifesto-inner">
+    <div class="manifesto-label">Nossa filosofia</div>
+    <p class="manifesto-text" id="manifesto-words">
+      <span class="word"><span class="word-inner">Cada</span></span>
+      <span class="word"><span class="word-inner">detalhe</span></span>
+      <span class="word"><span class="word-inner"><em>importa.</em></span></span>
+      <span class="word" style="margin-right:.5em"><span class="word-inner">&nbsp;</span></span>
+      <span class="word"><span class="word-inner">Da</span></span>
+      <span class="word"><span class="word-inner">textura</span></span>
+      <span class="word"><span class="word-inner">de</span></span>
+      <span class="word"><span class="word-inner">um</span></span>
+      <span class="word"><span class="word-inner">tecido</span></span>
+      <span class="word"><span class="word-inner">à</span></span>
+      <span class="word"><span class="word-inner">direção</span></span>
+      <span class="word"><span class="word-inner">da</span></span>
+      <span class="word"><span class="word-inner">luz</span></span>
+      <span class="word"><span class="word-inner">natural.</span></span>
+    </p>
+    <p class="manifesto-sub">Arquitetura de interiores não é sobre decoração. É sobre transformar a forma como você se sente ao chegar em casa.</p>
+  </div>
+</section>
+
+<!-- ─── AMBIENTES ──────────────────────────────── -->
+<section class="environments" id="ambientes">
+  <div class="env-header">
+    <h2>Ambientes que<br><em>encantam</em></h2>
+    <p>Cada espaço é pensado para ser vivido com prazer, funcionalidade e beleza.</p>
+  </div>
+
+  <div class="env-grid">
+    <div class="env-item">
+      <div class="env-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=85&auto=format&fit=crop"
+          alt="Sala de estar"
+          loading="lazy"
+        >
+      </div>
+      <div class="env-overlay"></div>
+      <div class="env-label">
+        <div class="env-label-tag">01</div>
+        <div class="env-label-name">Sala de Estar</div>
+      </div>
+    </div>
+
+    <div class="env-item">
+      <div class="env-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=85&auto=format&fit=crop"
+          alt="Cozinha integrada"
+          loading="lazy"
+        >
+      </div>
+      <div class="env-overlay"></div>
+      <div class="env-label">
+        <div class="env-label-tag">02</div>
+        <div class="env-label-name">Cozinha</div>
+      </div>
+    </div>
+
+    <div class="env-item">
+      <div class="env-img-wrap">
+        <img
+          src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=900&q=85&auto=format&fit=crop"
+          alt="Suíte master"
+          loading="lazy"
+        >
+      </div>
+      <div class="env-overlay"></div>
+      <div class="env-label">
+        <div class="env-label-tag">03</div>
+        <div class="env-label-name">Suíte</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── QUOTE ──────────────────────────────────── -->
+<section class="quote-section">
+  <div class="quote-inner">
+    <p class="quote-text">
+      "Um projeto de arquitetura <em>transforma</em> muito mais do que os ambientes. Ele transforma a forma como você <em>vive</em>."
+    </p>
+    <div class="quote-line"></div>
+    <p class="quote-author">[Nome do Escritório] &nbsp;·&nbsp; Arquitetura de Interiores</p>
+  </div>
+</section>
+
+<!-- ─── SERVIÇOS ───────────────────────────────── -->
+<section class="services" id="servicos">
+  <div class="services-header">
+    <div class="section-label">O que fazemos</div>
+    <h2>Serviços desenvolvidos<br>para cada etapa do seu sonho</h2>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-number">01</div>
+      <div class="service-name">Consultoria Online</div>
+      <div class="service-desc">Análise do ambiente com paleta de cores, sugestão de mobiliário e lista de compras — entregue em até 5 dias úteis.</div>
+      <div class="service-price">R$ 350</div>
+      <div class="service-price-label">por ambiente</div>
+      <ul class="service-list">
+        <li>Paleta de cores personalizada</li>
+        <li>Sugestões de mobiliário</li>
+        <li>Lista de compras orientada</li>
+        <li>1 revisão incluída</li>
+      </ul>
+      <button class="btn-service" onclick="openDiagnostico()">Solicitar consultoria</button>
+    </div>
+
+    <div class="service-card">
+      <div class="service-number">02</div>
+      <div class="service-name">Projeto Completo</div>
+      <div class="service-desc">Projeto executivo com levantamento in loco, plantas técnicas, moodboard detalhado e acompanhamento de execução.</div>
+      <div class="service-price">R$ 2.800</div>
+      <div class="service-price-label">a partir de</div>
+      <ul class="service-list">
+        <li>Levantamento presencial</li>
+        <li>Plantas e projeto executivo</li>
+        <li>Moodboard e especificações</li>
+        <li>Acompanhamento de obra</li>
+        <li>2 revisões incluídas</li>
+      </ul>
+      <button class="btn-service" onclick="openDiagnostico()">Começar projeto</button>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROCESSO ───────────────────────────────── -->
+<section class="process">
+  <div class="process-header">
+    <div class="section-label">Como funciona</div>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,54px);font-weight:300;color:var(--text);letter-spacing:-0.5px;line-height:1.15">
+      Do primeiro contato<br>à casa dos seus sonhos
+    </h2>
+  </div>
+
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">01</div>
+      <div class="step-name">Diagnóstico gratuito</div>
+      <div class="step-desc">Você nos conta sobre seu ambiente, seus desejos e como imagina sua vida naquele espaço. Sem compromisso.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <div class="step-name">Projeto & conceito</div>
+      <div class="step-desc">Desenvolvemos o conceito, a paleta, o layout e os materiais — traduzindo sua personalidade em espaço.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <div class="step-name">Entrega & acompanhamento</div>
+      <div class="step-desc">Acompanhamos cada etapa da execução para garantir que a casa entregue é exatamente o que você imaginou.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA FINAL ──────────────────────────────── -->
+<section class="cta-section">
+  <div class="cta-bg">
+    <img
+      src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=1920&q=85&auto=format&fit=crop"
+      alt="Ambiente sofisticado"
+      loading="lazy"
+    >
+  </div>
+  <div class="cta-overlay"></div>
+  <div class="cta-content">
+    <div class="cta-label">Pronto para começar?</div>
+    <h2 class="cta-title">O lar que você<br>sempre <em>imaginou</em><br>começa aqui.</h2>
+    <p class="cta-sub">Um diagnóstico gratuito e sem compromisso. Nos conte sobre seu espaço e descobrimos juntos o que ele pode se tornar.</p>
+    <div class="cta-btn-wrap">
+      <button class="btn-cta" onclick="openDiagnostico()">
+        <span>Quero meu diagnóstico gratuito</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ─── BARRA DE ACESSO ─────────────────────────── -->
+<div style="background:var(--charcoal);padding:32px 40px;text-align:center;border-top:1px solid rgba(255,255,255,0.06)">
+  <p style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:rgba(250,248,245,0.5);margin-bottom:8px;letter-spacing:.3px">
+    Já contratou? Acesse sua área.
+  </p>
+  <p style="font-size:13px;font-weight:300;color:rgba(250,248,245,0.3);margin-bottom:24px">
+    Acompanhe o andamento do seu projeto ou entre na área da equipe.
+  </p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <button onclick="openClienteLogin()" style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:rgba(250,248,245,0.8);background:rgba(250,248,245,0.06);border:1px solid rgba(250,248,245,0.18);border-radius:100px;padding:11px 24px;cursor:pointer;transition:all .3s;letter-spacing:.3px"
+      onmouseover="this.style.background='rgba(250,248,245,0.12)'" onmouseout="this.style.background='rgba(250,248,245,0.06)'">
+      Acompanhar meu projeto
+    </button>
+    <button onclick="openArqLogin()" style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:rgba(250,248,245,0.5);background:transparent;border:1px solid rgba(250,248,245,0.1);border-radius:100px;padding:11px 24px;cursor:pointer;transition:all .3s;letter-spacing:.3px"
+      onmouseover="this.style.borderColor='rgba(250,248,245,0.25)';this.style.color='rgba(250,248,245,0.7)'" onmouseout="this.style.borderColor='rgba(250,248,245,0.1)';this.style.color='rgba(250,248,245,0.5)'">
+      Acesso do arquiteto
+    </button>
+  </div>
+</div>
+
+<!-- ─── FOOTER ──────────────────────────────────── -->
+<footer>
+  <div class="footer-studio">[Nome do Escritório]</div>
+  <div class="footer-credit">ARQ|CENTRAL</div>
+</footer>
+
+<!-- ─── MODAL DIAGNÓSTICO ──────────────────────── -->
+<div class="modal-overlay" id="modal-diagnostico">
+  <div class="modal-box" style="position:relative">
+    <button class="modal-close" onclick="closeDiagnostico()" aria-label="Fechar">×</button>
+
+    <div id="modal-form-content">
+      <div class="modal-eyebrow">Diagnóstico Gratuito</div>
+      <h2 class="modal-title">Vamos entender<br>o seu espaço</h2>
+      <p class="modal-sub">Grátis · 2 minutos · Sem compromisso</p>
+
+      <div class="form-group">
+        <label class="form-label">Seu nome</label>
+        <input class="form-input" id="d-nome" type="text" placeholder="Como você se chama?">
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">WhatsApp</label>
+          <input class="form-input" id="d-wpp" type="tel" placeholder="(00) 00000-0000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail (opcional)</label>
+          <input class="form-input" id="d-email" type="email" placeholder="seu@email.com">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Qual ambiente você quer transformar?</label>
+        <div class="ambientes-grid">
+          <label class="amb-label"><input type="checkbox" class="d-amb" value="Sala de Estar"> Sala de Estar</label>
+          <label class="amb-label"><input type="checkbox" class="d-amb" value="Sala de Jantar"> Sala de Jantar</label>
+          <label class="amb-label"><input type="checkbox" class="d-amb" value="Cozinha"> Cozinha</label>
+          <label class="amb-label"><input type="checkbox" class="d-amb" value="Suíte"> Suíte</label>
+          <label class="amb-label"><input type="checkbox" class="d-amb" value="Banheiro"> Banheiro</label>
+          <label class="amb-label"><input type="checkbox" class="d-amb" value="Home Office"> Home Office</label>
+          <label class="amb-label"><input type="checkbox" class="d-amb" value="Varanda"> Varanda</label>
+          <label class="amb-label"><input type="checkbox" class="d-amb" value="Outro"> Outro</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Como você quer se sentir no seu espaço?</label>
+        <textarea class="form-textarea" id="d-objetivo" placeholder="Me conta sobre o ambiente dos seus sonhos — materiais, sensações, referências..."></textarea>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Prazo desejado</label>
+          <select class="form-select" id="d-prazo">
+            <option value="">Selecione</option>
+            <option>Urgente — até 1 mês</option>
+            <option>Curto — 1 a 3 meses</option>
+            <option>Médio — 3 a 6 meses</option>
+            <option>Sem pressa</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Investimento previsto</label>
+          <select class="form-select" id="d-inv">
+            <option value="">Selecione</option>
+            <option>Até R$ 2.000</option>
+            <option>R$ 2.000 a R$ 5.000</option>
+            <option>R$ 5.000 a R$ 10.000</option>
+            <option>Acima de R$ 10.000</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="modal-submit" onclick="submitDiagnostico()">
+        <span>Enviar diagnóstico gratuito</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <p class="modal-note">Ao enviar, você autoriza o contato pelo WhatsApp informado.<br>Sem spam. Respondemos em até 24h.</p>
+    </div>
+
+    <div class="modal-success" id="modal-success">
+      <div class="modal-success-icon">✦</div>
+      <h3>Diagnóstico enviado</h3>
+      <p>Obrigada, <span id="success-nome"></span>!<br>Entraremos em contato pelo WhatsApp<br>em até 24 horas.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── SCRIPTS ─────────────────────────────────── -->
+<script>
+// ─── CURSOR (desktop only) ─────────────────────────────────────────────────
+(function() {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  var cursor = document.getElementById('cursor');
+  var ring   = document.getElementById('cursor-ring');
+  if (!cursor || !ring) return;
+  var mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  });
+  (function tick() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(tick);
+  })();
+  document.querySelectorAll('button,a,.env-item,.service-card').forEach(function(el) {
+    el.addEventListener('mouseenter', function() { document.body.classList.add('hovering'); });
+    el.addEventListener('mouseleave', function() { document.body.classList.remove('hovering'); });
+  });
+})();
+</script>
+
+<script>
+// ─── NAV SCROLL ────────────────────────────────────────────────────────────
+window.addEventListener('scroll', function() {
+  var nav = document.getElementById('nav');
+  if (!nav) return;
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+</script>
+
+<script>
+// ─── THREE.JS HERO (desktop only, non-blocking) ─────────────────────────────
+(function() {
+  try {
+    if (typeof THREE === 'undefined') return;
+    if (!window.matchMedia('(hover: hover)').matches || window.innerWidth < 768) {
+      document.getElementById('webgl').style.display = 'none';
+      return;
+    }
+    var canvas   = document.getElementById('webgl');
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+    var scene  = new THREE.Scene();
+    scene.fog  = new THREE.FogExp2(0xF4EFE8, 0.028);
+    var camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 50);
+    camera.position.z = 6;
+    var count = 1200, pos = new Float32Array(count * 3);
+    for (var i = 0; i < count; i++) {
+      pos[i*3]   = (Math.random()-.5)*22;
+      pos[i*3+1] = (Math.random()-.5)*16;
+      pos[i*3+2] = (Math.random()-.5)*14 - 2;
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    scene.add(new THREE.Points(geo, new THREE.PointsMaterial({
+      size:.016, color:0xD4B886, transparent:true, opacity:.4, sizeAttenuation:true, depthWrite:false
+    })));
+    scene.add(new THREE.AmbientLight(0xFFF5E8, 1.2));
+    var pl = new THREE.PointLight(0xFFE8C8, 2.5, 18); pl.position.set(4,4,3); scene.add(pl);
+    var tx=0, ty=0, cx=0, cy=0, sy=0;
+    document.addEventListener('mousemove', function(e) {
+      tx=(e.clientX/innerWidth-.5)*.7; ty=(e.clientY/innerHeight-.5)*-.5;
+    });
+    window.addEventListener('scroll', function() { sy = scrollY; });
+    var particles = scene.children[1];
+    var t0 = Date.now();
+    (function loop() {
+      requestAnimationFrame(loop);
+      var t = (Date.now()-t0)*.001;
+      cx+=(tx-cx)*.025; cy+=(ty-cy)*.025;
+      camera.position.x=cx*.8; camera.position.y=cy*.6; camera.lookAt(0,0,0);
+      if (particles) { particles.rotation.y=t*.012; particles.rotation.x=t*.006; }
+      canvas.style.opacity = Math.max(0, 1 - sy/(innerHeight*.6));
+      renderer.render(scene, camera);
+    })();
+    window.addEventListener('resize', function() {
+      camera.aspect = innerWidth/innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    });
+  } catch(e) {
+    var c = document.getElementById('webgl');
+    if (c) c.style.display = 'none';
+  }
+})();
+</script>
+
+<script>
+// ─── GSAP SCROLL ANIMATIONS (enhancement only) ─────────────────────────────
+(function() {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero entrance
+  gsap.from('.hero-eyebrow', { opacity:0, y:20, duration:.8, delay:.4, ease:'power2.out' });
+  gsap.from('.hero-title .line-inner', { y:'100%', duration:1.1, delay:.3, ease:'power3.out', stagger:.1 });
+  gsap.from('.hero-sub',      { opacity:0, y:20, duration:.8, delay:.7, ease:'power2.out' });
+  gsap.from('.hero-cta-wrap', { opacity:0, y:16, duration:.7, delay:.9, ease:'power2.out' });
+
+  // Manifesto word reveal
+  ScrollTrigger.create({ trigger:'.manifesto', start:'top 75%', once:true,
+    onEnter: function() {
+      gsap.from('.manifesto-text .word-inner', {
+        y:'100%', filter:'blur(8px)', opacity:0,
+        duration:.6, ease:'power2.out', stagger:.05
+      });
+      gsap.from('.manifesto-label', { opacity:0, duration:.5 });
+      gsap.from('.manifesto-sub',   { opacity:0, duration:.8, delay:.8 });
+    }
+  });
+
+  // Env images
+  document.querySelectorAll('.env-item').forEach(function(item, i) {
+    ScrollTrigger.create({ trigger:item, start:'top 90%', once:true,
+      onEnter: function() {
+        gsap.from(item.querySelector('img'), { opacity:0, scale:1.08, duration:.9, ease:'power2.out', delay:i*.06 });
+        gsap.from(item.querySelector('.env-label'), { opacity:0, y:10, duration:.6, delay:i*.06+.25 });
+      }
+    });
+    gsap.to(item.querySelector('.env-img-wrap'), {
+      y:'10%', ease:'none',
+      scrollTrigger:{ trigger:item, start:'top bottom', end:'bottom top', scrub:1.5 }
+    });
+  });
+
+  // Quote
+  ScrollTrigger.create({ trigger:'.quote-section', start:'top 75%', once:true,
+    onEnter: function() {
+      gsap.from('.quote-text',   { opacity:0, y:24, duration:1,  ease:'power2.out' });
+      gsap.from('.quote-line',   { opacity:0, duration:.5, delay:.4 });
+      gsap.from('.quote-author', { opacity:0, duration:.5, delay:.6 });
+    }
+  });
+
+  // Services
+  ScrollTrigger.create({ trigger:'.services', start:'top 80%', once:true,
+    onEnter: function() {
+      gsap.from('.section-label', { opacity:0, duration:.5, stagger:.1 });
+      gsap.from('.service-card',  { opacity:0, y:24, duration:.7, stagger:.12, delay:.2 });
+    }
+  });
+
+  // Process
+  ScrollTrigger.create({ trigger:'.process', start:'top 80%', once:true,
+    onEnter: function() {
+      gsap.from('.process-step', { opacity:0, y:20, duration:.7, stagger:.15, ease:'power2.out' });
+    }
+  });
+
+  // CTA
+  ScrollTrigger.create({ trigger:'.cta-section', start:'top 80%', once:true,
+    onEnter: function() {
+      gsap.from('.cta-label',    { opacity:0, duration:.5 });
+      gsap.from('.cta-title',    { opacity:0, y:24, duration:.9, delay:.2 });
+      gsap.from('.cta-sub',      { opacity:0, duration:.7, delay:.5 });
+      gsap.from('.cta-btn-wrap', { opacity:0, y:14, duration:.7, delay:.7 });
+    }
+  });
+
+  // Parallax on CTA bg
+  gsap.to('.cta-bg img', {
+    y:'-10%', ease:'none',
+    scrollTrigger:{ trigger:'.cta-section', start:'top bottom', end:'bottom top', scrub:2 }
+  });
+
+  // Hero bg parallax
+  gsap.to('.hero-img img', {
+    y:'7%', ease:'none',
+    scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:1 }
+  });
+
+  document.documentElement.style.scrollBehavior = 'smooth';
+})();
+</script>
+
+<script>
+function openDiagnostico() {
+  document.getElementById('modal-diagnostico').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDiagnostico() {
+  document.getElementById('modal-diagnostico').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('modal-diagnostico').addEventListener('click', function(e) {
+  if (e.target === this) closeDiagnostico();
+});
+
+function submitDiagnostico() {
+  const nome = document.getElementById('d-nome').value.trim();
+  const wpp  = document.getElementById('d-wpp').value.trim();
+  if (!nome || !wpp) {
+    alert('Por favor, informe seu nome e WhatsApp para continuar.');
+    return;
+  }
+  const ambsSel = Array.from(document.querySelectorAll('.d-amb:checked')).map(c => c.value);
+  const email = document.getElementById('d-email').value;
+  const objetivo = document.getElementById('d-objetivo').value;
+  const servico = ambsSel.join(', ') || 'Diagnóstico Landing';
+  const diag = {
+    id: Date.now().toString(36),
+    nome, whatsapp: wpp,
+    email: email,
+    servico: servico,
+    ambientes: ambsSel,
+    dor: '',
+    objetivo: objetivo,
+    prazo: document.getElementById('d-prazo').value,
+    investimento: document.getElementById('d-inv').value,
+    status: 'Novo',
+    origem: 'Landing Page',
+    criadoEm: new Date().toLocaleDateString('pt-BR'),
+    convertidoEmLead: true
+  };
+  // Persist to localStorage (compatible with ARQ|CENTRAL)
+  try {
+    const lista = JSON.parse(localStorage.getItem('diagnosticos_lista') || '[]');
+    lista.unshift(diag);
+    localStorage.setItem('diagnosticos_lista', JSON.stringify(lista));
+    // Also create CRM lead
+    const leads = JSON.parse(localStorage.getItem('crm_leads_v2') || '[]');
+    leads.unshift({
+      id: diag.id + '_lead',
+      diagId: diag.id,
+      nome, whatsapp: wpp,
+      email: email,
+      servico: servico,
+      origem: 'Landing Page',
+      investimento: diag.investimento,
+      estagio: 'LEAD',
+      obs: 'Via landing page. Objetivo: ' + objetivo,
+      criadoEm: diag.criadoEm
+    });
+    localStorage.setItem('crm_leads_v2', JSON.stringify(leads));
+  } catch(e) {}
+
+  // Show success
+  document.getElementById('modal-form-content').style.display = 'none';
+  document.getElementById('modal-success').style.display = 'block';
+  document.getElementById('success-nome').textContent = nome.split(' ')[0];
+}
+
+function openClienteLogin() {
+  localStorage.setItem('arq_portal_destino', 'cliente');
+  window.location.href = 'arq-central-redesigned.html';
+}
+function openArqLogin() {
+  localStorage.setItem('arq_portal_destino', 'arquiteto');
+  window.location.href = 'arq-central-redesigned.html';
+}
+</script>
+
+</body>
+</html>

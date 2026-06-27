@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARQ|CENTRAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+
+<style>
+/* ===== FONT IMPORT — PP Neue Montreal ===== */
+@font-face{font-family:'PPNeue';src:url('https://assets.website-files.com/6009ec8cda7f305645c9d91b/60176f9bb43e36419997ecfe_PPNeueMontreal-Book.otf') format('opentype');font-weight:400;font-display:swap}
+@font-face{font-family:'PPNeue';src:url('https://assets.website-files.com/6009ec8cda7f305645c9d91b/60176f9b39c5673e51a86f5a_PPNeueMontreal-Medium.otf') format('opentype');font-weight:500;font-display:swap}
+
+/* ===== THEME VARIABLES ===== */
+[data-theme="dark"]{--bg:#1A140E;--bg2:#221A12;--bg3:#2C2018;--bg4:#38271A;--surface:#241C14;--border:rgba(255,255,255,0.09);--border2:rgba(255,255,255,0.05);--text:#F5EDE0;--text2:#D4C4B0;--muted:#8C7A6B;--muted2:#5C4A3B;--accent:#B8865A;--accent2:#9A6E45;--green:#4ade80;--amber:#fbbf24;--blue:#60a5fa;--red:#f87171;--purple:#a78bfa;--shadow:rgba(0,0,0,0.45)}
+[data-theme="light"]{--bg:#FAF8F5;--bg2:#F4EFE8;--bg3:#EDE6DC;--bg4:#E0D8CC;--surface:#FFFFFF;--border:rgba(42,26,14,0.1);--border2:rgba(42,26,14,0.06);--text:#1A140E;--text2:#2C2218;--muted:#6B5A4E;--muted2:#9C8A7A;--accent:#B8865A;--accent2:#9A6E45;--green:#16a34a;--amber:#d97706;--blue:#2563eb;--red:#dc2626;--purple:#7c3aed;--shadow:rgba(42,26,14,0.1)}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);font-family:'PPNeue',ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);font-size:14px;line-height:1.5;transition:background .2s,color .2s}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:240px;min-width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;transition:background .2s}
+.sb-top{padding:16px 14px 12px;border-bottom:1px solid var(--border2)}
+.sb-logo{font-size:13px;font-weight:700;letter-spacing:2px;color:var(--text)}
+.sb-logo .sep{color:var(--accent)}
+.area-tabs{display:flex;gap:3px;margin:10px 10px 0;background:var(--bg3);border-radius:8px;padding:3px}
+.atab{flex:1;padding:5px 4px;text-align:center;font-size:10px;font-weight:600;color:var(--muted);cursor:pointer;border-radius:5px;transition:all .15s;white-space:nowrap;border:none;background:none;font-family:inherit}
+.atab:hover{color:var(--text2)}
+.atab.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px var(--shadow)}
+.atab.on.proj{color:var(--accent)}
+.sb-scroll{flex:1;overflow-y:auto;padding:8px 8px 0}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
+.sb-label{font-size:10px;font-weight:600;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;padding:10px 8px 4px;display:block}
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:all .12s;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.sb-item:hover{background:var(--bg3);color:var(--text2)}
+.sb-item.on{background:var(--bg3);color:var(--text)}
+.sb-item.on .sb-icon{color:var(--accent)}
+.sb-icon{flex-shrink:0;opacity:.8}
+.sb-item.on .sb-icon{opacity:1}
+.sb-footer{padding:12px 14px;border-top:1px solid var(--border2);display:flex;align-items:center;gap:9px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.avatar.sm{width:24px;height:24px;font-size:9px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;transition:background .2s}
+.topbar-logo{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted2)}
+.area-badge{font-size:9px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--bg3);color:var(--muted);border:1px solid var(--border2);letter-spacing:.5px}
+.topbar-right{display:flex;align-items:center;gap:6px}
+.icon-btn{width:32px;height:32px;border-radius:7px;background:none;border:1px solid var(--border);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.icon-btn:hover{background:var(--bg3);color:var(--text2)}
+.content{flex:1;overflow-y:auto;padding:28px 32px}
+.content::-webkit-scrollbar{width:5px}
+.content::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+.page{display:none}
+.page.on{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes homeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.page-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:3px}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;transition:background .2s,border .2s}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:7px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;transition:background .2s}
+.stat-val{font-size:22px;font-weight:700;color:var(--text);margin-bottom:2px}
+.stat-lbl{font-size:11px;color:var(--muted)}
+.stat-trend{font-size:10px;color:var(--green);margin-top:4px;font-weight:500}
+.fl{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-bottom:5px}
+.fi{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border .15s,background .2s;margin-bottom:12px}
+.fi:focus{border-color:var(--accent)}
+.fi::placeholder{color:var(--muted2)}
+textarea.fi{min-height:80px;resize:vertical}
+.fs{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;margin-bottom:12px}
+.fg{margin-bottom:0}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:inherit;transition:all .15s}
+.btn:hover{background:var(--bg4);color:var(--text)}
+.btn-accent{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-accent:hover{background:var(--accent2);border-color:var(--accent2)}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px}
+.pill{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.p-green{background:rgba(74,222,128,0.12);color:var(--green)}
+.p-amber{background:rgba(251,191,36,0.12);color:var(--amber)}
+.p-blue{background:rgba(96,165,250,0.12);color:var(--blue)}
+.p-red{background:rgba(248,113,113,0.12);color:var(--red)}
+.p-muted{background:var(--bg3);color:var(--muted)}
+.p-accent{background:rgba(212,149,106,0.15);color:var(--accent)}
+.tbl{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;overflow:hidden}
+.tr{display:grid;padding:10px 14px;border-bottom:1px solid var(--border2);align-items:center;font-size:13px}
+.tr:last-child{border-bottom:none}
+.th{font-size:11px;font-weight:600;color:var(--muted);background:var(--bg3)}
+.toggle{width:36px;height:20px;background:var(--bg4);border-radius:10px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;border:none}
+.toggle.on{background:var(--accent)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle.on::after{transform:translateX(16px)}
+.divl{height:1px;background:var(--border2);margin:12px 0}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.swot-cell{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px}
+.swot-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kb-col{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px}
+.kb-title{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase}
+.kb-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:border .15s}
+.kb-card:hover{border-color:var(--accent)}
+.kb-card-title{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px}
+.kb-card-sub{font-size:11px;color:var(--muted)}
+.prog-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;background:var(--accent);transition:width .3s}
+.person-card{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;cursor:pointer;transition:border .15s}
+.person-card:hover{border-color:var(--border)}
+.screen{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:background .2s}
+.screen.hidden{display:none}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;width:400px;max-width:90vw;box-shadow:0 8px 40px var(--shadow)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo .name{font-size:18px;font-weight:700;letter-spacing:3px;color:var(--text)}
+.login-logo .name .sep{color:var(--accent)}
+.login-logo .sub{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:1px}
+.login-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.5}
+.btn-back{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;display:flex;align-items:center;gap:5px;font-family:inherit;margin-bottom:20px;transition:color .15s;padding:0}
+.btn-back:hover{color:var(--text)}
+.choice-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s;margin-bottom:8px}
+.choice-card:hover{border-color:var(--accent);background:var(--bg3)}
+.choice-icon{width:38px;height:38px;border-radius:9px;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0}
+.choice-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:2px}
+.choice-sub{font-size:11px;color:var(--muted);line-height:1.4}
+.portal-wrap{position:fixed;inset:0;z-index:98;background:var(--bg);display:flex;flex-direction:column;transition:background .2s}
+.portal-wrap.hidden{display:none}
+.portal-header{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.portal-logo{font-size:13px;font-weight:700;letter-spacing:2px;color:var(--text)}
+.portal-logo .sep{color:var(--accent)}
+.portal-body{flex:1;overflow-y:auto;padding:0 20px 100px}
+.portal-inner{max-width:620px;margin:0 auto}
+.vitrine-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px 20px;margin-bottom:12px;transition:all .2s}
+.vitrine-card:hover{border-color:rgba(212,149,106,0.3);box-shadow:0 4px 24px var(--shadow)}
+.v-price{font-size:24px;font-weight:700;color:var(--accent);margin:8px 0 12px}
+.v-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.v-list{list-style:none;margin-bottom:16px}
+.v-list li{font-size:12px;color:var(--text2);padding:4px 0;display:flex;align-items:center;gap:7px}
+.v-list li::before{content:'✓';color:var(--green);font-weight:700}
+.port-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.port-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .18s}
+.port-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px var(--shadow)}
+.port-cover{height:88px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;letter-spacing:2px}
+.port-info{padding:11px 13px}
+.port-name{font-size:12px;font-weight:600;color:var(--text2)}
+.port-meta{font-size:10px;color:var(--muted);margin-top:2px}
+.tl{position:relative;padding-left:22px}
+.tl::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:var(--border2)}
+.tli{position:relative;margin-bottom:14px}
+.tld{position:absolute;left:-19px;top:4px;width:9px;height:9px;border-radius:50%;background:var(--bg4);border:2px solid var(--bg4)}
+.tld.done{background:var(--green);border-color:var(--green)}
+.tld.now{background:var(--amber);border-color:var(--amber);box-shadow:0 0 6px rgba(251,191,36,.4)}
+.tlt{font-size:13px;font-weight:600;color:var(--text2)}
+.tls{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* =====================================================
+   RESPONSIVIDADE MOBILE
+   ===================================================== */
+@media(max-width:768px){
+  .app{flex-direction:column}
+  .sidebar{position:fixed;inset:0;z-index:150;width:80vw;max-width:280px;transform:translateX(-100%);transition:transform .25s ease}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay{display:none;position:fixed;inset:0;z-index:140;background:rgba(0,0,0,0.5)}
+  .sidebar.open ~ .sidebar-overlay{display:block}
+  .main{width:100%;height:100vh}
+  .topbar{padding:0 12px}
+  .topbar-left{display:flex;align-items:center;gap:8px}
+  .topbar-right .icon-btn:not(:first-child){display:none}
+  .content{padding:18px 14px}
+  .page-title{font-size:17px}
+  .page-sub{font-size:12px;margin-bottom:16px}
+  .g2,.g3,.g4{grid-template-columns:1fr !important}
+  .kanban{display:flex;flex-direction:row;overflow-x:auto;gap:12px;padding-bottom:12px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory}
+  .kb-col{min-width:240px;flex-shrink:0;scroll-snap-align:start}
+  .card{padding:14px}
+  .stat{padding:12px}
+  .stat-val{font-size:18px}
+  .fi,.fs{font-size:16px}
+  .portal-inner{padding:0 4px}
+  .portal-header{padding:0 14px;height:52px}
+  .swot-grid{grid-template-columns:1fr !important}
+  [id^="modal-"]{padding:10px 6px !important}
+  .vitrine-card{padding:16px}
+}
+.btn-hamburger{display:none;background:none;border:1px solid var(--border);border-radius:7px;width:32px;height:32px;color:var(--muted);cursor:pointer;align-items:center;justify-content:center}
+@media(max-width:768px){.btn-hamburger{display:flex}}
+@media(min-width:769px) and (max-width:1024px){.sidebar{width:200px;min-width:200px}.content{padding:22px 20px}.g3{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(2,1fr)}}
+
+/* =====================================================
+   VIKTOR ODDY DESIGN SYSTEM — adições
+   ===================================================== */
+
+/* Animations */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes vo-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* HOME SCREEN — redesign */
+.home-screen{position:fixed;inset:0;z-index:99;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background .2s;text-align:center}
+.home-screen.hidden{display:none}
+.home-eyebrow{font-size:10px;font-weight:600;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:20px;animation:fadeInUp .6s ease-out .1s both}
+.home-logo-text{font-size:clamp(44px,10vw,68px);font-weight:700;letter-spacing:3px;color:var(--text);margin-bottom:10px;line-height:1;animation:fadeInUp .6s ease-out .2s both}
+.home-logo-text .sep{color:var(--accent)}
+.home-tagline{font-size:13px;color:var(--muted);letter-spacing:0;margin-bottom:44px;max-width:340px;line-height:1.6;animation:fadeInUp .6s ease-out .3s both}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:520px;animation:fadeInUp .6s ease-out .4s both}
+.mode-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:22px 18px;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden}
+.mode-card::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,rgba(212,149,106,.06) 0%,transparent 70%);border-radius:18px;pointer-events:none}
+.mode-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 32px var(--shadow),0 0 0 1px rgba(212,149,106,.2)}
+.mode-icon{width:42px;height:42px;border-radius:11px;background:rgba(212,149,106,.1);border:1px solid rgba(212,149,106,.2);display:flex;align-items:center;justify-content:center;margin-bottom:14px;color:var(--accent);transition:background .2s}
+.mode-card:hover .mode-icon{background:rgba(212,149,106,.18)}
+.mode-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px}
+.mode-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.vo-card-full{grid-column:1/-1}
+
+/* VO BUTTONS — pill style with shadow */
+.btn-vo{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:100px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all .15s;letter-spacing:.01em;text-decoration:none}
+.btn-vo-primary{background:var(--accent);color:#fff;box-shadow:0 1px 2px rgba(192,125,82,.3),0 4px 8px rgba(192,125,82,.18),0 12px 16px rgba(192,125,82,.08),inset 0 1px 4px rgba(255,255,255,.2)}
+.btn-vo-primary:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 2px 4px rgba(192,125,82,.3),0 8px 18px rgba(192,125,82,.22),0 20px 28px rgba(192,125,82,.1),inset 0 1px 4px rgba(255,255,255,.2)}
+.btn-vo-secondary{background:var(--bg2);color:var(--text2);border:1px solid var(--border);box-shadow:0 1px 3px var(--shadow)}
+.btn-vo-secondary:hover{background:var(--bg3);border-color:var(--accent);color:var(--text)}
+.btn-vo-sm{padding:7px 16px;font-size:12px}
+
+/* VITRINE HERO */
+.vit-hero{padding:36px 0 20px;text-align:center}
+.vit-eyebrow{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;animation:fadeInUp .6s ease-out .1s both}
+.vit-h1{font-size:clamp(26px,5vw,38px);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:12px;letter-spacing:-.02em;animation:fadeInUp .6s ease-out .2s both}
+.vit-h1 em{font-style:normal;color:var(--accent)}
+.vit-sub{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:22px;max-width:420px;margin-left:auto;margin-right:auto;animation:fadeInUp .6s ease-out .3s both}
+.vit-ctas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;animation:fadeInUp .6s ease-out .4s both}
+
+/* MARQUEE */
+.vo-marquee-section{margin:24px 0;overflow:hidden;position:relative}
+.vo-marquee-section::before,.vo-marquee-section::after{content:'';position:absolute;top:0;bottom:0;width:48px;z-index:2;pointer-events:none}
+.vo-marquee-section::before{left:0;background:linear-gradient(to right,var(--bg),transparent)}
+.vo-marquee-section::after{right:0;background:linear-gradient(to left,var(--bg),transparent)}
+.vo-marquee-track{display:flex;animation:vo-marquee 26s linear infinite;width:max-content;gap:10px}
+.vo-marquee-track:hover{animation-play-state:paused}
+.vo-mq-item{width:160px;height:130px;border-radius:14px;flex-shrink:0;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:12px;position:relative;border:1px solid rgba(255,255,255,0.06)}
+.vo-mq-ini{font-size:26px;font-weight:700;letter-spacing:2px;position:absolute;top:10px;right:10px;opacity:.75}
+.vo-mq-name{font-size:10px;font-weight:600;color:rgba(255,255,255,.9);z-index:1;line-height:1.3}
+.vo-mq-type{font-size:9px;color:rgba(255,255,255,.5);margin-top:2px;z-index:1}
+
+/* SECTION LABEL */
+.vit-section-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.vit-section-label::after{content:'';flex:1;height:1px;background:var(--border2)}
+
+/* TESTIMONIAL cards */
+.vit-testi-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden}
+.vit-testi-card::before{content:'"';font-size:64px;color:var(--accent);opacity:.1;position:absolute;top:2px;left:12px;line-height:1;font-family:Georgia,serif;pointer-events:none}
+
+/* DIFFERENTIALS */
+.vit-diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vit-diff-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;transition:all .18s}
+.vit-diff-item:hover{border-color:rgba(212,149,106,.3);transform:translateY(-2px)}
+
+/* FLOATING BOTTOM NAV */
+.vo-bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:200;background:var(--bg2);border:1px solid var(--border);border-radius:100px;padding:7px 7px 7px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 6px var(--shadow),0 10px 28px rgba(0,0,0,.18),0 28px 52px rgba(0,0,0,.12);white-space:nowrap;animation:fadeInUp .5s ease-out .6s both}
+.vo-bnav-text{font-size:12px;font-weight:500;color:var(--text2)}
+
+@media(max-width:540px){
+  .vo-mq-item{width:130px;height:110px}
+  .vo-bottom-nav{bottom:12px;padding:6px 6px 6px 14px;gap:8px}
+  .vo-bnav-text{display:none}
+  .vit-diff-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .mode-grid{max-width:100%}
+}
+
+/* ═══════════════════════════════════════════════════════
+   LINGUAGEM VISUAL — continuidade com landing-vitrine
+   ═══════════════════════════════════════════════════════ */
+
+/* Títulos editoriais em Cormorant Garamond */
+.page-title,
+.login-title,
+.home-logo-text {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.02em !important;
+}
+.page-title { font-size: 26px !important; font-weight: 400 !important; }
+
+/* Sidebar logo */
+.sb-logo {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+  letter-spacing: 2px !important;
+}
+
+/* Portal logo */
+.portal-logo {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+  letter-spacing: 2px !important;
+}
+
+/* Studio name no header da vitrine */
+#studio-name-header {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* HOME SCREEN — mesma atmosfera da landing */
+.home-screen {
+  background: var(--bg) !important;
+  /* mantém position:fixed e z-index do CSS original */
+}
+.home-screen::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 60%;
+  height: 80%;
+  background: radial-gradient(ellipse, rgba(184,134,90,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.home-screen::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  right: -5%;
+  width: 45%;
+  height: 60%;
+  background: radial-gradient(ellipse, rgba(184,134,90,0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.home-eyebrow {
+  font-family: 'DM Sans', sans-serif !important;
+  letter-spacing: 3px !important;
+  font-size: 10px !important;
+  color: var(--accent) !important;
+  font-weight: 400 !important;
+}
+.home-logo-text {
+  font-size: clamp(42px, 9vw, 64px) !important;
+  letter-spacing: 3px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  margin-bottom: 12px !important;
+}
+.home-tagline {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 300 !important;
+  letter-spacing: 0 !important;
+  color: var(--muted) !important;
+  max-width: 360px !important;
+  line-height: 1.65 !important;
+  margin-bottom: 48px !important;
+}
+
+/* MODE CARDS — mesma linguagem da landing */
+.mode-card {
+  border-radius: 4px !important;
+  padding: 28px 24px !important;
+  border: 1px solid var(--border) !important;
+  background: var(--surface) !important;
+  text-align: left !important;
+  position: relative !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+  transition: border-color .25s, box-shadow .25s, transform .25s !important;
+}
+.mode-card:hover {
+  border-color: var(--accent) !important;
+  box-shadow: 0 8px 32px var(--shadow) !important;
+  transform: translateY(-3px) !important;
+}
+.mode-icon {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 4px !important;
+  background: rgba(184,134,90,0.1) !important;
+  border: 1px solid rgba(184,134,90,0.2) !important;
+  color: var(--accent) !important;
+  margin-bottom: 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.mode-title {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  text-align: left !important;
+  margin-bottom: 8px !important;
+  color: var(--text) !important;
+}
+.mode-desc {
+  font-size: 12px !important;
+  font-weight: 300 !important;
+  text-align: left !important;
+  color: var(--muted) !important;
+  line-height: 1.6 !important;
+}
+.mode-grid {
+  max-width: 560px !important;
+  gap: 12px !important;
+}
+.vo-card-full { grid-column: 1 / -1 !important; }
+
+/* LOGIN BOXES — premium, como modais da landing */
+.login-box {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 24px 64px var(--shadow) !important;
+  padding: 44px !important;
+}
+.login-logo .name {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 22px !important;
+  font-weight: 500 !important;
+  letter-spacing: 2px !important;
+}
+.login-logo .sub {
+  font-size: 11px !important;
+  letter-spacing: 2px !important;
+  font-weight: 300 !important;
+  color: var(--muted) !important;
+}
+.login-title {
+  font-size: 28px !important;
+  font-weight: 400 !important;
+  margin-bottom: 6px !important;
+  line-height: 1.2 !important;
+}
+.login-sub {
+  font-size: 13px !important;
+  font-weight: 300 !important;
+  line-height: 1.7 !important;
+  color: var(--muted) !important;
+}
+
+/* INPUTS — mais suaves */
+.fi {
+  border-radius: 3px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 300 !important;
+}
+.fi:focus { border-color: var(--accent) !important; }
+.fs {
+  border-radius: 3px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 300 !important;
+}
+
+/* BOTÃO PRIMÁRIO — pill shape como landing */
+.btn-accent {
+  border-radius: 100px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.3px !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 2px rgba(184,134,90,0.25), 0 4px 8px rgba(184,134,90,0.15) !important;
+}
+
+/* CARDS — bordas mais suaves */
+.card {
+  border-radius: 4px !important;
+  border: 1px solid var(--border) !important;
+}
+.vitrine-card {
+  border-radius: 4px !important;
+}
+
+/* PORTAL HEADER — mesma altura e estilo da landing */
+.portal-header {
+  background: var(--bg) !important;
+  border-bottom: 1px solid var(--border2) !important;
+  height: 60px !important;
+}
+
+/* PORTAL DO CLIENTE — continuidade total */
+.portal-body {
+  background: var(--bg) !important;
+}
+.portal-inner .card {
+  background: var(--surface) !important;
+}
+
+/* SIDEBAR — mais quente */
+.sidebar {
+  background: var(--bg2) !important;
+  border-right: 1px solid var(--border2) !important;
+}
+.sb-label {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 9px !important;
+  letter-spacing: 2px !important;
+  color: var(--muted2) !important;
+}
+.sb-item {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 300 !important;
+  border-radius: 3px !important;
+}
+
+/* TOPBAR */
+.topbar {
+  background: var(--bg2) !important;
+  border-bottom: 1px solid var(--border2) !important;
+}
+.topbar-logo {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 2px !important;
+}
+
+/* KANBAN COLS */
+.kb-col {
+  border-radius: 4px !important;
+  background: var(--bg2) !important;
+}
+.kb-card {
+  border-radius: 3px !important;
+  background: var(--surface) !important;
+}
+.kb-card:hover { border-color: var(--accent) !important; }
+
+/* PILLS */
+.pill { border-radius: 100px !important; }
+
+/* STAT CARDS */
+.stat { border-radius: 4px !important; }
+
+/* AREA TABS */
+.area-tabs { background: var(--bg3) !important; }
+.atab { border-radius: 3px !important; }
+
+/* CHOICE CARDS */
+.choice-card {
+  border-radius: 4px !important;
+  transition: border-color .2s, background .2s !important;
+}
+.choice-card:hover { border-color: var(--accent) !important; }
+
+/* TIMELINE */
+.tld.done { background: var(--green) !important; border-color: var(--green) !important; }
+.tld.now  { background: var(--amber) !important; border-color: var(--amber) !important; }
+
+/* PORTFOLIO CARDS */
+.port-card { border-radius: 4px !important; }
+.port-card:hover { border-color: var(--accent) !important; }
+
+/* VITRINE HERO — tipografia editorial */
+.vit-h1 {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.02em !important;
+}
+.vit-eyebrow {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 3px !important;
+}
+
+/* PREÇO destaque */
+.v-price {
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 28px !important;
+  font-weight: 400 !important;
+}
+
+/* SECTION LABELS */
+.vit-section-label {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 2px !important;
+  font-weight: 400 !important;
+}
+
+/* ARQ INTELLIGENCE resultado */
+#arqia-crm-result, #arqia-diag-result, #arqia-brief-result,
+#arqia-proj-result, #arqia-reun-result, #arqia-fin-result,
+#arqia-mkt-result {
+  border-radius: 4px !important;
+  border-left: 3px solid var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+/* MODAL overlay */
+.modal-overlay { background: rgba(26,20,14,0.8) !important; }
+
+/* ─── CURSOR POINTER GLOBAL ─────────────────────────── */
+button, [onclick], .mode-card, .kb-card, .port-card,
+.choice-card, .person-card, .vitrine-card, .env-item,
+.sb-item, .btn, .btn-accent, .btn-sm, .btn-vo,
+.btn-vo-primary, .btn-vo-secondary, .atab, .toggle,
+.icon-btn, label[onclick] {
+  cursor: pointer !important;
+}
+</style>
+
+<script>
+var ICONS = {
+  "arrow-left": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0"/><path d="M5 12l6 6"/><path d="M5 12l6 -6"/>',
+  "log-in": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"/><path d="M21 12h-13l3 -3"/><path d="M11 15l-3 -3"/>',
+  "log-out": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"/><path d="M9 12h12l-3 -3"/><path d="M18 15l3 -3"/>',
+  "pencil-ruler": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0"/><path d="M9 8l1 0"/><path d="M9 12l1 0"/><path d="M9 16l1 0"/><path d="M14 8l1 0"/><path d="M14 12l1 0"/><path d="M14 16l1 0"/><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16"/>',
+  "user-circle": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855"/>',
+  "layout-grid": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M14 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M4 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/><path d="M14 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"/>',
+  "clipboard-list": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"/><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/><path d="M9 12l.01 0"/><path d="M13 12l2 0"/><path d="M9 16l.01 0"/><path d="M13 16l2 0"/>',
+  "chevron-right": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6"/>',
+  "chevron-left": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6"/>',
+  "sun": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>',
+  "moon": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>',
+  "bell": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/>',
+  "layout-dashboard": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1"/><path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"/><path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1"/><path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"/>',
+  "building-2": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0"/><path d="M9 8l1 0"/><path d="M9 12l1 0"/><path d="M9 16l1 0"/><path d="M14 8l1 0"/><path d="M14 12l1 0"/><path d="M14 16l1 0"/><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16"/>',
+  "receipt": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2"/><path d="M14 8h-2.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 1 0 3h-2.5m2 0v1.5m0 -9v1.5"/>',
+  "files": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 3v4a1 1 0 0 0 1 1h4"/><path d="M18 17h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h4l5 5v7a2 2 0 0 1 -2 2z"/><path d="M16 17v2a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h2"/>',
+  "key-round": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16.555 3.843l3.602 3.602a2.877 2.877 0 0 1 0 4.069l-2.643 2.643a2.877 2.877 0 0 1 -4.069 0l-.301 -.301l-6.558 6.558a2 2 0 0 1 -1.239 .578l-.175 .008h-1.172a1 1 0 0 1 -.993 -.883l-.007 -.117v-1.172a2 2 0 0 1 .467 -1.284l.119 -.13l.414 -.414h2v-2h2v-2l2.144 -2.144l-.301 -.301a2.877 2.877 0 0 1 0 -4.069l2.643 -2.643a2.877 2.877 0 0 1 4.069 0z"/><path d="M15 9h.01"/>',
+  "key": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16.555 3.843l3.602 3.602a2.877 2.877 0 0 1 0 4.069l-2.643 2.643a2.877 2.877 0 0 1 -4.069 0l-.301 -.301l-6.558 6.558a2 2 0 0 1 -1.239 .578l-.175 .008h-1.172a1 1 0 0 1 -.993 -.883l-.007 -.117v-1.172a2 2 0 0 1 .467 -1.284l.119 -.13l.414 -.414h2v-2h2v-2l2.144 -2.144l-.301 -.301a2.877 2.877 0 0 1 0 -4.069l2.643 -2.643a2.877 2.877 0 0 1 4.069 0z"/>',
+  "users": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/>',
+  "mic": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 2m0 3a3 3 0 0 1 6 0v5a3 3 0 0 1 -6 0z"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M8 21l8 0"/><path d="M12 17l0 4"/>',
+  "contact": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h11a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-11a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1m3 0v18"/><path d="M13 8l2 0"/><path d="M13 12l2 0"/>',
+  "target": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M15 15l3.35 3.35"/><path d="M9 15l-3.35 3.35"/>',
+  "calendar-range": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M7 14h2"/><path d="M14 14h3"/>',
+  "package": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5"/><path d="M12 12l8 -4.5"/><path d="M12 12l0 9"/><path d="M12 12l-8 -4.5"/><path d="M16 5.25l-8 4.5"/>',
+  "palette": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25"/><path d="M8.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M12.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/>',
+  "bookmark": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 7v14l-6 -4l-6 4v-14a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4z"/>',
+  "pen-line": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21l18 0"/><path d="M3 17l12 -12"/><path d="M17.5 3.5l3 3"/>',
+  "crosshair": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/>',
+  "image": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z"/><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5"/><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3"/>',
+  "chess": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/><path d="M5 20h14"/><path d="M6.6 15a6 6 0 0 1 10.8 0"/>',
+  "lightbulb": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7"/><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3"/><path d="M9.7 17l4.6 0"/>',
+  "layout-template": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"/><path d="M4 14m0 2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2z"/><path d="M14 14l6 0m-6 4l6 0"/>',
+  "home": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/>',
+  "check-square": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11l3 3l8 -8"/><path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9"/>',
+  "badge": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M12 4l-4 4h-4v4l-2 4l2 4v4h4l4 4l4 -4h4v-4l2 -4l-2 -4v-4h-4z"/>',
+  "truck": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h4.5l2.5 5"/>',
+  "folder-open": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 19l2.757 -7.351a1 1 0 0 1 .936 -.649h12.307a1 1 0 0 1 .986 1.164l-.996 5.211a2 2 0 0 1 -1.964 1.625h-14.026a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2h4l3 3h7a2 2 0 0 1 2 2v2"/>',
+  "calendar": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/><path d="M11 15h1"/><path d="M12 15v3"/>',
+  "library": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 3m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v13.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z"/><path d="M4.012 16.737a2 2 0 0 1 -1.012 -1.737v-10c0 -2.21 1.343 -3 3 -3"/><path d="M11 7h4"/><path d="M11 11h4"/>',
+  "timer": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 3h4"/><path d="M12 3v4"/><path d="M12 12m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M12 12l3 -2"/>',
+  "sparkles": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm-7 1a6 6 0 0 0 6 6a6 6 0 0 0 -6 6a6 6 0 0 0 -6 -6a6 6 0 0 0 6 -6z"/>',
+  "video": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 10l4.553 -2.028a1 1 0 0 1 1.447 .894v6.268a1 1 0 0 1 -1.447 .894l-4.553 -2.028v-4z"/><path d="M3 6m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z"/>',
+  "file-text": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/><path d="M9 9l1 0"/><path d="M9 13l6 0"/><path d="M9 17l6 0"/>',
+  "file-signature": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 8v-3a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2h-5"/><path d="M6 17.1l1 -1l2.5 2.5"/><path d="M15 11c-.667 2 -2 3 -4 3"/><path d="M3 20.5c-.667 .333 -1.333 .167 -2 -.5l3.5 -3.5l2.5 2.5z"/>',
+  "presentation": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 12v-4"/><path d="M15 12v-2"/><path d="M12 12v-6"/><path d="M3 4h18"/><path d="M4 4v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-10"/><path d="M12 19l-2 2"/><path d="M12 19l2 2"/>',
+  "settings": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/>',
+  "folder": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"/>',
+  "trending-up": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/>',
+  "clock": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 7l0 5l3 3"/>',
+  "plus": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14"/><path d="M5 12l14 0"/>',
+  "save": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"/><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M14 4l0 4l-6 0l0 -4"/>',
+  "credit-card": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"/><path d="M3 10l18 0"/><path d="M7 15l.01 0"/><path d="M11 15l2 0"/>',
+  "external-link": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6"/><path d="M11 13l9 -9"/><path d="M15 4h5v5"/>',
+  "shopping-cart": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2 -1.61l1.38 -7.39h-15.1"/>',
+  "upload": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"/><path d="M7 9l5 -5l5 5"/><path d="M12 4l0 12"/>',
+  "upload-cloud": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1"/><path d="M9 15l3 -3l3 3"/><path d="M12 12l0 9"/>',
+  "folder-plus": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"/><path d="M9 13h6"/><path d="M12 10v6"/>',
+  "eye": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"/>',
+  "search": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/>',
+  "play": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 4v16l13 -8z"/>',
+  "pause": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"/><path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"/>',
+  "square": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"/>',
+  "bar-chart-2": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 18v-12"/><path d="M8 18v-6"/><path d="M12 18v-4"/><path d="M16 18v-8"/><path d="M20 18v-2"/>',
+  "activity": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12h4l3 8l4 -16l3 8h4"/>',
+  "download": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"/><path d="M7 11l5 5l5 -5"/><path d="M12 4l0 12"/>',
+  "file-down": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/><path d="M12 11v6"/><path d="M9.5 15.5l2.5 2.5l2.5 -2.5"/>',
+  "compass": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M16.57 7.43l-3.57 4.57"/><path d="M7.43 16.57l4.57 -3.57"/>',
+  "heart": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/>',
+  "user": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>',
+  "paperclip": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5"/>',
+  "check-circle": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M9 12l2 2l4 -4"/>',
+  "briefcase": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"/><path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>',
+  "send": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 14l11 -11"/><path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"/>',
+  "refresh-cw": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"/><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/>',
+  "lock": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z"/><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"/><path d="M8 11v-4a4 4 0 1 1 8 0v4"/>',
+  "shield-check": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11.46 20.846a12 12 0 0 1 -7.96 -14.846a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3a12 12 0 0 1 -.09 7.06"/><path d="M15 19l2 2l4 -4"/>',
+  "star": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/>',
+  "message-circle": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.259 1.029 10.598c-2.666 3.34 -7.655 4.608 -11.574 2.996l-4.7 .2"/>',
+  "gift": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 8m0 1a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z"/><path d="M12 8l0 13"/><path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"/>',
+  "mail": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"/><path d="M3 7l9 6l9 -6"/>',
+  "tag": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M3 6.5v5.5l8 8a2 2 0 0 0 2.83 0l5.67 -5.67a2 2 0 0 0 0 -2.83l-8 -8h-5.5a3 3 0 0 0 -3 3z"/>',
+  "info": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 8l.01 0"/><path d="M11 12l1 0l0 4l1 0"/>',
+  "chart-bar": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12h4l3 8l4 -16l3 8h4"/>',
+  "check": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10"/>',
+  "stethoscope": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h-1a2 2 0 0 0 -2 2v3.5h0a5.5 5.5 0 0 0 11 0v-3.5a2 2 0 0 0 -2 -2h-1"/><path d="M8 15a6 6 0 1 0 12 0v-3"/><path d="M11 3v2"/><path d="M6 3v2"/><path d="M20 10m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/>',
+  "clipboard": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"/><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/>',
+  "inbox": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"/><path d="M4 13h3l3 3h4l3 -3h3"/>',
+  "calculator": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 3m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"/><path d="M8 7m0 1a1 1 0 0 1 1 -1h6a1 1 0 0 1 1 1v1a1 1 0 0 1 -1 1h-6a1 1 0 0 1 -1 -1z"/><path d="M8 14l0 .01"/><path d="M12 14l0 .01"/><path d="M16 14l0 .01"/><path d="M8 17l0 .01"/><path d="M12 17l0 .01"/><path d="M16 17l0 .01"/>',
+  "arrow-right": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/>',
+  "user-plus": '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M16 19h6"/><path d="M19 16v6"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4"/>'
+};
+
+function renderIcons() {
+  document.querySelectorAll("[data-lucide]").forEach(function(el) {
+    var name = el.getAttribute("data-lucide");
+    var path = ICONS[name];
+    if (!path) path = ICONS["info"] || "";
+    var w = el.style.width || "16px";
+    var h = el.style.height || "16px";
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + path + '</svg>';
+    el.outerHTML = svg;
+  });
+}
+</script>
+</head>
+<body>
+
+<!-- =====================================================
+     HOME — redesigned with Viktor Oddy aesthetic
+     ===================================================== -->
+<div class="home-screen hidden" id="home">
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;max-width:560px;padding:0 24px;position:relative;z-index:1">
+
+    <a href="landing-vitrine.html" style="font-size:10px;font-family:'DM Sans',sans-serif;font-weight:400;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;margin-bottom:36px;letter-spacing:2px;text-transform:uppercase;transition:color .25s;align-self:flex-start">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l14 0"/><path d="M5 12l6 6"/><path d="M5 12l6 -6"/></svg>
+      Voltar ao site
+    </a>
+
+    <div class="home-eyebrow">Plataforma de Gestão</div>
+    <div class="home-logo-text">ARQ<span class="sep">|</span>CENTRAL</div>
+    <div class="home-tagline">Do primeiro contato à entrega final — tudo em um só lugar.</div>
+
+    <div class="mode-grid">
+      <div class="mode-card" onclick="showVitrine()">
+        <div class="mode-icon"><i data-lucide="sparkles" style="width:18px;height:18px"></i></div>
+        <div class="mode-title">Vitrine do escritório</div>
+        <div class="mode-desc">Serviços, portfólio e diagnóstico gratuito</div>
+      </div>
+      <div class="mode-card" onclick="showCliLogin()">
+        <div class="mode-icon"><i data-lucide="clipboard-list" style="width:18px;height:18px"></i></div>
+        <div class="mode-title">Meu projeto</div>
+        <div class="mode-desc">Acompanhe o andamento do projeto contratado</div>
+      </div>
+      <div class="mode-card vo-card-full" onclick="showArqLogin()">
+        <div class="mode-icon"><i data-lucide="pencil-ruler" style="width:18px;height:18px"></i></div>
+        <div class="mode-title">Área da arquiteta</div>
+        <div class="mode-desc">Acesso restrito à equipe do escritório</div>
+      </div>
+    </div>
+
+  </div>
+  <div style="position:absolute;bottom:24px;right:24px;z-index:2">
+    <button class="icon-btn" onclick="toggleTheme()" style="width:36px;height:36px;border-radius:3px">
+      <i data-lucide="sun" id="home-theme-icon" style="width:15px;height:15px"></i>
+    </button>
+  </div>
+</div>
+
+<!-- LOGIN ARQUITETO -->
+<div class="screen hidden" id="scr-arq">
+  <div class="login-box">
+    <button class="btn-back" onclick="window.location.href='landing-vitrine.html'">
+      <i data-lucide="arrow-left" style="width:15px;height:15px"></i> Voltar ao site
+    </button>
+    <div class="login-logo">
+      <div class="name">ARQ<span class="sep">|</span>CENTRAL</div>
+      <div class="sub">Área do Arquiteto</div>
+    </div>
+    <div class="login-title">Entrar na plataforma</div>
+    <div class="login-sub">Acesso exclusivo para a equipe do escritório.</div>
+    <label class="fl">E-mail profissional</label>
+    <input class="fi" type="email" placeholder="arquiteta@seuescritorio.com">
+    <label class="fl">Senha</label>
+    <input class="fi" type="password" placeholder="••••••••">
+    <button class="btn btn-accent" style="width:100%;justify-content:center;padding:13px" onclick="showDash()">
+      <i data-lucide="log-in" style="width:15px;height:15px"></i> Entrar como arquiteto
+    </button>
+    <p style="text-align:center;margin-top:14px;font-size:12px;color:var(--muted)">
+      Esqueceu a senha? <span style="color:var(--accent);cursor:pointer">Recuperar acesso</span>
+    </p>
+  </div>
+</div>
+
+<!-- CLIENTE ESCOLHA -->
+<div class="screen hidden" id="scr-cli-choice">
+  <div class="login-box">
+    <button class="btn-back" onclick="goHome()">
+      <i data-lucide="arrow-left" style="width:15px;height:15px"></i> Voltar
+    </button>
+    <div class="login-logo">
+      <div class="name">ARQ<span class="sep">|</span>CENTRAL</div>
+      <div class="sub">O que você quer fazer?</div>
+    </div>
+    <div class="choice-card" onclick="showVitrine()">
+      <div class="choice-icon"><i data-lucide="layout-grid" style="width:18px;height:18px"></i></div>
+      <div>
+        <div class="choice-title">Ver serviços e contratar</div>
+        <div class="choice-sub">Conheça os serviços e contrate sem login</div>
+      </div>
+      <i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--muted2);margin-left:auto"></i>
+    </div>
+    <div class="choice-card" onclick="showCliLogin()">
+      <div class="choice-icon"><i data-lucide="clipboard-list" style="width:18px;height:18px"></i></div>
+      <div>
+        <div class="choice-title">Acompanhar meu projeto</div>
+        <div class="choice-sub">Entre para ver o andamento do projeto</div>
+      </div>
+      <i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--muted2);margin-left:auto"></i>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN CLIENTE -->
+<div class="screen hidden" id="scr-cli">
+  <div class="login-box">
+    <button class="btn-back" onclick="window.location.href='landing-vitrine.html'">
+      <i data-lucide="arrow-left" style="width:15px;height:15px"></i> Voltar ao site
+    </button>
+    <div class="login-logo">
+      <div class="name">ARQ<span class="sep">|</span>CENTRAL</div>
+      <div class="sub">Acompanhamento de Projeto</div>
+    </div>
+    <div class="login-title">Entrar no portal</div>
+    <div class="login-sub">Use o e-mail informado ao contratar. Sua senha foi enviada automaticamente após o pagamento.</div>
+    <label class="fl">E-mail</label>
+    <input class="fi" type="email" placeholder="cliente@email.com">
+    <label class="fl">Senha</label>
+    <input class="fi" type="password" placeholder="••••••••">
+    <button class="btn btn-accent" style="width:100%;justify-content:center;padding:11px;background:var(--green);border-color:var(--green);color:#fff" onclick="showMeuProjeto()">
+      <i data-lucide="log-in" style="width:15px;height:15px"></i> Entrar no portal
+    </button>
+  </div>
+</div>
+
+<!-- =====================================================
+     PORTAL VITRINE — redesigned with Viktor Oddy aesthetic
+     ===================================================== -->
+<div class="portal-wrap hidden" id="portal-vitrine">
+
+  <!-- HEADER -->
+  <div class="portal-header" style="background:var(--bg);border-bottom:1px solid var(--border2)">
+    <div style="font-size:14px;font-weight:700;color:var(--text);letter-spacing:.5px" id="studio-name-header">
+      [Nome do Seu Escritório]
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="btn-vo btn-vo-primary btn-vo-sm" onclick="abrirDiagnosticoExpress()">
+        <i data-lucide="sparkles" style="width:12px;height:12px"></i> Diagnóstico gratuito
+      </button>
+      <button class="icon-btn" onclick="toggleTheme()">
+        <i data-lucide="sun" id="vit-theme-icon" style="width:15px;height:15px"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="portal-body">
+    <div class="portal-inner">
+
+      <!-- ── HERO ── -->
+      <div class="vit-hero">
+        <div class="vit-eyebrow">Seu Escritório de Arquitetura</div>
+        <h1 class="vit-h1">Design consciente<br>com <em>biofilia</em> e propósito</h1>
+        <p class="vit-sub">Transformamos ambientes em experiências que refletem quem você é — com design consciente e propósito.</p>
+        <div class="vit-ctas">
+          <button class="btn-vo btn-vo-primary" onclick="abrirDiagnosticoExpress()">
+            <i data-lucide="sparkles" style="width:14px;height:14px"></i>
+            Diagnóstico gratuito
+          </button>
+          <button class="btn-vo btn-vo-secondary" onclick="document.getElementById('vit-contato').scrollIntoView({behavior:'smooth'})">
+            <i data-lucide="message-circle" style="width:14px;height:14px"></i>
+            Falar com a arquiteta
+          </button>
+        </div>
+      </div>
+
+      <!-- ── MARQUEE ── -->
+      <div class="vo-marquee-section">
+        <div class="vo-marquee-track" id="vit-marquee">
+          <!-- 8 cards × 2 (duplicated for infinite loop) -->
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#1a3a5c,#0a1a2e)">
+            <span class="vo-mq-ini" style="color:#60a5fa">SE</span>
+            <span class="vo-mq-name">Sala de Estar — Projeto 01</span>
+            <span class="vo-mq-type">Residencial · 48m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#1a3a1a,#0a1f0a)">
+            <span class="vo-mq-ini" style="color:#4ade80">HO</span>
+            <span class="vo-mq-name">Home Office — Projeto 02</span>
+            <span class="vo-mq-type">Residencial · 12m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#2d1a3a,#150d1f)">
+            <span class="vo-mq-ini" style="color:#a78bfa">LO</span>
+            <span class="vo-mq-name">Loft — Projeto 03</span>
+            <span class="vo-mq-type">Residencial · 65m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#2a1a10,#140d08)">
+            <span class="vo-mq-ini" style="color:#fb923c">CO</span>
+            <span class="vo-mq-name">Coworking Espaço Ativo</span>
+            <span class="vo-mq-type">Comercial · 120m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#1a2a3a,#0a1520)">
+            <span class="vo-mq-ini" style="color:#60a5fa">SU</span>
+            <span class="vo-mq-name">Suíte Master — Projeto 05</span>
+            <span class="vo-mq-type">Residencial · 22m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#3a1a1a,#1f0a0a)">
+            <span class="vo-mq-ini" style="color:#f87171">CZ</span>
+            <span class="vo-mq-name">Cozinha Integrada</span>
+            <span class="vo-mq-type">Residencial · 18m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#1a3020,#0d1a10)">
+            <span class="vo-mq-ini" style="color:#4ade80">VA</span>
+            <span class="vo-mq-name">Varanda Gourmet</span>
+            <span class="vo-mq-type">Residencial · 14m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#2a2010,#16130a)">
+            <span class="vo-mq-ini" style="color:#fbbf24">QI</span>
+            <span class="vo-mq-name">Quarto Infantil</span>
+            <span class="vo-mq-type">Residencial · 10m²</span>
+          </div>
+          <!-- Duplicate for seamless loop -->
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#1a3a5c,#0a1a2e)">
+            <span class="vo-mq-ini" style="color:#60a5fa">SE</span>
+            <span class="vo-mq-name">Sala de Estar — Projeto 01</span>
+            <span class="vo-mq-type">Residencial · 48m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#1a3a1a,#0a1f0a)">
+            <span class="vo-mq-ini" style="color:#4ade80">HO</span>
+            <span class="vo-mq-name">Home Office — Projeto 02</span>
+            <span class="vo-mq-type">Residencial · 12m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#2d1a3a,#150d1f)">
+            <span class="vo-mq-ini" style="color:#a78bfa">LO</span>
+            <span class="vo-mq-name">Loft — Projeto 03</span>
+            <span class="vo-mq-type">Residencial · 65m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#2a1a10,#140d08)">
+            <span class="vo-mq-ini" style="color:#fb923c">CO</span>
+            <span class="vo-mq-name">Coworking Espaço Ativo</span>
+            <span class="vo-mq-type">Comercial · 120m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#1a2a3a,#0a1520)">
+            <span class="vo-mq-ini" style="color:#60a5fa">SU</span>
+            <span class="vo-mq-name">Suíte Master — Projeto 05</span>
+            <span class="vo-mq-type">Residencial · 22m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#3a1a1a,#1f0a0a)">
+            <span class="vo-mq-ini" style="color:#f87171">CZ</span>
+            <span class="vo-mq-name">Cozinha Integrada</span>
+            <span class="vo-mq-type">Residencial · 18m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#1a3020,#0d1a10)">
+            <span class="vo-mq-ini" style="color:#4ade80">VA</span>
+            <span class="vo-mq-name">Varanda Gourmet</span>
+            <span class="vo-mq-type">Residencial · 14m²</span>
+          </div>
+          <div class="vo-mq-item" style="background:linear-gradient(135deg,#2a2010,#16130a)">
+            <span class="vo-mq-ini" style="color:#fbbf24">QI</span>
+            <span class="vo-mq-name">Quarto Infantil</span>
+            <span class="vo-mq-type">Residencial · 10m²</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SERVIÇOS ── -->
+      <div style="margin-bottom:32px">
+        <div class="vit-section-label">O que posso fazer pelo seu espaço</div>
+
+        <div class="vitrine-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <div style="font-size:15px;font-weight:700">Consultoria Online</div>
+            <span class="pill p-green">Disponível</span>
+          </div>
+          <div class="v-price">R$ 350</div>
+          <div class="v-desc">Análise do ambiente com paleta de cores, mobiliário e lista de compras em até 5 dias úteis.</div>
+          <ul class="v-list">
+            <li>Paleta de cores personalizada</li>
+            <li>Lista de compras sugerida</li>
+            <li>1 revisão incluída</li>
+          </ul>
+          <button class="btn-vo btn-vo-primary" onclick="abrirDiagnosticoExpress()">
+            <i data-lucide="sparkles" style="width:13px;height:13px"></i> Quero este serviço
+          </button>
+        </div>
+
+        <div class="vitrine-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <div style="font-size:15px;font-weight:700">Projeto de Interiores Completo</div>
+            <span class="pill p-green">Disponível</span>
+          </div>
+          <div class="v-price">R$ 2.800</div>
+          <div class="v-desc">Projeto executivo completo com plantas, moodboard e acompanhamento de obra.</div>
+          <ul class="v-list">
+            <li>Levantamento in loco</li>
+            <li>Plantas e projeto executivo</li>
+            <li>2 revisões incluídas</li>
+            <li>Acompanhamento de obra</li>
+          </ul>
+          <button class="btn-vo btn-vo-primary" onclick="abrirDiagnosticoExpress()">
+            <i data-lucide="sparkles" style="width:13px;height:13px"></i> Quero este serviço
+          </button>
+        </div>
+
+        <div class="vitrine-card" style="opacity:.75">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <div style="font-size:15px;font-weight:700">Decoração de Ambientes</div>
+            <span class="pill p-amber">Em breve</span>
+          </div>
+          <div class="v-price">R$ 1.200</div>
+          <div class="v-desc">Seleção de mobiliário e objetos decorativos para ambientes já reformados.</div>
+          <button class="btn-vo btn-vo-secondary" style="opacity:.5;pointer-events:none">
+            <i data-lucide="clock" style="width:13px;height:13px"></i> Em breve
+          </button>
+        </div>
+      </div>
+
+      <!-- ── DIFERENCIAIS ── -->
+      <div style="margin-bottom:32px">
+        <div class="vit-section-label">Como trabalhamos</div>
+        <div class="vit-diff-grid">
+          <div class="vit-diff-item">
+            <div style="color:var(--accent);margin-bottom:8px"><i data-lucide="heart" style="width:22px;height:22px"></i></div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">Biofilia</div>
+            <div style="font-size:11px;color:var(--muted)">Ambientes que conectam com a natureza</div>
+          </div>
+          <div class="vit-diff-item">
+            <div style="color:var(--accent);margin-bottom:8px"><i data-lucide="clock" style="width:22px;height:22px"></i></div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">Prazo garantido</div>
+            <div style="font-size:11px;color:var(--muted)">Entrega dentro do combinado</div>
+          </div>
+          <div class="vit-diff-item">
+            <div style="color:var(--accent);margin-bottom:8px"><i data-lucide="message-circle" style="width:22px;height:22px"></i></div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">Atendimento próximo</div>
+            <div style="font-size:11px;color:var(--muted)">Comunicação clara e direta</div>
+          </div>
+          <div class="vit-diff-item">
+            <div style="color:var(--accent);margin-bottom:8px"><i data-lucide="sparkles" style="width:22px;height:22px"></i></div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px">IA no processo</div>
+            <div style="font-size:11px;color:var(--muted)">Tecnologia a serviço do design</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PORTFÓLIO ── -->
+      <div style="margin-bottom:32px">
+        <div class="vit-section-label">Transformações recentes</div>
+        <div class="port-grid">
+          <div class="port-card">
+            <div class="port-cover" style="background:linear-gradient(135deg,#1a3a5c,#0a1a2e);color:#60a5fa">SE</div>
+            <div class="port-info"><div class="port-name">Sala Estar — Família [Cliente]</div><div class="port-meta">Residencial · 48m² · Contemporâneo</div></div>
+          </div>
+          <div class="port-card">
+            <div class="port-cover" style="background:linear-gradient(135deg,#1a3a1a,#0a1f0a);color:#4ade80">HO</div>
+            <div class="port-info"><div class="port-name">Home Office — Dr. [Cliente]</div><div class="port-meta">Residencial · 12m² · Minimalista</div></div>
+          </div>
+          <div class="port-card">
+            <div class="port-cover" style="background:linear-gradient(135deg,#2d1a3a,#150d1f);color:#a78bfa">LO</div>
+            <div class="port-info"><div class="port-name">Loft — Projeto 03</div><div class="port-meta">Residencial · 65m² · Industrial</div></div>
+          </div>
+          <div class="port-card">
+            <div class="port-cover" style="background:linear-gradient(135deg,#2a1a10,#140d08);color:#fb923c">CO</div>
+            <div class="port-info"><div class="port-name">Coworking — Projeto 04</div><div class="port-meta">Comercial · 120m² · Contemporâneo</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── DEPOIMENTOS ── -->
+      <div style="margin-bottom:32px">
+        <div class="vit-section-label">Quem já transformou o lar</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="vit-testi-card">
+            <div style="font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:12px;margin-top:4px">"A arquiteta transformou nossa sala por completo. Além de lindo, o ambiente ficou muito mais funcional para o dia a dia da família."</div>
+            <div style="font-size:11px;font-weight:600">[Cliente A]</div>
+            <div style="font-size:10px;color:var(--muted)">Consultoria Online · </div>
+          </div>
+          <div class="vit-testi-card">
+            <div style="font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:12px;margin-top:4px">"Profissional incrível. Cumpriu o prazo, foi super atenciosa e o resultado superou todas as expectativas."</div>
+            <div style="font-size:11px;font-weight:600">Dr. [Cliente]</div>
+            <div style="font-size:10px;color:var(--muted)">Projeto Completo · </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FAQ ── -->
+      <div style="margin-bottom:32px">
+        <div class="vit-section-label">Dúvidas comuns</div>
+        <div style="display:flex;flex-direction:column;gap:8px" id="vit-faq">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+            <div style="padding:12px 16px;cursor:pointer;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center" onclick="toggleFAQ(this)">Como funciona o processo de design? <span style="color:var(--muted);font-size:16px;line-height:1">+</span></div>
+            <div style="display:none;padding:0 16px 14px;font-size:12px;color:var(--muted);line-height:1.65">Começamos com um diagnóstico gratuito para entender suas necessidades. Depois desenvolvemos o projeto em etapas: briefing detalhado, conceito, layout, especificação de materiais e acompanhamento.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+            <div style="padding:12px 16px;cursor:pointer;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center" onclick="toggleFAQ(this)">Vocês atendem fora da cidade? <span style="color:var(--muted);font-size:16px;line-height:1">+</span></div>
+            <div style="display:none;padding:0 16px 14px;font-size:12px;color:var(--muted);line-height:1.65">Sim! A Consultoria Online atende todo o Brasil. Para projetos completos, podemos combinar visitas presenciais com acompanhamento remoto.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+            <div style="padding:12px 16px;cursor:pointer;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center" onclick="toggleFAQ(this)">Qual o prazo médio de entrega? <span style="color:var(--muted);font-size:16px;line-height:1">+</span></div>
+            <div style="display:none;padding:0 16px 14px;font-size:12px;color:var(--muted);line-height:1.65">A Consultoria Online tem prazo de 5 dias úteis. Projetos completos variam entre 30 e 60 dias dependendo da complexidade e número de ambientes.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+            <div style="padding:12px 16px;cursor:pointer;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center" onclick="toggleFAQ(this)">Como funciona o pagamento? <span style="color:var(--muted);font-size:16px;line-height:1">+</span></div>
+            <div style="display:none;padding:0 16px 14px;font-size:12px;color:var(--muted);line-height:1.65">Trabalhamos com 50% na assinatura do contrato e 50% na entrega final. Aceitamos PIX, cartão de crédito e transferência bancária.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CONTATO ── -->
+      <div id="vit-contato" style="margin-bottom:40px">
+        <div class="vit-section-label">Pronto para começar?</div>
+        <div class="card" style="border-radius:16px">
+          <div class="fg"><label class="fl">Seu nome</label><input class="fi" id="vit-contato-nome" placeholder="Como você se chama?"></div>
+          <div class="fg"><label class="fl">WhatsApp</label><input class="fi" id="vit-contato-wpp" placeholder="(91) 99999-0000"></div>
+          <div class="fg"><label class="fl">O que você precisa?</label><textarea class="fi" id="vit-contato-msg" style="min-height:70px" placeholder="Me conta: o que você quer sentir quando chegar em casa?"></textarea></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn-vo btn-vo-primary" onclick="enviarContato()">
+              <i data-lucide="send" style="width:13px;height:13px"></i> Quero começar
+            </button>
+            <button class="btn-vo btn-vo-secondary" onclick="abrirDiagnosticoExpress()">
+              <i data-lucide="sparkles" style="width:13px;height:13px"></i> Fazer diagnóstico gratuito
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FLOATING BOTTOM NAV -->
+  <div class="vo-bottom-nav">
+    <span class="vo-bnav-text">Pronto para transformar?</span>
+    <button class="btn-vo btn-vo-primary btn-vo-sm" onclick="abrirDiagnosticoExpress()">
+      <i data-lucide="sparkles" style="width:12px;height:12px"></i>
+      Diagnóstico gratuito
+    </button>
+  </div>
+
+  <!-- RODAPÉ DISCRETO COM ACESSOS INTERNOS -->
+  <div style="text-align:center;padding:28px 20px 100px;border-top:1px solid var(--border2);margin-top:8px">
+    <div style="font-size:10px;color:var(--muted2);margin-bottom:10px;letter-spacing:.5px">
+      <span style="cursor:pointer;transition:color .15s" onmouseover="this.style.color='var(--muted)'" onmouseout="this.style.color='var(--muted2)'" onclick="showCliLogin()">Área do cliente</span>
+      <span style="margin:0 10px;opacity:.4">·</span>
+      <span style="cursor:pointer;transition:color .15s" onmouseover="this.style.color='var(--muted)'" onmouseout="this.style.color='var(--muted2)'" onclick="showArqLogin()">Acesso restrito</span>
+    </div>
+    <div style="font-size:9px;color:var(--border);letter-spacing:1px;text-transform:uppercase;user-select:none">
+      ARQ|CENTRAL
+    </div>
+  </div>
+
+</div>
+
+<!-- PORTAL MEU PROJETO -->
+<div class="portal-wrap hidden" id="portal-projeto">
+  <div class="portal-header">
+    <div class="portal-logo">ARQ<span class="sep">|</span>CENTRAL</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="icon-btn" onclick="toggleTheme()">
+        <i data-lucide="sun" id="proj-theme-icon" style="width:15px;height:15px"></i>
+      </button>
+      <button class="btn btn-sm" onclick="goHome()">
+        <i data-lucide="log-out" style="width:13px;height:13px"></i> Sair
+      </button>
+    </div>
+  </div>
+  <div class="portal-body">
+    <div class="portal-inner">
+      <div style="margin-bottom:18px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:3px">Olá! 👋</div>
+        <div style="font-size:20px;font-weight:700">Meu Projeto</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">Consultoria Online · Pedido #0042</div>
+      </div>
+      <div style="display:flex;gap:0;margin-bottom:18px;background:var(--bg2);border:1px solid var(--border2);border-radius:9px;padding:3px;overflow-x:auto">
+        <button class="btn btn-accent btn-sm" style="flex:1;justify-content:center;white-space:nowrap" onclick="switchPortalTab(this,'ptab-status')">Projeto</button>
+        <button class="btn btn-sm" style="flex:1;justify-content:center;white-space:nowrap" onclick="switchPortalTab(this,'ptab-briefing')">Briefing</button>
+        <button class="btn btn-sm" style="flex:1;justify-content:center;white-space:nowrap" onclick="switchPortalTab(this,'ptab-docs')">Documentos</button>
+        <button class="btn btn-sm" style="flex:1;justify-content:center;white-space:nowrap" onclick="switchPortalTab(this,'ptab-pgto')">Pagamentos</button>
+        <button class="btn btn-sm" style="flex:1;justify-content:center;white-space:nowrap" onclick="switchPortalTab(this,'ptab-aprov')">Aprovações</button>
+      </div>
+      <div id="ptab-status">
+        <div class="card">
+          <div class="card-title"><i data-lucide="activity" style="width:15px;height:15px"></i> Status do projeto</div>
+          <div class="tl">
+            <div class="tli"><div class="tld done"></div><div class="tlt">Briefing recebido</div><div class="tls">02/06/2026 às 14:32</div></div>
+            <div class="tli"><div class="tld now"></div><div class="tlt">Em análise</div><div class="tls">Sua arquiteta está analisando as fotos e o briefing</div></div>
+            <div class="tli"><div class="tld"></div><div class="tlt" style="color:var(--muted)">Proposta enviada</div><div class="tls">Previsão: até 07/06/2026</div></div>
+            <div class="tli"><div class="tld"></div><div class="tlt" style="color:var(--muted)">Aprovação</div></div>
+            <div class="tli" style="margin-bottom:0"><div class="tld"></div><div class="tlt" style="color:var(--muted)">Entrega final</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i data-lucide="folder-open" style="width:15px;height:15px"></i> Drive do projeto</div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:12px">
+            <i data-lucide="folder-open" style="width:22px;height:22px;color:var(--accent)"></i>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">Pasta do projeto no Google Drive</div><div style="font-size:11px;color:var(--muted)">Fotos, plantas e documentos organizados</div></div>
+            <button class="btn btn-accent btn-sm"><i data-lucide="external-link" style="width:13px;height:13px"></i> Abrir</button>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:10px">
+          <button class="btn btn-sm"><i data-lucide="star" style="width:13px;height:13px"></i> Avaliar atendimento</button>
+        </div>
+      </div>
+      <div id="ptab-briefing" style="display:none">
+        <div class="card">
+          <div class="card-title"><i data-lucide="clipboard-list" style="width:15px;height:15px"></i> Briefing do projeto</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Preencha para ajudarmos a entender melhor suas necessidades.</div>
+          <div class="fg"><label class="fl">Ambientes a reformar</label><input class="fi" id="cli-brief-amb" placeholder="Ex: Sala de estar, cozinha, quarto principal"></div>
+          <div class="fg"><label class="fl">O que mais incomoda atualmente?</label><textarea class="fi" id="cli-brief-dor" style="min-height:70px" placeholder="Descreva os problemas do seu ambiente atual..."></textarea></div>
+          <div class="fg"><label class="fl">Como você imagina o resultado ideal?</label><textarea class="fi" id="cli-brief-obj" style="min-height:70px" placeholder="Descreva o que você quer conquistar..."></textarea></div>
+          <div class="fg"><label class="fl">Referências de estilo</label><input class="fi" id="cli-brief-ref" placeholder="Link do Pinterest, Instagram ou descrição do estilo"></div>
+          <div class="fg"><label class="fl">Alguma restrição importante?</label><textarea class="fi" id="cli-brief-rest" style="min-height:60px" placeholder="Orçamento limite, móveis que devem ser mantidos..."></textarea></div>
+          <button class="btn btn-accent" onclick="salvarBriefingCliente()"><i data-lucide="send" style="width:14px;height:14px"></i> Enviar briefing</button>
+        </div>
+      </div>
+      <div id="ptab-docs" style="display:none">
+        <div class="card">
+          <div class="card-title"><i data-lucide="files" style="width:15px;height:15px"></i> Documentos do projeto</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:8px">
+              <i data-lucide="file-text" style="width:18px;height:18px;color:var(--accent)"></i>
+              <div style="flex:1"><div style="font-size:12px;font-weight:500">Contrato assinado</div><div style="font-size:11px;color:var(--muted)">02/06/2026 · PDF</div></div>
+              <button class="btn btn-sm"><i data-lucide="download" style="width:12px;height:12px"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:8px">
+              <i data-lucide="file-text" style="width:18px;height:18px;color:var(--muted2)"></i>
+              <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--muted)">Proposta comercial</div><div style="font-size:11px;color:var(--muted2)">Aguardando envio</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:8px">
+              <i data-lucide="image" style="width:18px;height:18px;color:var(--muted2)"></i>
+              <div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--muted)">Projeto executivo</div><div style="font-size:11px;color:var(--muted2)">Em desenvolvimento</div></div>
+            </div>
+          </div>
+          <div style="margin-top:14px">
+            <div style="font-size:11px;font-weight:600;margin-bottom:8px">Enviar arquivo</div>
+            <label style="cursor:pointer"><input type="file" style="display:none" onchange="uploadArqCliente(this)"><span class="btn btn-sm"><i data-lucide="upload" style="width:12px;height:12px"></i> Selecionar arquivo</span></label>
+          </div>
+        </div>
+      </div>
+      <div id="ptab-pgto" style="display:none">
+        <div class="card">
+          <div class="card-title"><i data-lucide="receipt" style="width:15px;height:15px"></i> Pagamentos</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg2);border-radius:8px">
+              <div><div style="font-size:12px;font-weight:600">Parcela 1/2 — Entrada</div><div style="font-size:11px;color:var(--muted)">Vencimento: 02/06/2026</div></div>
+              <div style="text-align:right"><div style="font-size:13px;font-weight:700">R$ 175,00</div><span class="pill p-green">Pago</span></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg2);border-radius:8px">
+              <div><div style="font-size:12px;font-weight:600">Parcela 2/2 — Entrega</div><div style="font-size:11px;color:var(--muted)">Vencimento: 30/06/2026</div></div>
+              <div style="text-align:right"><div style="font-size:13px;font-weight:700">R$ 175,00</div><span class="pill p-amber">Pendente</span></div>
+            </div>
+          </div>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:12px;color:var(--muted)">Total do contrato</span>
+            <span style="font-size:15px;font-weight:700">R$ 350,00</span>
+          </div>
+        </div>
+      </div>
+      <div id="ptab-aprov" style="display:none">
+        <div class="card">
+          <div class="card-title"><i data-lucide="check-square" style="width:15px;height:15px"></i> Aprovações pendentes</div>
+          <div style="text-align:center;padding:24px;color:var(--muted2)">
+            <i data-lucide="inbox" style="width:28px;height:28px;margin-bottom:10px"></i>
+            <div style="font-size:12px">Nenhuma aprovação pendente no momento.</div>
+            <div style="font-size:11px;margin-top:4px">Quando houver itens para aprovar, eles aparecerão aqui.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP DASHBOARD -->
+<div class="app hidden" id="app">
+  <div class="sidebar">
+    <div class="sb-top">
+      <div class="sb-logo">ARQ<span class="sep">|</span>CENTRAL</div>
+    </div>
+    <div class="area-tabs">
+      <button class="atab on" onclick="switchArea('captacao',this)">Captação</button>
+      <button class="atab" onclick="switchArea('operacao',this)">Operação</button>
+      <button class="atab" onclick="switchArea('gestao',this)">Gestão</button>
+    </div>
+    <div class="sb-scroll" id="sb-nav"></div>
+    <div class="sb-footer">
+      <div class="avatar">AR</div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--text)">[Seu Nome]</div>
+        <div style="font-size:11px;color:var(--muted)">Arquiteta · Admin</div>
+      </div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn-hamburger" onclick="toggleSidebar()" id="btn-hamburger" aria-label="Menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l16 0"/><path d="M4 12l16 0"/><path d="M4 18l16 0"/></svg>
+        </button>
+        <span class="topbar-logo">ARQ<span style="color:var(--muted2)">|</span>CENTRAL</span>
+        <span class="area-badge" id="area-badge">CAPTAÇÃO</span>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" onclick="abrirConfigAPI()" title="API Key">
+          <i data-lucide="key" style="width:15px;height:15px"></i>
+        </button>
+        <button class="icon-btn" onclick="toggleTheme()">
+          <i data-lucide="sun" id="app-theme-icon" style="width:15px;height:15px"></i>
+        </button>
+        <div class="avatar sm">AR</div>
+        <button class="btn btn-sm" onclick="window.location.href='landing-vitrine.html'">
+          <i data-lucide="log-out" style="width:13px;height:13px"></i> Sair
+        </button>
+      </div>
+    </div>
+    <div class="content" id="page-content"></div>
+  </div>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="portal-wrap hidden" id="portal-checkout">
+  <div class="portal-header">
+    <div class="portal-logo">ARQ<span class="sep">|</span>CENTRAL</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="icon-btn" onclick="toggleTheme()"><i data-lucide="sun" style="width:15px;height:15px"></i></button>
+      <button class="btn btn-sm" onclick="showVitrine()"><i data-lucide="arrow-left" style="width:13px;height:13px"></i> Voltar</button>
+    </div>
+  </div>
+  <div class="portal-body"><div class="portal-inner" id="checkout-content"></div></div>
+</div>
+
+<!-- BOAS-VINDAS -->
+<div class="portal-wrap hidden" id="portal-boasvindas">
+  <div class="portal-header">
+    <div class="portal-logo">ARQ<span class="sep">|</span>CENTRAL</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="btn btn-sm" onclick="showMeuProjeto()"><i data-lucide="arrow-right" style="width:13px;height:13px"></i> Ir para meu projeto</button>
+    </div>
+  </div>
+  <div class="portal-body"><div class="portal-inner" id="boasvindas-content"></div></div>
+</div>
+
+<!-- PÓS-VENDA -->
+<div class="portal-wrap hidden" id="portal-posvenda">
+  <div class="portal-header">
+    <div class="portal-logo">ARQ<span class="sep">|</span>CENTRAL</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="btn btn-sm" onclick="showMeuProjeto()"><i data-lucide="arrow-left" style="width:13px;height:13px"></i> Meu projeto</button>
+    </div>
+  </div>
+  <div class="portal-body"><div class="portal-inner" id="posvenda-content"></div></div>
+</div>
+
+<script>
+var isDark = true;
+
+function toggleSidebar() {
+  var sb = document.querySelector('.sidebar');
+  var ov = document.getElementById('sidebar-overlay');
+  if (!sb) return;
+  var open = sb.classList.toggle('open');
+  if (ov) ov.style.display = open ? 'block' : 'none';
+}
+
+function closeSidebarMobile() {
+  if (window.innerWidth <= 768) {
+    var sb = document.querySelector('.sidebar');
+    var ov = document.getElementById('sidebar-overlay');
+    if (sb) sb.classList.remove('open');
+    if (ov) ov.style.display = 'none';
+  }
+}
+
+function toggleTheme() {
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  var newIcon = isDark ? 'sun' : 'moon';
+  ['home-theme-icon','vit-theme-icon','proj-theme-icon','app-theme-icon'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.setAttribute('data-lucide', newIcon); }
+  });
+  renderIcons();
+}
+
+function hideAll() {
+  ['home','scr-arq','scr-cli-choice','scr-cli','portal-vitrine','portal-projeto','portal-checkout','portal-boasvindas','portal-posvenda','app'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+}
+
+function goHome() { hideAll(); document.getElementById('home').classList.remove('hidden'); renderIcons(); }
+function showArqLogin() { hideAll(); document.getElementById('scr-arq').classList.remove('hidden'); renderIcons(); }
+function showCliChoice() { hideAll(); document.getElementById('scr-cli-choice').classList.remove('hidden'); renderIcons(); }
+function showCliLogin() { hideAll(); document.getElementById('scr-cli').classList.remove('hidden'); renderIcons(); }
+function showVitrine() { hideAll(); document.getElementById('portal-vitrine').classList.remove('hidden'); renderIcons(); }
+function showMeuProjeto() { hideAll(); document.getElementById('portal-projeto').classList.remove('hidden'); renderIcons(); }
+function showBoasVindas() { hideAll(); document.getElementById('portal-boasvindas').classList.remove('hidden'); document.getElementById('boasvindas-content').innerHTML = buildBoasVindas(); renderIcons(); }
+function showPosVenda() { hideAll(); document.getElementById('portal-posvenda').classList.remove('hidden'); document.getElementById('posvenda-content').innerHTML = buildPosVenda(); renderIcons(); }
+function showDash() {
+  hideAll();
+  document.getElementById('app').classList.remove('hidden');
+  switchArea('captacao', document.querySelector('.atab.on'));
+  renderIcons();
+}
+
+function mostrarFeedback(msg) {
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:10px 20px;border-radius:100px;font-size:13px;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.3);animation:fadeInUp .3s ease-out';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function(){ el.remove(); }, 2500);
+}
+
+var navConfigs = {
+  captacao: [
+    {lbl:'CAPTAÇÃO'},
+    {icon:'contact',        txt:'CRM',            page:'crm'},
+    {icon:'stethoscope',    txt:'Diagnósticos',   page:'diagnosticos'},
+    {icon:'clipboard',      txt:'Briefings',       page:'briefings'}
+  ],
+  operacao: [
+    {lbl:'OPERAÇÃO'},
+    {icon:'folder-open',    txt:'Projetos',        page:'proj-lista'},
+    {icon:'mic',            txt:'Reuniões',         page:'reunioes'},
+    {icon:'user-circle',    txt:'Clientes',         page:'clientes'},
+    {icon:'calendar',       txt:'Cronograma',       page:'cronograma'},
+    {icon:'library',        txt:'Biblioteca',       page:'biblioteca'},
+    {icon:'timer',          txt:'Contador de Tempo',page:'contador'},
+    {icon:'calculator',     txt:'Calculadora',      page:'calculadora'},
+    {lbl:'GERAR COM IA'},
+    {icon:'file-text',      txt:'Proposta',         page:'gen-proposta'},
+    {icon:'file-signature', txt:'Contrato',         page:'gen-contrato'},
+    {icon:'image',          txt:'Render / Imagem',  page:'gen-render'},
+    {icon:'video',          txt:'Vídeo',            page:'gen-video'}
+  ],
+  gestao: [
+    {lbl:'VISÃO GERAL'},
+    {icon:'layout-dashboard',txt:'Dashboard',      page:'dashboard'},
+    {lbl:'GESTÃO'},
+    {icon:'receipt',        txt:'Financeiro',        page:'financeiro'},
+    {icon:'badge',          txt:'Equipe',            page:'funcoes'},
+    {icon:'check-square',   txt:'Tarefas',           page:'tarefas'},
+    {icon:'truck',          txt:'Fornecedores',      page:'fornecedores'},
+    {icon:'target',         txt:'Metas',             page:'metas'},
+    {lbl:'EMPRESA'},
+    {icon:'building-2',     txt:'Sobre a Empresa',   page:'sobre'},
+    {icon:'files',          txt:'Documentos',         page:'documentos'},
+    {icon:'key-round',      txt:'Acessos e Logins',  page:'acessos'},
+    {icon:'settings',       txt:'Dados do Escritório',page:'config'},
+    {lbl:'MARKETING'},
+    {icon:'palette',        txt:'Minha Marca',        page:'marca'},
+    {icon:'bookmark',       txt:'Manual da Marca',    page:'manual'},
+    {icon:'pen-line',       txt:'Linha Editorial',    page:'editorial'},
+    {icon:'chess',          txt:'Estratégico',         page:'estrategico'},
+    {icon:'image',          txt:'Produção',            page:'producao'},
+    {icon:'lightbulb',      txt:'Banco de Ideias',    page:'ideias'}
+  ]
+};
+
+function switchArea(area, el) {
+  document.querySelectorAll('.atab').forEach(function(x) { x.classList.remove('on'); });
+  if (el) el.classList.add('on');
+  document.getElementById('area-badge').textContent = area.toUpperCase();
+  var nav = document.getElementById('sb-nav');
+  nav.innerHTML = '';
+  (navConfigs[area] || []).forEach(function(item) {
+    if (item.lbl) {
+      var s = document.createElement('span');
+      s.className = 'sb-label';
+      s.textContent = item.lbl;
+      nav.appendChild(s);
+    } else {
+      var b = document.createElement('button');
+      b.className = 'sb-item';
+      b.innerHTML = '<i data-lucide="' + item.icon + '" class="sb-icon" style="width:16px;height:16px"></i>' + item.txt;
+      b.setAttribute('data-page', item.page);
+      b.onclick = function() {
+        document.querySelectorAll('.sb-item').forEach(function(x) { x.classList.remove('on'); });
+        b.classList.add('on');
+        renderPage(item.page);
+        closeSidebarMobile();
+      };
+      nav.appendChild(b);
+    }
+  });
+  renderIcons();
+  var firstBtn = nav.querySelector('.sb-item');
+  if (firstBtn) {
+    firstBtn.classList.add('on');
+    var firstPage = navConfigs[area].find(function(x) { return x.page; });
+    if (firstPage) renderPage(firstPage.page);
+  }
+}
+
+function ic(name, size) {
+  size = size || 14;
+  return '<i data-lucide="' + name + '" style="width:' + size + 'px;height:' + size + 'px"></i>';
+}
+
+function pill(text, cls) {
+  return '<span class="pill ' + cls + '">' + text + '</span>';
+}
+
+function mkCard(title, icon, body) {
+  return '<div class="card"><div class="card-title">' + ic(icon, 15) + '&nbsp;' + title + '</div>' + body + '</div>';
+}
+
+function mkStat(val, lbl, trend, color) {
+  return '<div class="stat"><div class="stat-val" style="color:' + (color || 'var(--text)') + '">' + val + '</div><div class="stat-lbl">' + lbl + '</div>' + (trend ? '<div class="stat-trend">' + trend + '</div>' : '') + '</div>';
+}
+
+function mkTblRow(cols, grid, isHead) {
+  return '<div class="tr ' + (isHead ? 'th' : '') + '" style="grid-template-columns:' + grid + '">' + cols.map(function(c) { return '<span>' + c + '</span>'; }).join('') + '</div>';
+}
+</script>
+
+<script>
+function renderPage(page) {
+  var c = document.getElementById('page-content');
+  var html = '';
+  if (page === 'dashboard') {
+    html = '<div class="page on"><div class="page-title">Bom dia! 👋</div><div class="page-sub">Resumo do escritório hoje.</div>';
+    html += '<div class="g3" style="margin-bottom:20px">';
+    html += mkStat('3', 'Projetos ativos', ic('trending-up', 12) + ' +1 este mês');
+    html += mkStat('R$ 8.4k', 'Faturamento junho', ic('trending-up', 12) + ' +12%', 'var(--accent)');
+    html += mkStat('2', 'Leads no CRM', ic('clock', 12) + ' Aguardando', 'var(--amber)');
+    html += '</div>';
+    html += mkCard('Projetos recentes', 'folder', buildProjectCards());
+    html += '</div>';
+  } else if (page === 'crm') {
+    var crmLeads = getCRMLeads();
+    html = '<div class="page on"><div class="page-title">CRM</div><div class="page-sub">Pipeline completo da captação ao cliente.</div>';
+    html += '<div style="margin-bottom:12px"><button class="btn btn-accent" onclick="abrirModalNovoLead()">' + ic('plus',14) + ' Novo lead</button></div>';
+    html += '<div class="kanban">';
+    CRM_ESTAGIOS.forEach(function(estagio) {
+      var items = crmLeads.filter(function(l){ return l.estagio === estagio; });
+      var cards = items.map(function(l){ return [l.nome, (l.servico||'') + (l.investimento ? ' · ' + l.investimento : ''), l.id||'']; });
+      html += buildKbColCRM(estagio + ' · ' + items.length, cards, estagio);
+    });
+    html += '</div></div>';
+  } else if (page === 'diagnosticos') {
+    var diags = getDiagnosticos();
+    html = '<div class="page on"><div class="page-title">Diagnósticos</div><div class="page-sub">Leads vindos da landing page e formulários de captação.</div>';
+    html += '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap"><button class="btn btn-accent" onclick="abrirModalNovoDiagnostico()">' + ic('plus',14) + ' Novo diagnóstico</button>';
+    DIAG_STATUS.forEach(function(s) {
+      var cnt = diags.filter(function(d){ return d.status === s; }).length;
+      html += '<span style="font-size:11px;padding:4px 10px;border-radius:20px;background:var(--bg2);border:1px solid var(--border2);color:var(--muted)">' + s + ' <b style="color:var(--text)">' + cnt + '</b></span>';
+    });
+    html += '</div>';
+    if (!diags.length) {
+      html += '<div style="text-align:center;padding:48px;color:var(--muted2)">' + ic('stethoscope',32) + '<div style="font-size:13px;margin-top:12px">Nenhum diagnóstico ainda.</div></div>';
+    } else {
+      html += '<div style="display:flex;flex-direction:column;gap:8px">';
+      diags.forEach(function(d) {
+        var statusCor = {Novo:'p-blue','Em análise':'p-amber',Qualificado:'p-green',Descartado:'p-muted'}[d.status] || 'p-muted';
+        html += '<div class="card" style="cursor:pointer;transition:border .15s" onclick="abrirDetalheDiagnostico(\'' + d.id + '\')" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">';
+        html += '<div style="display:flex;align-items:center;justify-content:space-between">';
+        html += '<div style="display:flex;align-items:center;gap:10px"><div class="avatar sm">' + (d.nome||'?').substring(0,2).toUpperCase() + '</div>';
+        html += '<div><div style="font-size:13px;font-weight:600">' + d.nome + '</div><div style="font-size:11px;color:var(--muted)">' + (d.servico||'') + (d.investimento ? ' · ' + d.investimento : '') + '</div></div></div>';
+        html += '<div style="display:flex;align-items:center;gap:8px">' + pill(d.status, statusCor);
+        if (d.convertidoEmLead) html += '<span style="font-size:10px;color:var(--green)">✓ Lead</span>';
+        html += '<span style="color:var(--muted)">' + ic('chevron-right',13) + '</span></div></div></div>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+  } else if (page === 'briefings') {
+    var briefs = getBriefings();
+    html = '<div class="page on"><div class="page-title">Briefings</div><div class="page-sub">Questionários de interiores por cliente.</div>';
+    html += '<div style="margin-bottom:14px"><button class="btn btn-accent" onclick="abrirModalNovoBriefing()">' + ic('plus',14) + ' Novo briefing</button></div>';
+    html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">';
+    BRIEFING_STATUS.forEach(function(s) {
+      var cnt = briefs.filter(function(b){ return b.status === s; }).length;
+      html += '<span style="font-size:11px;padding:4px 10px;border-radius:20px;background:var(--bg2);border:1px solid var(--border2);color:var(--muted)">' + s + ' <b style="color:var(--text)">' + cnt + '</b></span>';
+    });
+    html += '</div>';
+    if (!briefs.length) {
+      html += '<div style="text-align:center;padding:48px;color:var(--muted2)">' + ic('clipboard',32) + '<div style="font-size:13px;margin-top:12px">Nenhum briefing ainda.</div></div>';
+    } else {
+      html += '<div style="display:flex;flex-direction:column;gap:8px">';
+      briefs.forEach(function(b) {
+        var sc = {'Não enviado':'p-muted','Em preenchimento':'p-blue','Concluído':'p-amber','Analisado':'p-green','Convertido em Projeto':'p-green'}[b.status] || 'p-muted';
+        html += '<div class="card" style="cursor:pointer;transition:border .15s" onclick="abrirDetalheBriefing(\'' + b.id + '\')" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">';
+        html += '<div style="display:flex;align-items:center;justify-content:space-between">';
+        html += '<div style="display:flex;align-items:center;gap:10px"><div class="avatar sm">' + (b.cliente||'?').substring(0,2).toUpperCase() + '</div>';
+        html += '<div><div style="font-size:13px;font-weight:600">' + b.cliente + '</div><div style="font-size:11px;color:var(--muted)">' + (b.tipoImovel||'') + (b.cidade ? ' · ' + b.cidade : '') + (b.ambientes && b.ambientes.length ? ' · ' + b.ambientes.length + ' ambientes' : '') + '</div></div></div>';
+        html += '<div style="display:flex;align-items:center;gap:8px">' + pill(b.status, sc) + '<span style="color:var(--muted)">' + ic('chevron-right',13) + '</span></div></div></div>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+  } else if (page === 'financeiro') {
+    html = '<div class="page on"><div class="page-title">Financeiro</div><div class="page-sub">Controle de receitas, despesas e notas fiscais.</div>';
+    html += '<div style="margin-bottom:14px"><button class="btn" style="color:var(--accent);border-color:var(--accent)" onclick="arqIA_projetarReceitas()">' + ic('sparkles',13) + ' Projetar Receitas</button></div>';
+    html += '<div id="arqia-fin-result" style="display:none;margin-bottom:14px"></div>';
+    html += '<div class="g3" style="margin-bottom:16px">';
+    html += mkStat('R$ 12.8k', 'Receita junho', ic('trending-up',12) + ' +18%', 'var(--green)');
+    html += mkStat('R$ 3.2k', 'Despesas junho', '', 'var(--red)');
+    html += mkStat('R$ 9.6k', 'Resultado líquido', ic('trending-up',12) + ' Positivo');
+    html += '</div>';
+    html += mkCard('Lançamentos', 'credit-card', buildLancamentos());
+    html += mkCard('Notas Fiscais', 'file-text', buildNotasFiscais());
+    html += '</div>';
+  } else if (page === 'sobre') {
+    html = '<div class="page on"><div class="page-title">Sobre a Empresa</div><div class="page-sub">Identidade, propósito e análise estratégica.</div>';
+    html += '<div class="g2">' + mkCard('História', 'scroll', buildField('textarea', 'Seu Escritório de Arquitetura foi fundada em 2020 com o propósito de transformar espaços por meio do design consciente e biofílico.'));
+    html += mkCard('Propósito', 'compass', buildField('textarea', 'Criar ambientes que conectem as pessoas à natureza e à sua essência.')) + '</div>';
+    html += mkCard('Análise SWOT', 'chart-bar', buildSWOT());
+    html += '</div>';
+  } else if (page === 'metas') {
+    html = '<div class="page on"><div class="page-title">Objetivos e Metas</div><div class="page-sub">OKRs e planos de ação.</div>' + mkCard('Objetivos 2026', 'target', buildMetas()) + '</div>';
+  } else if (page === 'clientes') {
+    html = '<div class="page on"><div class="page-title">Clientes</div><div class="page-sub">Base de clientes e controle de pagamentos.</div>' + buildClientesCompleto() + '</div>';
+  } else if (page === 'proj-lista') {
+    html = '<div class="page on"><div class="page-title">Projetos</div><div class="page-sub">Gerencie todos os projetos do escritório.</div>';
+    html += '<div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap"><button class="btn btn-accent">' + ic('plus',14) + ' Novo projeto</button>';
+    html += '<button class="btn" style="color:var(--accent);border-color:var(--accent)" onclick="abrirIAProjetoModal()">' + ic('sparkles',13) + ' Gerar Diretrizes</button></div>';
+    html += '<div class="g3">' + buildProjectCards() + '</div>';
+    html += '<div id="arqia-proj-result" style="display:none;margin-top:14px"></div></div>';
+  } else if (page === 'reunioes') {
+    html = '<div class="page on"><div class="page-title">Reuniões</div><div class="page-sub">Agendamentos, atas e tarefas.</div>';
+    html += '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">';
+    html += '<button class="btn btn-accent">' + ic('plus',14) + ' Nova reunião</button>';
+    html += '<button class="btn" style="color:var(--accent);border-color:var(--accent)" onclick="abrirIAPreparoReuniaoModal()">' + ic('sparkles',13) + ' Preparar Reunião</button>';
+    html += '<button class="btn" style="color:var(--accent);border-color:var(--accent)" onclick="arqIA_gerarAta()">' + ic('sparkles',13) + ' Gerar Ata</button></div>';
+    html += mkCard('Agenda', 'calendar', buildReunioes());
+    html += '<div id="arqia-reun-result" style="display:none;margin-top:14px"></div></div>';
+  } else if (page === 'funcoes') {
+    html = '<div class="page on"><div class="page-title">Equipe e Funções</div><div class="page-sub">Cadastro completo por funcionário.</div>';
+    html += '<div style="margin-bottom:16px"><button class="btn btn-accent">' + ic('plus',14) + ' Novo funcionário</button></div>';
+    html += buildPersonCard('AR','var(--accent)','[Seu Nome]','Arquiteta · Sócia · Admin','Ativo','p-green');
+    html += buildPersonCard('JC','var(--purple)','Julia Costa','Estagiária · Social Media','Ativo','p-green');
+    html += '</div>';
+  } else if (page === 'tarefas') {
+    html = '<div class="page on"><div class="page-title">Tarefas</div><div class="page-sub">Dashboard kanban com filtros.</div>';
+    html += '<div style="display:flex;gap:8px;margin-bottom:16px"><button class="btn btn-accent">' + ic('plus',14) + ' Nova tarefa</button></div>';
+    html += '<div class="kanban">';
+    html += buildKbColWithPill('A FAZER · 3', [['Planta hidráulica — Proj. 01','[Você] · Projeto 01','Urgente','p-red'],['Moodboard — Proj. 02','Julia · Projeto 02','Médio','p-blue'],['Proposta [Lead]','[Você] · CRM','Importante','p-amber']]);
+    html += buildKbCol('EM ANDAMENTO · 2', [['Layout — Proj. 02','Julia · 18/06'],['Fotos — Proj. 03','[Você] · 20/06']]);
+    html += buildKbCol('CONCLUÍDA · 4', [['Cadastro Proj. 01','Concluído 12/05'],['Briefing Proj. 03','Concluído 02/04']]);
+    html += '</div></div>';
+  } else if (page === 'fornecedores') {
+    html = '<div class="page on"><div class="page-title">Fornecedores</div><div class="page-sub">Por categoria.</div>' + buildFornecedores() + '</div>';
+  } else if (page === 'documentos') {
+    html = '<div class="page on"><div class="page-title">Documentos</div><div class="page-sub">Dados cadastrais e arquivos do escritório.</div><div class="g2">' + mkCard('Dados da Empresa', 'building-2', buildDadosEmpresa()) + mkCard('Dados dos Sócios', 'user', buildDadosSocios()) + '</div>' + mkCard('Anexos PDF', 'paperclip', buildAnexos()) + '</div>';
+  } else if (page === 'acessos') {
+    html = '<div class="page on"><div class="page-title">Acessos e Logins</div><div class="page-sub">Senhas e acessos das plataformas.</div>' + mkCard('Vault de Acessos', 'key-round', buildVault()) + '</div>';
+  } else if (page === 'marca') {
+    html = '<div class="page on"><div class="page-title">Minha Marca</div><div class="page-sub">Identidade visual e portfólio.</div>' + mkCard('Identidade Visual', 'palette', buildMarca()) + '</div>';
+  } else if (page === 'manual') {
+    html = '<div class="page on"><div class="page-title">Manual da Marca</div><div class="page-sub">Diretrizes de identidade e comunicação.</div>' + mkCard('Identidade de Marca', 'bookmark', buildManual()) + '</div>';
+  } else if (page === 'editorial') {
+    html = '<div class="page on"><div class="page-title">Linha Editorial</div><div class="page-sub">Estratégia de conteúdo e pilares.</div>' + mkCard('Configuração Editorial', 'pen-line', buildEditorial()) + '</div>';
+  } else if (page === 'estrategico') {
+    html = '<div class="page on"><div class="page-title">Estratégico</div><div class="page-sub">Mapa estratégico e métricas por rede social.</div>';
+    html += '<div style="margin-bottom:16px"><button class="btn" style="color:var(--accent);border-color:var(--accent)" onclick="arqIA_analisarTendencias()">' + ic('sparkles',13) + ' Analisar Tendências</button></div>';
+    html += '<div id="arqia-mkt-result" style="display:none;margin-bottom:14px"></div>';
+    html += mkCard('Mapa Estratégico', 'chess', buildMapaEstrategico());
+    html += mkCard('Planejamento Mensal', 'calendar', buildPlanejamentoMensal());
+    html += mkCard('Métricas por Rede', 'bar-chart-2', buildMetricasRede()) + '</div>';
+  } else if (page === 'producao') {
+    html = '<div class="page on"><div class="page-title">Produção</div><div class="page-sub">Gestão de conteúdo por etapas.</div>';
+    html += '<div class="kanban">';
+    html += buildKbCol('IDEIA', [['5 erros na iluminação','Reels · Educativo']]);
+    html += buildKbCol('EM REVISÃO', [['Biofilia no apê pequeno','Carrossel · Dicas']]);
+    html += buildKbCol('AGENDADO', [['Antes e depois HO','Post · 07/06 · 18h']]);
+    html += '</div><div style="margin-top:12px"><button class="btn btn-accent">' + ic('plus',14) + ' Nova ideia</button></div></div>';
+  } else if (page === 'ideias') {
+    html = '<div class="page on"><div class="page-title">Banco de Ideias</div><div class="page-sub">Gerador de conteúdo com IA.</div>' + mkCard('Gerar com IA', 'sparkles', buildGerarIdeia()) + '</div>';
+  } else if (page === 'cronograma') {
+    html = '<div class="page on"><div class="page-title">Cronograma</div><div class="page-sub">Calendário de prazos e compromissos.</div>' + mkCard('Junho 2026', 'calendar', buildCalendario()) + '</div>';
+  } else if (page === 'biblioteca') {
+    html = '<div class="page on"><div class="page-title">Biblioteca</div><div class="page-sub">Materiais, produtos e fornecedores.</div>';
+    html += '<div style="text-align:center;padding:48px;color:var(--muted2)">' + ic('package',32) + '<div style="font-size:13px;margin-top:12px">Nenhum material cadastrado ainda.</div></div></div>';
+  } else if (page === 'contador') {
+    html = '<div class="page on"><div class="page-title">Contador de Tempo</div><div class="page-sub">Registre o tempo gasto por atividade.</div>';
+    html += mkCard('Cadastrar atividade', 'timer', buildCadAtividade());
+    html += '<div class="g2">' + buildPomodoro() + buildContadorLivre() + '</div></div>';
+  } else if (page === 'gen-proposta') {
+    html = '<div class="page on"><div class="page-title">Gerar Proposta com IA</div><div class="page-sub">Proposta profissional gerada pela IA.</div>' + mkCard('Dados da proposta', 'file-text', buildGenProposta()) + '</div>';
+  } else if (page === 'gen-contrato') {
+    html = '<div class="page on"><div class="page-title">Gerar Contrato com IA</div><div class="page-sub">Contrato completo com cláusulas personalizáveis.</div>' + mkCard('Dados do contrato', 'file-signature', buildGenContrato()) + '</div>';
+  } else if (page === 'gen-render') {
+    html = '<div class="page on"><div class="page-title">Render / Imagem com IA</div><div class="page-sub">Renders conceituais.</div>' + mkCard('Configurar render', 'image', buildGenRender()) + '</div>';
+  } else if (page === 'gen-video') {
+    html = '<div class="page on"><div class="page-title">Vídeo com IA</div><div class="page-sub">Em breve.</div></div>';
+  } else if (page === 'config') {
+    html = '<div class="page on"><div class="page-title">Dados do Escritório</div><div class="page-sub">Configurações gerais.</div>' + mkCard('Configurações', 'settings', buildConfig()) + '</div>';
+  } else if (page === 'calculadora') {
+    html = '<div class="page on"><div class="page-title">Calculadora</div><div class="page-sub">Orçamento com fórmulas reais.</div><div class="card"><div style="text-align:center;padding:24px;color:var(--muted2)">' + ic('calculator',28) + '<div style="font-size:12px;margin-top:10px">Em desenvolvimento</div></div></div></div>';
+  } else {
+    html = '<div class="page on"><div class="page-title">' + page + '</div><div class="page-sub">Em construção...</div></div>';
+  }
+  c.innerHTML = html;
+  c.querySelectorAll('.toggle').forEach(function(t) { t.addEventListener('click', function() { this.classList.toggle('on'); }); });
+  renderIcons();
+}
+
+// ===== BUILDERS =====
+function buildField(type, val, opts) {
+  opts = opts || {};
+  if (type === 'textarea') return '<div class="fg"><textarea class="fi" style="min-height:' + (opts.h || '80') + 'px">' + val + '</textarea></div>';
+  return '<div class="fg"><label class="fl">' + (opts.label || '') + '</label><input class="fi" value="' + val + '"></div>';
+}
+function buildSelect(options) {
+  return '<select class="fs" style="width:auto;margin:0">' + options.map(function(o) { return '<option>' + o + '</option>'; }).join('') + '</select>';
+}
+function buildProjectCards() {
+  var projects = [
+    {i:'SE',n:'Sala Estar — Família [Cliente]',c:'PRJ-001',p:65,bg:'linear-gradient(135deg,#1a3a5c,#0a1a2e)',tc:'#60a5fa'},
+    {i:'CI',n:'Cozinha Integrada — Projeto 02',c:'PRJ-002',p:30,bg:'linear-gradient(135deg,#2d1a3a,#150d1f)',tc:'#a78bfa'},
+    {i:'HO',n:'Home Office — Dr. [Cliente]',c:'PRJ-003',p:90,bg:'linear-gradient(135deg,#1a3a1a,#0a1f0a)',tc:'#4ade80'}
+  ];
+  return projects.map(function(pr) {
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+      + '<div style="height:80px;background:' + pr.bg + ';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;letter-spacing:2px;color:' + pr.tc + ';position:relative">' + pr.i
+      + '<div style="position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;background:rgba(0,0,0,0.5);color:#fff;padding:2px 7px;border-radius:10px">' + pr.p + '%</div></div>'
+      + '<div style="padding:11px"><div style="font-size:12px;font-weight:600;color:var(--text2)">' + pr.n + '</div><div style="font-size:10px;color:var(--muted);margin-top:2px">' + pr.c + '</div></div></div>';
+  }).join('');
+}
+function buildSWOT() {
+  var items = [
+    {color:'var(--green)',emoji:'💪',label:'Forças',val:'Identidade visual forte · Expertise em biofilia · IA nos projetos'},
+    {color:'var(--red)',emoji:'⚠️',label:'Fraquezas',val:'Equipe pequena · Processos ainda manuais'},
+    {color:'var(--blue)',emoji:'🚀',label:'Oportunidades',val:'Mercado imobiliário aquecido · Crescimento de home office'},
+    {color:'var(--amber)',emoji:'⚡',label:'Ameaças',val:'Concorrência crescente · Inflação nos materiais'}
+  ];
+  var html = '<div class="swot-grid">';
+  items.forEach(function(it) {
+    html += '<div class="swot-cell"><div class="swot-label" style="color:' + it.color + '">' + it.emoji + ' ' + it.label + '</div><textarea class="fi" style="min-height:70px;margin:0">' + it.val + '</textarea></div>';
+  });
+  html += '</div><div style="margin-top:14px"><button class="btn btn-accent">' + ic('save',14) + ' Salvar</button></div>';
+  return html;
+}
+function buildLancamentos() {
+  var rows = [['Projeto 01','<span style="color:var(--green)">Receita</span>','R$ 2.800','15/06',pill('Recebido','p-green')],['Projeto 02','<span style="color:var(--green)">Receita</span>','R$ 4.200','30/06',pill('Pendente','p-amber')],['Adobe CC','<span style="color:var(--red)">Despesa</span>','R$ 156','10/07',pill('Fixo','p-muted')],['Claude PRO','<span style="color:var(--red)">Despesa</span>','R$ 120','15/07',pill('Fixo','p-muted')]];
+  var grid = '1fr 80px 90px 90px 80px';
+  var html = '<div class="tbl">' + mkTblRow(['Descrição','Tipo','Valor','Vencimento','Status'], grid, true);
+  rows.forEach(function(r) { html += mkTblRow(r, grid, false); });
+  html += '</div><div style="margin-top:12px"><button class="btn btn-accent">' + ic('plus',14) + ' Novo lançamento</button></div>';
+  return html;
+}
+function buildNotasFiscais() {
+  var html = '<div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn btn-accent">' + ic('plus',14) + ' Nova NF</button></div>';
+  html += '<div class="tbl">';
+  html += mkTblRow(['Nº','Cliente','Valor','Emissão','Status'], '60px 1fr 90px 90px 80px', true);
+  var nfs = [['001','[Cliente A]','R$ 2.800','12/05/26','Emitida'],['002','[Cliente B]','R$ 4.200','18/05/26','Emitida'],['003','Dr. [Cliente]','R$ 350','02/04/26','Emitida']];
+  nfs.forEach(function(nf) {
+    html += mkTblRow(['<span style="font-weight:600;color:var(--accent)">' + nf[0] + '</span>','<span style="font-weight:500">' + nf[1] + '</span>','<span style="color:var(--green)">' + nf[2] + '</span>','<span style="color:var(--muted)">' + nf[3] + '</span>',pill(nf[4],'p-green')], '60px 1fr 90px 90px 80px', false);
+  });
+  html += '</div>';
+  return html;
+}
+function buildMetas() {
+  var items = [{label:'Faturamento anual',val:'R$ 51.2k',target:'R$ 120k',pct:43,color:'var(--accent)'},{label:'Projetos entregues',val:'4',target:'12',pct:33,color:'var(--amber)'},{label:'Seguidores Instagram',val:'3.2k',target:'10k',pct:32,color:'var(--purple)'}];
+  var html = '';
+  items.forEach(function(it) {
+    html += '<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:500">' + it.label + '</span><span style="font-size:13px;color:' + it.color + '">' + it.val + ' / ' + it.target + '</span></div><div class="prog-bar"><div class="prog-fill" style="width:' + it.pct + '%;background:' + it.color + '"></div></div></div>';
+  });
+  html += '<div style="margin-top:14px"><button class="btn btn-accent">' + ic('plus',14) + ' Novo objetivo</button></div>';
+  return html;
+}
+function buildClientesCompleto() {
+  var html = '<div style="margin-bottom:16px"><button class="btn btn-accent">' + ic('plus',14) + ' Novo cliente</button></div>';
+  html += buildPersonCard('AS','var(--purple)','[Cliente A]','CPF: 123.456.789-00 · Cliente desde 12/05/26','Em andamento','p-amber');
+  html += buildPersonCard('MM','var(--blue)','[Cliente B]','CPF: 987.654.321-00 · Cliente desde 18/05/26','Em andamento','p-amber');
+  html += buildPersonCard('RC','var(--accent)','Dr. [Cliente]','Concluído','Concluído','p-green');
+  return html;
+}
+function buildDadosEmpresa() {
+  var fields = [['CNPJ','00.000.000/0001-00'],['Nome Fantasia','Seu Escritório de Arquitetura'],['Tipo','MEI'],['Cidade',''],['E-mail','contato@seuescritorio.com.br']];
+  var html = '<div class="g2">';
+  fields.forEach(function(f) { html += '<div class="fg"><label class="fl">' + f[0] + '</label><input class="fi" value="' + f[1] + '"></div>'; });
+  html += '</div><button class="btn btn-accent">' + ic('save',14) + ' Salvar</button>';
+  return html;
+}
+function buildDadosSocios() {
+  var fields = [['Nome Completo','[Seu Nome Completo]'],['CPF','000.000.000-00'],['E-mail','arquiteta@email.com'],['Telefone','(91) 99999-0000']];
+  var html = '';
+  fields.forEach(function(f) { html += '<div class="fg"><label class="fl">' + f[0] + '</label><input class="fi" value="' + f[1] + '"></div>'; });
+  html += '<button class="btn btn-accent">' + ic('save',14) + ' Salvar</button>';
+  return html;
+}
+function buildAnexos() {
+  return '<div style="display:flex;gap:8px;margin-bottom:14px"><button class="btn btn-accent">' + ic('upload',14) + ' Enviar arquivo</button></div><div class="tbl">' + mkTblRow(['Nome','Tipo','Data'], '1fr 80px 90px', true) + mkTblRow(['<span style="color:var(--accent)">' + ic('file-text',13) + ' Contrato Padrão v3</span>',pill('Contrato','p-blue'),'01/06/26'], '1fr 80px 90px', false) + '</div>';
+}
+function buildVault() {
+  var html = '<div style="margin-bottom:14px"><button class="btn btn-accent">' + ic('plus',14) + ' Novo acesso</button></div>';
+  html += '<div class="tbl">' + mkTblRow(['Plataforma','Login','Funcionalidade'], '1fr 1fr 1fr', true);
+  [['Airtable','sibelle@...','Banco de dados'],['Claude PRO','sibelle@...','IA e automação'],['Vercel','sibelle@...','Hospedagem']].forEach(function(r) {
+    html += mkTblRow(['<span style="font-weight:500">'+r[0]+'</span>','<span style="color:var(--muted)">'+r[1]+'</span>','<span style="color:var(--muted)">'+r[2]+'</span>'], '1fr 1fr 1fr', false);
+  });
+  html += '</div>';
+  return html;
+}
+function buildPersonCard(initials, bg, name, sub, status, statusCls) {
+  return '<div class="person-card"><div class="avatar" style="background:'+bg+'">'+initials+'</div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">'+name+'</div><div style="font-size:11px;color:var(--muted)">'+sub+'</div></div>'+pill(status, statusCls)+'<button class="btn btn-sm">'+ic('chevron-right',13)+'</button></div>';
+}
+function buildReunioes() {
+  var html = '<div class="tbl">' + mkTblRow(['Assunto','Data','Tipo','Status'], '1fr 100px 90px 80px', true);
+  html += mkTblRow(['<span style="font-weight:500">Apresentação Projeto 01</span>','<span style="color:var(--muted)">05/06/26 14h</span>',pill('Aprovação','p-blue'),pill('Agendada','p-amber')], '1fr 100px 90px 80px', false);
+  html += mkTblRow(['<span style="font-weight:500">Kickoff Dr. [Cliente]</span>','<span style="color:var(--muted)">02/04/26 15h</span>',pill('Abertura','p-accent'),pill('Concluída','p-green')], '1fr 100px 90px 80px', false);
+  html += '</div>';
+  return html;
+}
+function buildKbCol(title, items) {
+  var html = '<div class="kb-col"><div class="kb-title">' + title + '</div>';
+  items.forEach(function(it) { html += '<div class="kb-card"><div class="kb-card-title">' + it[0] + '</div><div class="kb-card-sub">' + it[1] + '</div></div>'; });
+  html += '</div>';
+  return html;
+}
+function buildKbColWithPill(title, items) {
+  var html = '<div class="kb-col"><div class="kb-title">' + title + '</div>';
+  items.forEach(function(it) {
+    html += '<div class="kb-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="kb-card-title">' + it[0] + '</div>' + pill(it[2], it[3]) + '</div><div class="kb-card-sub">' + it[1] + '</div></div>';
+  });
+  html += '</div>';
+  return html;
+}
+function buildFornecedores() {
+  var cats = ['Marcenaria','Marmoraria','Serralheria','Construtora','Decoração','Revestimentos','Persianas/Cortinas','Iluminação','Pintura','Eletricista'];
+  var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">';
+  cats.forEach(function(c) {
+    html += '<div class="card" style="cursor:pointer;padding:14px;text-align:center;transition:border .15s" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--border)\'"><div style="font-size:13px;font-weight:500">' + c + '</div><div style="font-size:11px;color:var(--muted);margin-top:4px">0 cadastrados</div></div>';
+  });
+  html += '</div>';
+  return html;
+}
+function buildMarca() {
+  return '<div class="g2"><div><div class="fg"><label class="fl">Logo (PNG/SVG)</label><div style="border:2px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer"><div style="color:var(--muted)">' + ic('upload-cloud',22) + '</div><div style="font-size:12px;color:var(--muted);margin-top:6px">Clique para enviar</div></div></div></div><div><div class="fg"><label class="fl">Cor primária</label><input class="fi" value="#6EE7B7" type="color" style="height:40px;padding:4px"></div><div class="fg"><label class="fl">Tipografia</label>' + buildSelect(['Montserrat','Playfair Display','DM Sans']) + '</div></div></div><button class="btn btn-accent">' + ic('save',14) + ' Salvar</button>';
+}
+function buildManual() {
+  return '<div class="fg"><label class="fl">Valores fundamentais</label><textarea class="fi">Biofilia · Sustentabilidade · Inovação · Escuta ativa</textarea></div><div class="fg"><label class="fl">Missão</label><textarea class="fi">Transformar espaços com design consciente e propósito</textarea></div><button class="btn btn-accent">' + ic('save',14) + ' Salvar</button>';
+}
+function buildEditorial() {
+  return '<div class="g2"><div class="fg"><label class="fl">Público-Alvo</label><textarea class="fi" style="min-height:60px">Mulheres 28-45 anos, classe A/B, valorizam estética e bem-estar</textarea></div><div class="fg"><label class="fl">Tom de Voz</label><textarea class="fi" style="min-height:60px">Instagram: próximo e inspirador · E-mail: profissional e caloroso</textarea></div></div><button class="btn btn-accent">' + ic('save',14) + ' Salvar</button>';
+}
+function buildMapaEstrategico() {
+  return '<div class="g2"><div class="fg"><label class="fl">Posicionamento</label><textarea class="fi">Escritório de design biofílico em Sua cidade do Pará</textarea></div><div class="fg"><label class="fl">Diferencial</label><textarea class="fi">Único com especialização em biofilia + IA no processo</textarea></div></div>';
+}
+function buildPlanejamentoMensal() {
+  var meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var html = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">';
+  meses.forEach(function(m, i) {
+    var isCurrent = i === 5;
+    html += '<div style="background:var(--bg2);border:1px solid var(' + (isCurrent?'--accent':'--border2') + ');border-radius:8px;padding:10px"><div style="font-size:11px;font-weight:600;color:' + (isCurrent?'var(--accent)':'var(--muted)') + ';margin-bottom:6px">' + m + '</div><textarea class="fi" style="min-height:50px;font-size:11px" placeholder="Ações..."></textarea></div>';
+  });
+  html += '</div>';
+  return html;
+}
+function buildMetricasRede() {
+  var html = '<div class="tbl">' + mkTblRow(['Rede','Seguidores','Meta','Engaj.','Leads'], '100px 80px 80px 80px 60px', true);
+  [['Instagram','3.200','10.000','4.8%','8'],['Pinterest','890','5.000','2.1%','2']].forEach(function(r) {
+    html += mkTblRow(['<span style="font-weight:600">' + r[0] + '</span>','<span style="color:var(--accent)">' + r[1] + '</span>','<span style="color:var(--muted)">' + r[2] + '</span>',r[3],'<span style="color:var(--green)">' + r[4] + '</span>'], '100px 80px 80px 80px 60px', false);
+  });
+  html += '</div>';
+  return html;
+}
+function buildGerarIdeia() {
+  return '<div class="g2"><div class="fg"><label class="fl">Categoria</label>' + buildSelect(['Portfólio','Inspiração','Tendências','Autoridade','Dicas','Bastidores']) + '</div><div class="fg"><label class="fl">Formato</label>' + buildSelect(['Post Feed','Reels','Stories','Carrossel']) + '</div></div><div class="fg"><label class="fl">Tema / ideia</label><textarea class="fi" placeholder="Ex: Como escolher a paleta de cores perfeita..."></textarea></div><button class="btn btn-accent">' + ic('sparkles',14) + ' Gerar conteúdo</button>';
+}
+function buildCalendario() {
+  var dias = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><button class="btn btn-sm">' + ic('chevron-left',13) + '</button><span style="font-size:14px;font-weight:600">Junho 2026</span><button class="btn btn-sm">' + ic('chevron-right',13) + '</button></div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center">';
+  dias.forEach(function(d) { html += '<div style="font-size:10px;font-weight:600;color:var(--muted);padding:6px">' + d + '</div>'; });
+  for (var i = 0; i < 35; i++) {
+    var num = i < 1 ? '' : (i > 30 ? '' : i);
+    var isToday = i === 3;
+    var style = 'padding:6px 4px;border-radius:6px;cursor:pointer;' + (isToday ? 'background:var(--accent);color:#fff;font-weight:700;' : '');
+    html += '<div style="' + style + '"><span style="font-size:12px">' + num + '</span></div>';
+  }
+  html += '</div>';
+  return html;
+}
+function buildCadAtividade() {
+  return '<div class="g3"><div class="fg"><label class="fl">Atividade</label>' + buildSelect(['Levantamento','Anteprojeto','Projeto Básico','Briefing']) + '</div><div class="fg"><label class="fl">Ambiente</label><input class="fi" placeholder="Ex: Banheiro..."></div><div class="fg"><label class="fl">Metragem (m²)</label><input class="fi" type="number" placeholder="9"></div></div>';
+}
+function buildPomodoro() {
+  return '<div class="card" style="text-align:center"><div style="font-size:13px;font-weight:600;margin-bottom:16px">' + ic('clock',15) + ' Pomodoro</div><div style="font-size:48px;font-weight:700;color:var(--accent);margin-bottom:16px">25:00</div><div style="display:flex;gap:8px;justify-content:center"><button class="btn btn-accent">' + ic('play',14) + ' Iniciar</button><button class="btn">' + ic('pause',14) + ' Pausar</button><button class="btn" style="color:var(--red);border-color:var(--red)">' + ic('square',14) + ' Fim</button></div></div>';
+}
+function buildContadorLivre() {
+  return '<div class="card" style="text-align:center"><div style="font-size:13px;font-weight:600;margin-bottom:16px">' + ic('timer',15) + ' Contador livre</div><div style="font-size:48px;font-weight:700;color:var(--blue);margin-bottom:16px">00:00</div><div style="display:flex;gap:8px;justify-content:center"><button class="btn btn-accent">' + ic('play',14) + ' Iniciar</button><button class="btn">' + ic('pause',14) + ' Pausar</button><button class="btn" style="color:var(--red);border-color:var(--red)">' + ic('square',14) + ' Fim</button></div></div>';
+}
+function buildGenRender() {
+  return '<div class="fg"><label class="fl">Prompt</label><textarea class="fi" style="min-height:80px" placeholder="Ex: sala de estar contemporânea biofílica, luz natural..."></textarea></div><div class="g2"><div class="fg"><label class="fl">Estilo</label>' + buildSelect(['Fotografia realista','Render 3D','Aquarela']) + '</div><div class="fg"><label class="fl">Proporção</label>' + buildSelect(['16:9','1:1','4:3']) + '</div></div><button class="btn btn-accent">' + ic('sparkles',14) + ' Gerar render</button>';
+}
+function buildGenProposta() {
+  return '<div class="g2"><div class="fg"><label class="fl">Cliente</label>' + buildSelect(['[Cliente A]','[Cliente B]','Dr. [Cliente]']) + '</div><div class="fg"><label class="fl">Serviço</label>' + buildSelect(['Consultoria Online — R$ 350','Projeto Completo — R$ 2.800']) + '</div><div class="fg"><label class="fl">Ambientes</label><input class="fi" value="Sala de estar, sala de jantar"></div><div class="fg"><label class="fl">Área (m²)</label><input class="fi" value="48"></div></div><button class="btn btn-accent">' + ic('sparkles',14) + ' Gerar proposta</button>';
+}
+function buildGenContrato() {
+  return '<div class="g2"><div class="fg"><label class="fl">Cliente</label>' + buildSelect(['[Cliente A]','[Cliente B]']) + '</div><div class="fg"><label class="fl">Valor total</label><input class="fi" value="R$ 2.800,00"></div><div class="fg"><label class="fl">Forma de pagamento</label>' + buildSelect(['50% entrada + 50% entrega','3x iguais','À vista']) + '</div><div class="fg"><label class="fl">Prazo</label><input class="fi" value="45 dias corridos"></div></div><button class="btn btn-accent">' + ic('sparkles',14) + ' Gerar contrato</button>';
+}
+function buildConfig() {
+  return '<div class="fg"><label class="fl">CREA / CAU</label><input class="fi" placeholder="CAU A000000-0 BR"></div><div style="margin-top:14px"><button class="btn btn-accent">' + ic('save',14) + ' Salvar</button></div>';
+}
+function buildBoasVindas() {
+  return '<div style="background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;gap:10px"><div style="color:var(--green)">' + ic('check-circle',22) + '</div><div><div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:4px">Pagamento confirmado!</div><div style="font-size:13px;color:var(--muted)">Um e-mail de boas-vindas foi enviado com seu acesso ao portal.</div></div></div>';
+}
+function buildPosVenda() {
+  return '<div class="card"><div class="card-title">' + ic('star',15) + ' Pesquisa de Satisfação</div><div style="font-size:13px;color:var(--muted)">Enviada automaticamente após a entrega.</div></div>';
+}
+</script>
+
+<script>
+// ===== DATA LAYER =====
+var CRM_ESTAGIOS = ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA','CONTRATO','CLIENTE'];
+var DIAG_STATUS  = ['Novo','Em análise','Qualificado','Descartado'];
+var BRIEFING_STATUS = ['Não enviado','Em preenchimento','Concluído','Analisado','Convertido em Projeto'];
+var AMBIENTES_LISTA = ['Sala de Estar','Sala de TV','Sala de Jantar','Living Integrado','Varanda','Varanda Gourmet','Área Gourmet','Lavabo','Suíte Master','Quarto Casal','Quarto Infantil','Quarto Adolescente','Quarto de Hóspedes','Closet','Banheiro Social','Banheiro Suíte','Cozinha','Cozinha Gourmet','Lavanderia','Despensa','Home Office','Atelier','Outro'];
+var DETALHES_CAMPOS = [{id:'manter',label:'O que será mantido?'},{id:'substituir',label:'O que será substituído?'},{id:'moveis',label:'Novos móveis desejados?'},{id:'problemas',label:'Problemas atuais?'},{id:'necessidades',label:'Necessidades?'},{id:'atividades',label:'Atividades realizadas?'},{id:'referencias',label:'Referências?'},{id:'restricoes',label:'Restrições?'}];
+
+function _ld(key, def) { try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch(e) { return def; } }
+function _sd(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+function getDiagnosticos() { return _ld('diagnosticos_lista', []); }
+function salvarDiagnosticos(lista) { _sd('diagnosticos_lista', lista); }
+function getCRMLeads() { return _ld('crm_leads_v2', []); }
+function salvarCRMLeads(lista) { _sd('crm_leads_v2', lista); }
+function getBriefings() { return _ld('briefings_lista', []); }
+function salvarBriefings(lista) { _sd('briefings_lista', lista); }
+function gerarId() { return Date.now().toString(36) + Math.random().toString(36).substr(2,5); }
+
+// ===== CRM =====
+var _crmData = {};
+function buildKbColCRM(title, cards, estagio) {
+  var col = estagio.toLowerCase().replace(/[^a-z]/g,'_');
+  var html = '<div class="kb-col"><div class="kb-title">' + title + '</div>';
+  cards.forEach(function(c, i) {
+    var key = col + '_' + i;
+    _crmData[key] = {nome:c[0], info:c[1], estagio:estagio, id:c[2]||key};
+    html += '<div class="kb-card" onclick="abrirCardCRMv2(\'' + key + '\')"><div class="kb-card-title">' + c[0] + '</div><div class="kb-card-sub">' + (c[1]||'') + '</div></div>';
+  });
+  html += '</div>';
+  return html;
+}
+function abrirCardCRMv2(key) {
+  var d = _crmData[key]; if (!d) return;
+  var old = document.getElementById('modal-crm-v2'); if (old) old.remove();
+  var m = document.createElement('div');
+  m.id = 'modal-crm-v2';
+  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  m.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:480px;max-width:96vw;box-shadow:0 8px 40px rgba(0,0,0,.4)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-size:15px;font-weight:700">' + d.nome + '</div><button onclick="document.getElementById(\'modal-crm-v2\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px">×</button></div><div class="fg"><label class="fl">Mover para estágio</label><select class="fs" id="crm-estagio-sel">' + CRM_ESTAGIOS.map(function(e){ return '<option' + (e===d.estagio?' selected':'') + '>' + e + '</option>'; }).join('') + '</select></div><div class="fg"><label class="fl">Serviço de interesse</label><input class="fi" id="crm-servico" value="' + (d.info||'').split('·')[0].trim() + '"></div><div class="fg"><label class="fl">Próximo passo</label><input class="fi" id="crm-prox" placeholder="Ex: Enviar proposta até sexta"></div><div class="fg"><label class="fl">Observações</label><textarea class="fi" id="crm-obs" style="min-height:60px"></textarea></div><div style="display:flex;gap:8px"><button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarCardCRM(\'' + key + '\')">' + ic('save',14) + ' Salvar</button><button class="btn" style="color:var(--accent);border-color:var(--accent)" onclick="arqIA_analisarLead(' + JSON.stringify({nome:d.nome,info:d.info,estagio:d.estagio}).replace(/\'/g,"\\'") + ')">' + ic('sparkles',13) + ' Analisar</button><button class="btn" onclick="document.getElementById(\'modal-crm-v2\').remove()">Fechar</button></div><div id="arqia-crm-result" style="display:none;margin-top:12px"></div></div></div>';
+  document.body.appendChild(m); renderIcons();
+}
+function salvarCardCRM(key) {
+  var d = _crmData[key]; if (!d) return;
+  if (d.id) {
+    var leads = getCRMLeads();
+    var lead = leads.find(function(l){ return l.id === d.id; });
+    if (lead) { lead.estagio = (document.getElementById('crm-estagio-sel')||{value:d.estagio}).value; salvarCRMLeads(leads); }
+  }
+  var modal = document.getElementById('modal-crm-v2'); if (modal) modal.remove();
+  mostrarFeedback('Lead salvo!'); renderPage('crm');
+}
+function abrirModalNovoLead() {
+  var old = document.getElementById('modal-novo-lead'); if (old) old.remove();
+  var m = document.createElement('div');
+  m.id = 'modal-novo-lead';
+  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  m.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:440px;max-width:96vw;box-shadow:0 8px 40px rgba(0,0,0,.4)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><div style="font-size:15px;font-weight:700">Novo Lead</div><button onclick="document.getElementById(\'modal-novo-lead\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px">×</button></div><div class="fg"><label class="fl">Nome</label><input class="fi" id="nl-nome" placeholder="Nome do lead"></div><div class="g2"><div class="fg"><label class="fl">WhatsApp</label><input class="fi" id="nl-wpp" placeholder="(91) 99999-0000"></div><div class="fg"><label class="fl">Serviço</label><input class="fi" id="nl-serv" placeholder="Ex: Projeto Completo"></div></div><div class="fg"><label class="fl">Origem</label><select class="fs" id="nl-origem"><option>Instagram</option><option>Indicação</option><option>Google</option><option>WhatsApp</option><option>Outro</option></select></div><div class="fg"><label class="fl">Investimento previsto</label><select class="fs" id="nl-inv"><option>Até R$ 2.000</option><option>R$ 2.000 a R$ 5.000</option><option>R$ 5.000 a R$ 10.000</option><option>Acima de R$ 10.000</option></select></div><div style="display:flex;gap:8px"><button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarNovoLead()">' + ic('save',14) + ' Salvar</button><button class="btn" onclick="document.getElementById(\'modal-novo-lead\').remove()">Cancelar</button></div></div>';
+  document.body.appendChild(m); renderIcons();
+}
+function salvarNovoLead() {
+  var nome = (document.getElementById('nl-nome')||{value:''}).value.trim();
+  if (!nome) { mostrarFeedback('Informe o nome'); return; }
+  var leads = getCRMLeads();
+  leads.push({id:gerarId(),nome:nome,whatsapp:(document.getElementById('nl-wpp')||{value:''}).value,servico:(document.getElementById('nl-serv')||{value:''}).value,origem:(document.getElementById('nl-origem')||{value:''}).value,investimento:(document.getElementById('nl-inv')||{value:''}).value,estagio:'LEAD',obs:'',criadoEm:new Date().toLocaleDateString('pt-BR')});
+  salvarCRMLeads(leads);
+  var m = document.getElementById('modal-novo-lead'); if (m) m.remove();
+  mostrarFeedback('Lead ' + nome + ' criado!'); renderPage('crm');
+}
+
+// ===== DIAGNÓSTICOS =====
+function abrirModalNovoDiagnostico() {
+  var old = document.getElementById('modal-novo-diag'); if (old) old.remove();
+  var amb = ['Sala de estar','Sala de jantar','Quarto','Cozinha','Banheiro','Varanda','Home Office','Outro'];
+  var m = document.createElement('div');
+  m.id = 'modal-novo-diag';
+  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 10px';
+  m.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:560px;max-width:96vw;margin:auto;box-shadow:0 8px 40px rgba(0,0,0,.4)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><div style="font-size:15px;font-weight:700">Novo Diagnóstico</div><button onclick="document.getElementById(\'modal-novo-diag\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px">×</button></div><div class="g2"><div class="fg"><label class="fl">Nome</label><input class="fi" id="nd-nome" placeholder="Nome completo"></div><div class="fg"><label class="fl">WhatsApp</label><input class="fi" id="nd-wpp" placeholder="(91) 99999-0000"></div></div><div class="fg"><label class="fl">Serviço desejado</label><select class="fs" id="nd-serv"><option>Projeto de Interiores Completo</option><option>Consultoria Online</option></select></div><div class="fg"><label class="fl">Ambientes</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px" id="nd-amb-wrap">' + amb.map(function(a){ return '<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" value="' + a + '"> ' + a + '</label>'; }).join('') + '</div></div><div class="fg"><label class="fl">Dor principal</label><textarea class="fi" id="nd-dor" style="min-height:60px" placeholder="O que incomoda..."></textarea></div><div class="fg"><label class="fl">Objetivo principal</label><textarea class="fi" id="nd-obj" style="min-height:60px" placeholder="O que quer conquistar..."></textarea></div><div class="g2"><div class="fg"><label class="fl">Prazo</label><select class="fs" id="nd-prazo"><option>Urgente (até 1 mês)</option><option>Curto (1-3 meses)</option><option>Médio (3-6 meses)</option><option>Sem pressa</option></select></div><div class="fg"><label class="fl">Investimento</label><select class="fs" id="nd-inv"><option>Até R$ 2.000</option><option>R$ 2.000 a R$ 5.000</option><option>R$ 5.000 a R$ 10.000</option><option>Acima de R$ 10.000</option></select></div></div><div class="fg"><label class="fl">Status</label><select class="fs" id="nd-status">' + DIAG_STATUS.map(function(s){ return '<option>' + s + '</option>'; }).join('') + '</select></div><div style="display:flex;gap:8px"><button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarNovoDiagnostico()">' + ic('save',14) + ' Salvar</button><button class="btn" onclick="document.getElementById(\'modal-novo-diag\').remove()">Cancelar</button></div></div>';
+  document.body.appendChild(m); renderIcons();
+}
+function salvarNovoDiagnostico() {
+  var nome = (document.getElementById('nd-nome')||{value:''}).value.trim();
+  if (!nome) { mostrarFeedback('Informe o nome'); return; }
+  var ambientes = Array.from(document.querySelectorAll('#nd-amb-wrap input:checked')).map(function(cb){ return cb.value; });
+  var diags = getDiagnosticos();
+  diags.unshift({id:gerarId(),nome:nome,whatsapp:(document.getElementById('nd-wpp')||{value:''}).value,servico:(document.getElementById('nd-serv')||{value:''}).value,ambientes:ambientes,dor:(document.getElementById('nd-dor')||{value:''}).value,objetivo:(document.getElementById('nd-obj')||{value:''}).value,prazo:(document.getElementById('nd-prazo')||{value:''}).value,investimento:(document.getElementById('nd-inv')||{value:''}).value,status:(document.getElementById('nd-status')||{value:'Novo'}).value,criadoEm:new Date().toLocaleDateString('pt-BR'),convertidoEmLead:false});
+  salvarDiagnosticos(diags);
+  var m = document.getElementById('modal-novo-diag'); if (m) m.remove();
+  mostrarFeedback('Diagnóstico de ' + nome + ' salvo!'); renderPage('diagnosticos');
+}
+function abrirDetalheDiagnostico(id) {
+  var diags = getDiagnosticos();
+  var d = diags.find(function(x){ return x.id === id; }); if (!d) return;
+  var old = document.getElementById('modal-detalhe-diag'); if (old) old.remove();
+  var statusCor = {Novo:'p-blue','Em análise':'p-amber',Qualificado:'p-green',Descartado:'p-muted'};
+  var m = document.createElement('div');
+  m.id = 'modal-detalhe-diag';
+  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 10px';
+  m.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:560px;max-width:96vw;margin:auto;box-shadow:0 8px 40px rgba(0,0,0,.4)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px"><div><div style="font-size:15px;font-weight:700">' + d.nome + '</div><div style="font-size:11px;color:var(--muted);margin-top:2px">' + (d.whatsapp||'') + '</div><div style="margin-top:6px">' + pill(d.status, statusCor[d.status]||'p-muted') + '</div></div><button onclick="document.getElementById(\'modal-detalhe-diag\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px">×</button></div>' + (d.dor ? '<div class="fg"><label class="fl">Dor principal</label><div style="font-size:12px;color:var(--text2)">' + d.dor + '</div></div>' : '') + '<div class="fg"><label class="fl">Atualizar status</label><select class="fs" id="dd-status">' + DIAG_STATUS.map(function(s){ return '<option' + (s===d.status?' selected':'') + '>' + s + '</option>'; }).join('') + '</select></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-accent" onclick="atualizarStatusDiag(\'' + id + '\')">' + ic('save',14) + ' Salvar</button><button class="btn" style="color:var(--accent);border-color:var(--accent)" onclick="arqIA_resumoDiagnostico(' + JSON.stringify(d).replace(/'/g,"\\'").replace(/\\/g,'\\\\') + ')">' + ic('sparkles',13) + ' Gerar Resumo</button>' + (!d.convertidoEmLead && d.status === 'Qualificado' ? '<button class="btn" style="color:var(--green);border-color:var(--green)" onclick="converterDiagnosticoEmLead(\'' + id + '\')">' + ic('user-plus',14) + ' Converter em Lead</button>' : d.convertidoEmLead ? '<span style="font-size:12px;color:var(--green)">✓ Já convertido</span>' : '') + '<button class="btn" onclick="document.getElementById(\'modal-detalhe-diag\').remove()">Fechar</button></div><div id="arqia-diag-result" style="display:none;margin-top:12px"></div></div>';
+  document.body.appendChild(m); renderIcons();
+}
+function atualizarStatusDiag(id) {
+  var diags = getDiagnosticos();
+  var d = diags.find(function(x){ return x.id === id; }); if (!d) return;
+  d.status = (document.getElementById('dd-status')||{value:d.status}).value;
+  salvarDiagnosticos(diags);
+  var m = document.getElementById('modal-detalhe-diag'); if (m) m.remove();
+  mostrarFeedback('Status: ' + d.status); renderPage('diagnosticos');
+}
+function converterDiagnosticoEmLead(diagId) {
+  var diags = getDiagnosticos();
+  var diag = diags.find(function(d){ return d.id === diagId; }); if (!diag) return;
+  if (diag.status !== 'Qualificado') { mostrarFeedback('Somente qualificados podem ser convertidos'); return; }
+  var leads = getCRMLeads();
+  leads.push({id:gerarId(),diagId:diagId,nome:diag.nome,whatsapp:diag.whatsapp,servico:diag.servico,investimento:diag.investimento,estagio:'LEAD',obs:'',criadoEm:new Date().toLocaleDateString('pt-BR')});
+  salvarCRMLeads(leads);
+  diag.convertidoEmLead = true; salvarDiagnosticos(diags);
+  var m = document.getElementById('modal-detalhe-diag'); if (m) m.remove();
+  mostrarFeedback('✅ ' + diag.nome + ' convertido em Lead!'); renderPage('diagnosticos');
+}
+
+// ===== BRIEFINGS =====
+function abrirModalNovoBriefing() {
+  var old = document.getElementById('modal-novo-briefing'); if (old) old.remove();
+  var m = document.createElement('div');
+  m.id = 'modal-novo-briefing';
+  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 10px';
+  var ambHtml = AMBIENTES_LISTA.map(function(a){ return '<label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;padding:3px 0"><input type="checkbox" class="nb-amb-cb" value="' + a + '"> ' + a + '</label>'; }).join('');
+  m.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:580px;max-width:96vw;margin:auto;box-shadow:0 8px 40px rgba(0,0,0,.4)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><div style="font-size:15px;font-weight:700">Novo Briefing</div><button onclick="document.getElementById(\'modal-novo-briefing\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px">×</button></div><div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">1 · Dados Gerais</div><div class="fg"><label class="fl">Nome do cliente</label><input class="fi" id="nb-cliente" placeholder="Ex: [Cliente A]"></div><div class="g2"><div class="fg"><label class="fl">Tipo do imóvel</label><select class="fs" id="nb-tipo"><option>Apartamento</option><option>Casa</option><option>Cobertura</option><option>Studio</option><option>Comercial</option></select></div><div class="fg"><label class="fl">Cidade</label><input class="fi" id="nb-cidade" placeholder="Ex: "></div></div><div class="g2"><div class="fg"><label class="fl">Metragem (m²)</label><input class="fi" id="nb-metros" type="number" placeholder="65"></div><div class="fg"><label class="fl">Moradores</label><input class="fi" id="nb-moradores" placeholder="Casal + 1 filho"></div></div><div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px">2 · Ambientes</div><div style="display:grid;grid-template-columns:1fr 1fr;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:12px;max-height:200px;overflow-y:auto">' + ambHtml + '</div><div style="display:flex;gap:8px;margin-top:18px"><button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarNovoBriefing()">' + ic('save',14) + ' Salvar e continuar</button><button class="btn" onclick="document.getElementById(\'modal-novo-briefing\').remove()">Cancelar</button></div></div>';
+  document.body.appendChild(m); renderIcons();
+}
+function salvarNovoBriefing() {
+  var cliente = (document.getElementById('nb-cliente')||{value:''}).value.trim();
+  if (!cliente) { alert('Informe o nome do cliente'); return; }
+  var ambSel = Array.from(document.querySelectorAll('.nb-amb-cb:checked')).map(function(cb){ return cb.value; });
+  if (!ambSel.length) { alert('Selecione ao menos um ambiente'); return; }
+  var briefing = {id:gerarId(),cliente:cliente,tipoImovel:(document.getElementById('nb-tipo')||{value:''}).value,cidade:(document.getElementById('nb-cidade')||{value:''}).value,metros:(document.getElementById('nb-metros')||{value:''}).value,moradores:(document.getElementById('nb-moradores')||{value:''}).value,ambientes:ambSel,prioridade:ambSel.slice(),detalhes:{},status:'Em preenchimento',criadoEm:new Date().toLocaleDateString('pt-BR'),projetoId:null};
+  var lista = getBriefings(); lista.unshift(briefing); salvarBriefings(lista);
+  var modal = document.getElementById('modal-novo-briefing'); if (modal) modal.remove();
+  abrirDetalheBriefing(briefing.id);
+}
+function abrirDetalheBriefing(id) {
+  var lista = getBriefings();
+  var b = lista.find(function(x){ return x.id === id; }); if (!b) return;
+  var old = document.getElementById('modal-detalhe-briefing'); if (old) old.remove();
+  var prioHtml = '<div id="bf-prio-list">' + (b.prioridade||b.ambientes).map(function(amb, i) {
+    return '<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;margin-bottom:5px"><span style="font-size:11px;color:var(--muted);width:18px;text-align:center;font-weight:600">' + (i+1) + '</span><span style="flex:1;font-size:12px">' + amb + '</span><button onclick="moverPrioridadeBF(\'' + id + '\',' + i + ',\'up\')" style="background:none;border:1px solid var(--border2);border-radius:4px;width:22px;height:22px;cursor:pointer;color:var(--muted);font-size:13px;line-height:1">↑</button><button onclick="moverPrioridadeBF(\'' + id + '\',' + i + ',\'dn\')" style="background:none;border:1px solid var(--border2);border-radius:4px;width:22px;height:22px;cursor:pointer;color:var(--muted);font-size:13px;line-height:1">↓</button></div>';
+  }).join('') + '</div>';
+  var detHtml = (b.prioridade||b.ambientes).map(function(amb) {
+    var key = amb.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z_]/g,'');
+    var det = (b.detalhes && b.detalhes[key]) || {};
+    return '<div style="border:1px solid var(--border2);border-radius:10px;margin-bottom:8px;overflow:hidden"><div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;background:var(--bg2)" onclick="toggleBFAcordeon(this)"><span style="font-size:13px;font-weight:500">' + amb + '</span><span style="color:var(--muted)" class="bfacc-arrow">›</span></div><div style="display:none;padding:14px">' + DETALHES_CAMPOS.map(function(campo){ return '<div class="fg"><label class="fl">' + campo.label + '</label><textarea class="fi" id="bf-' + key + '-' + campo.id + '" style="min-height:55px">' + (det[campo.id]||'') + '</textarea></div>'; }).join('') + '<button class="btn btn-sm" onclick="salvarDetalhesBFAmbiente(\'' + id + '\',\'' + amb + '\',\'' + key + '\')">' + ic('save',12) + ' Salvar ' + amb + '</button></div></div>';
+  }).join('');
+  var btnConverter = b.status !== 'Convertido em Projeto' ? '<button class="btn" style="color:var(--green);border-color:var(--green)" onclick="converterBriefingEmProjeto(\'' + id + '\')">' + ic('folder-plus',14) + ' Converter em Projeto</button>' : '<span style="font-size:12px;color:var(--green)">✓ Já convertido</span>';
+  var m = document.createElement('div');
+  m.id = 'modal-detalhe-briefing';
+  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 10px';
+  m.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:620px;max-width:96vw;margin:auto;box-shadow:0 8px 40px rgba(0,0,0,.4)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px"><div><div style="font-size:15px;font-weight:700">' + b.cliente + '</div><div style="font-size:11px;color:var(--muted);margin-top:2px">' + (b.tipoImovel||'') + (b.cidade ? ' · ' + b.cidade : '') + '</div></div><button onclick="document.getElementById(\'modal-detalhe-briefing\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px">×</button></div><div class="fg"><label class="fl">Status</label><select class="fs" id="bf-status-sel">' + BRIEFING_STATUS.map(function(s){ return '<option' + (s===b.status?' selected':'') + '>' + s + '</option>'; }).join('') + '</select></div><div style="margin-bottom:18px"><button class="btn btn-sm" onclick="salvarStatusBF(\'' + id + '\')">' + ic('save',12) + ' Salvar status</button></div><div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">3 · Priorização</div>' + prioHtml + '<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px">4 · Detalhamento por Ambiente</div>' + detHtml + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">' + btnConverter + '<button class="btn" style="color:var(--accent);border-color:var(--accent)" onclick="arqIA_interpretarBriefing(\'' + id + '\')">' + ic('sparkles',13) + ' Interpretar</button><button class="btn" onclick="document.getElementById(\'modal-detalhe-briefing\').remove()">Fechar</button></div><div id="arqia-brief-result" style="display:none;margin-top:12px"></div></div>';
+  document.body.appendChild(m); renderIcons();
+}
+function toggleBFAcordeon(header) {
+  var body = header.nextElementSibling;
+  var arrow = header.querySelector('.bfacc-arrow');
+  var open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.style.transform = open ? '' : 'rotate(90deg)';
+}
+function moverPrioridadeBF(id, idx, dir) {
+  var lista = getBriefings();
+  var b = lista.find(function(x){ return x.id === id; }); if (!b || !b.prioridade) return;
+  var arr = b.prioridade;
+  var troca = dir === 'up' ? idx - 1 : idx + 1;
+  if (troca < 0 || troca >= arr.length) return;
+  var tmp = arr[idx]; arr[idx] = arr[troca]; arr[troca] = tmp;
+  salvarBriefings(lista);
+  var m = document.getElementById('modal-detalhe-briefing'); if (m) m.remove();
+  abrirDetalheBriefing(id);
+}
+function salvarDetalhesBFAmbiente(id, amb, key) {
+  var lista = getBriefings();
+  var b = lista.find(function(x){ return x.id === id; }); if (!b) return;
+  if (!b.detalhes) b.detalhes = {};
+  var det = {};
+  DETALHES_CAMPOS.forEach(function(campo){ var el = document.getElementById('bf-' + key + '-' + campo.id); if (el) det[campo.id] = el.value; });
+  b.detalhes[key] = det; salvarBriefings(lista);
+  if (event && event.target) { var btn = event.target; var orig = btn.innerHTML; btn.innerHTML = '✓ Salvo'; setTimeout(function(){ btn.innerHTML = orig; }, 1200); }
+}
+function salvarStatusBF(id) {
+  var lista = getBriefings();
+  var b = lista.find(function(x){ return x.id === id; }); if (!b) return;
+  b.status = (document.getElementById('bf-status-sel')||{value:b.status}).value;
+  salvarBriefings(lista);
+  var m = document.getElementById('modal-detalhe-briefing'); if (m) m.remove();
+  renderPage('briefings');
+}
+function converterBriefingEmProjeto(id) {
+  var lista = getBriefings();
+  var b = lista.find(function(x){ return x.id === id; }); if (!b) return;
+  if (b.status === 'Convertido em Projeto') { alert('Este briefing já foi convertido.'); return; }
+  var hoje = new Date();
+  var mmaa = (hoje.getMonth()+1).toString().padStart(2,'0') + '_' + hoje.getFullYear().toString().slice(-2);
+  var slug = b.cliente.split(' ')[0].toUpperCase().substring(0,6);
+  var numProj = (_ld('projetos_lista',[]).length + 1).toString().padStart(3,'0');
+  var codigoProjeto = numProj + '_' + mmaa + '_' + slug;
+  var projId = gerarId();
+  var novoProjeto = {id:projId,codigo:codigoProjeto,cliente:b.cliente,tipoImovel:b.tipoImovel,cidade:b.cidade,metros:b.metros,moradores:b.moradores,ambientes:b.prioridade||b.ambientes,detalhes:b.detalhes||{},briefingId:id,status:'Em andamento',progresso:0,criadoEm:new Date().toLocaleDateString('pt-BR')};
+  var projetos = _ld('projetos_lista', []); projetos.unshift(novoProjeto); _sd('projetos_lista', projetos);
+  b.status = 'Convertido em Projeto'; b.projetoId = projId; salvarBriefings(lista);
+  var m = document.getElementById('modal-detalhe-briefing'); if (m) m.remove();
+  renderPage('briefings');
+  setTimeout(function(){ alert('✅ Projeto ' + codigoProjeto + ' criado!\n\nAcesse em Operação → Projetos.'); }, 100);
+}
+</script>
+
+<script>
+// ===== ARQ INTELLIGENCE (Claude API) =====
+var _arqIAKey = _ld('claude_api_key', '');
+function _arqIAGetKey() { _arqIAKey = _ld('claude_api_key', ''); return _arqIAKey; }
+function _arqIARenderResult(containerId, titulo, itens) {
+  var el = document.getElementById(containerId); if (!el) return;
+  var html = '<div style="background:linear-gradient(135deg,var(--bg2),var(--surface));border:1px solid var(--accent);border-radius:10px;padding:14px;font-size:12px">';
+  html += '<div style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--accent);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">' + ic('sparkles',11) + ' ARQ Intelligence · ' + titulo + '</div>';
+  itens.forEach(function(it) { html += '<div style="margin-bottom:8px"><div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">' + it.label + '</div><div style="color:var(--text2);line-height:1.5">' + it.valor + '</div></div>'; });
+  html += '</div>';
+  el.innerHTML = html; el.style.display = 'block';
+}
+function _arqIALoading(containerId) {
+  var el = document.getElementById(containerId); if (!el) return;
+  el.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px;font-size:12px;color:var(--muted)">' + ic('sparkles',14) + ' ARQ Intelligence processando...</div>';
+  el.style.display = 'block';
+}
+async function _arqIACall(prompt, containerId, titulo, parser) {
+  var key = _arqIAGetKey();
+  if (!key) {
+    var el = document.getElementById(containerId);
+    if (el) { el.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--red);border-radius:10px;padding:12px;font-size:12px;color:var(--red)">Configure a chave da API no ícone 🔑 para usar a ARQ Intelligence.</div>'; el.style.display='block'; }
+    return;
+  }
+  _arqIALoading(containerId);
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})});
+    var data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    var texto = data.content && data.content[0] ? data.content[0].text : '';
+    _arqIARenderResult(containerId, titulo, parser(texto));
+  } catch(e) {
+    var el = document.getElementById(containerId);
+    if (el) { el.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--red);border-radius:10px;padding:12px;font-size:12px;color:var(--red)">Erro: ' + e.message + '</div>'; el.style.display='block'; }
+  }
+}
+function _arqIAParseSecoes(texto, secoes) {
+  return secoes.map(function(s) {
+    var re = new RegExp(s + '[:\\s*]+([\\s\\S]*?)(?=' + secoes.filter(function(x){return x!==s;}).join('|') + '|$)', 'i');
+    var m = texto.match(re);
+    return { label: s, valor: m ? m[1].replace(/\*\*/g,'').trim().substring(0,400) : '—' };
+  });
+}
+function arqIA_analisarLead(d) {
+  var prompt = 'Você é consultora especializada em vendas de arquitetura. Analise este lead respondendo SOMENTE com:\nPOTENCIAL DE FECHAMENTO: [%]\nPRINCIPAIS DORES: [até 3]\nPOSSÍVEIS OBJEÇÕES: [até 3]\nPRÓXIMA AÇÃO: [ação concreta]\n\nLead: ' + d.nome + ' | Serviço: ' + d.info + ' | Estágio: ' + d.estagio;
+  _arqIACall(prompt, 'arqia-crm-result', 'Analisar Lead', function(t){ return _arqIAParseSecoes(t, ['POTENCIAL DE FECHAMENTO','PRINCIPAIS DORES','POSSÍVEIS OBJEÇÕES','PRÓXIMA AÇÃO']); });
+}
+function arqIA_resumoDiagnostico(d) {
+  var prompt = 'Você é arquiteta de interiores. Analise este diagnóstico respondendo SOMENTE com:\nDOR PRINCIPAL: [2 linhas]\nOBJETIVOS: [até 3]\nURGÊNCIA: [Baixa/Média/Alta + justificativa]\nOPORTUNIDADES: [até 3]\n\nDados: Nome: ' + d.nome + ' | Ambientes: ' + ((d.ambientes||[]).join(', ')||'—') + ' | Dor: ' + (d.dor||'—') + ' | Objetivo: ' + (d.objetivo||'—');
+  _arqIACall(prompt, 'arqia-diag-result', 'Gerar Resumo', function(t){ return _arqIAParseSecoes(t, ['DOR PRINCIPAL','OBJETIVOS','URGÊNCIA','OPORTUNIDADES']); });
+}
+function arqIA_interpretarBriefing(id) {
+  var lista = getBriefings();
+  var b = lista.find(function(x){ return x.id === id; }); if (!b) return;
+  var prompt = 'Você é arquiteta de interiores. Interprete este briefing respondendo SOMENTE com:\nPERFIL ESTÉTICO: [2-3 linhas]\nPERFIL FUNCIONAL: [como usa os espaços]\nRESTRIÇÕES: [principais limitações]\nOPORTUNIDADES: [até 3 criativas]\n\nBriefing: ' + b.cliente + ' | ' + (b.tipoImovel||'') + ' ' + (b.metros||'') + 'm² | Ambientes: ' + ((b.prioridade||b.ambientes||[]).join(', '));
+  _arqIACall(prompt, 'arqia-brief-result', 'Interpretar Briefing', function(t){ return _arqIAParseSecoes(t, ['PERFIL ESTÉTICO','PERFIL FUNCIONAL','RESTRIÇÕES','OPORTUNIDADES']); });
+}
+function arqIA_projetarReceitas() {
+  var leads = getCRMLeads();
+  var leadsAtivos = leads.filter(function(l){ return ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA'].indexOf(l.estagio) >= 0; }).length;
+  var prompt = 'Consultora financeira de arquitetura. Responda SOMENTE com:\nPROJEÇÃO 30 DIAS: [valor estimado]\nPROJEÇÃO 90 DIAS: [com base no pipeline]\nOPORTUNIDADES: [3 ações para aumentar receita]\nALERTAS: [riscos financeiros]\n\nLeads ativos: ' + leadsAtivos;
+  _arqIACall(prompt, 'arqia-fin-result', 'Projetar Receitas', function(t){ return _arqIAParseSecoes(t, ['PROJEÇÃO 30 DIAS','PROJEÇÃO 90 DIAS','OPORTUNIDADES','ALERTAS']); });
+}
+function arqIA_analisarTendencias() {
+  var diags = getDiagnosticos();
+  var dores = diags.map(function(d){ return d.dor||''; }).filter(Boolean).join('; ').substring(0,300);
+  var prompt = 'Especialista em marketing para arquitetura em . Responda SOMENTE com:\nPRINCIPAIS DORES DOS CLIENTES: [3 mais recorrentes]\nAMBIENTES MAIS REFORMADOS: [com oportunidade de conteúdo]\nSUGESTÕES DE CONTEÚDO: [5 ideias de posts]\n\nDores relatadas: ' + (dores||'dados insuficientes');
+  _arqIACall(prompt, 'arqia-mkt-result', 'Analisar Tendências', function(t){ return _arqIAParseSecoes(t, ['PRINCIPAIS DORES DOS CLIENTES','AMBIENTES MAIS REFORMADOS','SUGESTÕES DE CONTEÚDO']); });
+}
+function abrirIAProjetoModal() {
+  var projetos = _ld('projetos_lista', []);
+  var old = document.getElementById('modal-ia-proj'); if (old) old.remove();
+  var opts = projetos.length ? projetos.map(function(p,i){ return '<option value="'+i+'">'+p.cliente+' — '+p.codigo+'</option>'; }).join('') : '<option value="">Nenhum projeto cadastrado</option>';
+  var m = document.createElement('div');
+  m.id = 'modal-ia-proj';
+  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  m.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:440px;max-width:96vw;box-shadow:0 8px 40px rgba(0,0,0,.4)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--accent)">' + ic('sparkles',14) + ' Gerar Diretrizes</div><button onclick="document.getElementById(\'modal-ia-proj\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px">×</button></div><div class="fg"><label class="fl">Selecione o projeto</label><select class="fs" id="ia-proj-sel">' + opts + '</select></div><div class="fg"><label class="fl">Contexto adicional</label><textarea class="fi" id="ia-proj-ctx" style="min-height:60px" placeholder="Paleta terrosa, orçamento reduzido..."></textarea></div><div style="display:flex;gap:8px"><button class="btn btn-accent" style="flex:1;justify-content:center" onclick="arqIA_gerarDiretrizes()">' + ic('sparkles',14) + ' Gerar</button><button class="btn" onclick="document.getElementById(\'modal-ia-proj\').remove()">Cancelar</button></div></div>';
+  document.body.appendChild(m); renderIcons();
+}
+function arqIA_gerarDiretrizes() {
+  var projetos = _ld('projetos_lista', []);
+  var sel = document.getElementById('ia-proj-sel');
+  var ctx = (document.getElementById('ia-proj-ctx')||{value:''}).value;
+  var p = sel ? projetos[parseInt(sel.value)] : null;
+  var m = document.getElementById('modal-ia-proj'); if (m) m.remove();
+  if (!p) return;
+  var prompt = 'Arquiteta de interiores. Crie diretrizes respondendo SOMENTE com:\nCONCEITO: [2-3 linhas]\nESTRATÉGIAS: [até 4]\nPRIORIDADES: [3 de execução]\nCUIDADOS: [até 3 pontos de atenção]\n\nProjeto: ' + p.cliente + ' | ' + (p.tipoImovel||'') + ' ' + (p.metros||'') + 'm² | Ambientes: ' + ((p.ambientes||[]).join(', ')||'—') + (ctx ? ' | Contexto: ' + ctx : '');
+  _arqIACall(prompt, 'arqia-proj-result', 'Gerar Diretrizes', function(t){ return _arqIAParseSecoes(t, ['CONCEITO','ESTRATÉGIAS','PRIORIDADES','CUIDADOS']); });
+}
+function abrirIAPreparoReuniaoModal() {
+  var old = document.getElementById('modal-ia-reun'); if (old) old.remove();
+  var m = document.createElement('div');
+  m.id = 'modal-ia-reun';
+  m.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center';
+  m.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:440px;max-width:96vw;box-shadow:0 8px 40px rgba(0,0,0,.4)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-size:13px;font-weight:700;color:var(--accent)">' + ic('sparkles',14) + ' Preparar Reunião</div><button onclick="document.getElementById(\'modal-ia-reun\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px">×</button></div><div class="fg"><label class="fl">Tipo de reunião</label><select class="fs" id="ia-reun-tipo"><option>Apresentação de proposta</option><option>Kickoff de projeto</option><option>Aprovação de layout</option><option>Entrega de projeto</option></select></div><div class="fg"><label class="fl">Cliente / Projeto</label><input class="fi" id="ia-reun-cliente" placeholder="Ana Silva — Sala + Cozinha"></div><div class="fg"><label class="fl">Contexto</label><textarea class="fi" id="ia-reun-ctx" style="min-height:60px" placeholder="Detalhes relevantes..."></textarea></div><div style="display:flex;gap:8px"><button class="btn btn-accent" style="flex:1;justify-content:center" onclick="arqIA_prepararReuniao()">' + ic('sparkles',14) + ' Gerar</button><button class="btn" onclick="document.getElementById(\'modal-ia-reun\').remove()">Cancelar</button></div></div>';
+  document.body.appendChild(m); renderIcons();
+}
+function arqIA_prepararReuniao() {
+  var tipo = (document.getElementById('ia-reun-tipo')||{value:''}).value;
+  var cliente = (document.getElementById('ia-reun-cliente')||{value:''}).value;
+  var ctx = (document.getElementById('ia-reun-ctx')||{value:''}).value;
+  var m = document.getElementById('modal-ia-reun'); if (m) m.remove();
+  var prompt = 'Arquiteta de interiores. Prepare esta reunião respondendo SOMENTE com:\nPERGUNTAS SUGERIDAS: [5 perguntas abertas]\nPONTOS CRÍTICOS: [até 3]\nITENS PENDENTES: [até 4]\n\nTipo: ' + tipo + ' | Cliente: ' + (cliente||'—') + ' | Contexto: ' + (ctx||'padrão');
+  _arqIACall(prompt, 'arqia-reun-result', 'Preparar Reunião', function(t){ return _arqIAParseSecoes(t, ['PERGUNTAS SUGERIDAS','PONTOS CRÍTICOS','ITENS PENDENTES']); });
+}
+function arqIA_gerarAta() {
+  var prompt = 'Gere um modelo de ata de reunião em branco. Responda SOMENTE com:\nPONTOS DISCUTIDOS: [campo em branco]\nDECISÕES TOMADAS: [campo em branco]\nAÇÕES GERADAS: [campo em branco]\nPRÓXIMA REUNIÃO: [campo em branco]';
+  _arqIACall(prompt, 'arqia-reun-result', 'Modelo de Ata', function(t){ return _arqIAParseSecoes(t, ['PONTOS DISCUTIDOS','DECISÕES TOMADAS','AÇÕES GERADAS','PRÓXIMA REUNIÃO']); });
+}
+
+// ===== CONFIG API =====
+function abrirConfigAPI() {
+  var atual = _ld('claude_api_key', '');
+  var m = document.createElement('div');
+  m.id = 'modal-config-api';
+  m.style.cssText = 'position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center';
+  m.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:460px;max-width:96vw;box-shadow:0 8px 40px rgba(0,0,0,.5)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div style="font-size:14px;font-weight:700">Chave da API (ARQ Intelligence)</div><button onclick="document.getElementById(\'modal-config-api\').remove()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px">×</button></div><div class="fg"><label class="fl">Chave Anthropic</label><input class="fi" id="cfg-key-inp" type="password" placeholder="sk-ant-api03-..."></div><div style="font-size:11px;color:var(--muted);margin-bottom:14px">A chave fica salva apenas no seu navegador. Obtenha em console.anthropic.com</div><div style="display:flex;gap:8px"><button class="btn btn-accent" style="flex:1;justify-content:center" onclick="salvarChaveAPIConfig()">Salvar</button><button class="btn" onclick="_sd(\'claude_api_key\',\'\');_arqIAKey=\'\';document.getElementById(\'modal-config-api\').remove();">Remover</button></div></div>';
+  document.body.appendChild(m);
+  setTimeout(function(){ var inp=document.getElementById('cfg-key-inp'); if(inp){inp.value=atual||'';inp.focus();} }, 80);
+  renderIcons();
+}
+function salvarChaveAPIConfig() {
+  var key = (document.getElementById('cfg-key-inp')||{value:''}).value.trim();
+  if (!key || key.startsWith('••')) return;
+  _sd('claude_api_key', key); _arqIAKey = key;
+  var m = document.getElementById('modal-config-api'); if (m) m.remove();
+  mostrarFeedback('Chave salva!');
+}
+
+// ===== VITRINE FUNCTIONS =====
+function toggleFAQ(header) {
+  var body = header.nextElementSibling;
+  var open = body.style.display !== 'none';
+  var sign = header.querySelector('span:last-child');
+  body.style.display = open ? 'none' : 'block';
+  if (sign) sign.textContent = open ? '+' : '−';
+}
+function switchPortalTab(btn, tabId) {
+  var tabs = ['ptab-status','ptab-briefing','ptab-docs','ptab-pgto','ptab-aprov'];
+  tabs.forEach(function(t) { var el = document.getElementById(t); if (el) el.style.display = 'none'; });
+  var el = document.getElementById(tabId); if (el) el.style.display = 'block';
+  var allBtns = btn.parentElement.querySelectorAll('button');
+  allBtns.forEach(function(b) { b.className = 'btn btn-sm'; b.style.flex='1'; b.style.justifyContent='center'; b.style.whiteSpace='nowrap'; });
+  btn.className = 'btn btn-accent btn-sm'; btn.style.flex='1'; btn.style.justifyContent='center'; btn.style.whiteSpace='nowrap';
+}
+function salvarBriefingCliente() {
+  var dados = {ambientes:(document.getElementById('cli-brief-amb')||{value:''}).value,dor:(document.getElementById('cli-brief-dor')||{value:''}).value,objetivo:(document.getElementById('cli-brief-obj')||{value:''}).value};
+  _sd('briefing_cliente', dados);
+  alert('✅ Briefing enviado com sucesso!');
+}
+function uploadArqCliente(input) {
+  if (!input.files || !input.files[0]) return;
+  alert('📎 Arquivo "' + input.files[0].name + '" recebido!');
+  input.value = '';
+}
+function enviarContato() {
+  var nome = (document.getElementById('vit-contato-nome')||{value:''}).value.trim();
+  var wpp  = (document.getElementById('vit-contato-wpp') ||{value:''}).value.trim();
+  var msg  = (document.getElementById('vit-contato-msg') ||{value:''}).value.trim();
+  if (!nome || !msg) { alert('Preencha nome e mensagem.'); return; }
+  var leads = getCRMLeads();
+  leads.unshift({id:gerarId(),nome:nome,whatsapp:wpp,servico:'Contato via site',origem:'Site / Formulário',investimento:'',estagio:'LEAD',obs:msg,criadoEm:new Date().toLocaleDateString('pt-BR')});
+  salvarCRMLeads(leads);
+  ['vit-contato-nome','vit-contato-wpp','vit-contato-msg'].forEach(function(id){ var el = document.getElementById(id); if(el) el.value=''; });
+  alert('✅ Mensagem enviada!\n\nNossa equipe entrará em contato em até 24h.');
+}
+
+// ===== DIAGNÓSTICO EXPRESS (público) =====
+function abrirDiagnosticoExpress() {
+  var old = document.getElementById('modal-diag-express'); if (old) old.remove();
+  var ambientes = ['Sala de Estar','Sala de Jantar','Quarto','Cozinha','Banheiro','Varanda','Home Office','Outro'];
+  var m = document.createElement('div');
+  m.id = 'modal-diag-express';
+  m.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 10px';
+  m.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:540px;max-width:96vw;margin:auto;box-shadow:0 8px 40px rgba(0,0,0,.5)"><div style="text-align:center;margin-bottom:24px"><div style="display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">' + ic('sparkles',11) + ' Diagnóstico Express</div><div style="font-size:20px;font-weight:700;margin-bottom:6px">Vamos entender o seu espaço</div><div style="font-size:12px;color:var(--muted)">Grátis · 2 minutos · Sem compromisso</div></div><div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Quem é você?</div><div class="g2"><div class="fg"><label class="fl">Seu nome</label><input class="fi" id="dex-nome" placeholder="Como você se chama?"></div><div class="fg"><label class="fl">WhatsApp</label><input class="fi" id="dex-wpp" placeholder="(91) 99999-0000"></div></div><div class="fg"><label class="fl">E-mail (opcional)</label><input class="fi" id="dex-email" placeholder="Para enviar o resultado"></div><div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px">Qual espaço você quer transformar?</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px">' + ambientes.map(function(a){ return '<label style="display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:12px;transition:border .15s"><input type="checkbox" class="dex-amb-cb" value="' + a + '"> ' + a + '</label>'; }).join('') + '</div><div class="fg"><label class="fl">O que mais te incomoda no ambiente hoje?</label><textarea class="fi" id="dex-dor" style="min-height:60px" placeholder="Ex: Muito escuro, sem espaço..."></textarea></div><div class="fg"><label class="fl">Como você quer se sentir no seu espaço?</label><textarea class="fi" id="dex-obj" style="min-height:60px" placeholder="Ex: Deixar mais aconchegante..."></textarea></div><div class="g2"><div class="fg"><label class="fl">Prazo</label><select class="fs" id="dex-prazo"><option>Urgente — até 1 mês</option><option>Curto — 1 a 3 meses</option><option>Médio — 3 a 6 meses</option><option>Sem pressa</option></select></div><div class="fg"><label class="fl">Investimento</label><select class="fs" id="dex-inv"><option>Até R$ 2.000</option><option>R$ 2.000 a R$ 5.000</option><option>R$ 5.000 a R$ 10.000</option><option>Acima de R$ 10.000</option></select></div></div><div style="display:flex;gap:8px;margin-top:4px"><button class="btn-vo btn-vo-primary" style="flex:1;justify-content:center" onclick="concluirDiagnosticoExpress()">' + ic('sparkles',14) + ' Enviar diagnóstico</button><button class="btn-vo btn-vo-secondary" onclick="document.getElementById(\'modal-diag-express\').remove()">Cancelar</button></div><div style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px">Ao enviar, você autoriza o contato pelo WhatsApp informado.</div></div>';
+  document.body.appendChild(m); renderIcons();
+}
+function concluirDiagnosticoExpress() {
+  var nome = (document.getElementById('dex-nome')||{value:''}).value.trim();
+  var wpp  = (document.getElementById('dex-wpp') ||{value:''}).value.trim();
+  if (!nome || !wpp) { alert('Informe seu nome e WhatsApp para continuar.'); return; }
+  var ambSel = Array.from(document.querySelectorAll('.dex-amb-cb:checked')).map(function(cb){ return cb.value; });
+  var diag = {id:gerarId(),nome:nome,whatsapp:wpp,email:(document.getElementById('dex-email')||{value:''}).value,servico:'Diagnóstico Express (site)',ambientes:ambSel,dor:(document.getElementById('dex-dor')||{value:''}).value,objetivo:(document.getElementById('dex-obj')||{value:''}).value,prazo:(document.getElementById('dex-prazo')||{value:''}).value,investimento:(document.getElementById('dex-inv')||{value:''}).value,status:'Novo',criadoEm:new Date().toLocaleDateString('pt-BR'),convertidoEmLead:false,origem:'Landing Page'};
+  var diags = getDiagnosticos(); diags.unshift(diag); salvarDiagnosticos(diags);
+  var leads = getCRMLeads();
+  leads.unshift({id:gerarId(),diagId:diag.id,nome:nome,whatsapp:wpp,email:diag.email,servico:ambSel.join(', ')||'Diagnóstico Express',origem:'Landing Page',investimento:diag.investimento,estagio:'LEAD',obs:'Gerado via Diagnóstico Express.\nDor: ' + diag.dor,criadoEm:diag.criadoEm});
+  salvarCRMLeads(leads);
+  diag.convertidoEmLead = true; salvarDiagnosticos(diags);
+  var m = document.getElementById('modal-diag-express'); if (m) m.remove();
+  alert('✅ Diagnóstico enviado com sucesso, ' + nome.split(' ')[0] + '!\n\nNossa equipe entrará em contato pelo WhatsApp em até 24h.');
+}
+
+// ===== INIT =====
+window.addEventListener('load', function() {
+  // Lê destino enviado pela landing page
+  var destino = localStorage.getItem('arq_portal_destino');
+  localStorage.removeItem('arq_portal_destino'); // limpa após uso
+  if (destino === 'cliente') {
+    showCliLogin();
+  } else if (destino === 'arquiteto') {
+    showArqLogin();
+  } else {
+    showVitrine();
+  }
+  renderIcons();
+});
+</script>
+</body>
+</html>
