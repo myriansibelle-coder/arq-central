@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ARQ|CENTRAL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 /* ===== FONT IMPORT — PP Neue Montreal ===== */
@@ -271,11 +271,11 @@ textarea.fi{min-height:80px;resize:vertical}
    LINGUAGEM VISUAL — continuidade com landing-vitrine
    ═══════════════════════════════════════════════════════ */
 
-/* Títulos editoriais em Cormorant Garamond */
+/* Títulos editoriais em Fraunces */
 .page-title,
 .login-title,
 .home-logo-text {
-  font-family: 'Cormorant Garamond', serif !important;
+  font-family: 'Fraunces', serif !important;
   font-weight: 400 !important;
   letter-spacing: -0.02em !important;
 }
@@ -283,7 +283,7 @@ textarea.fi{min-height:80px;resize:vertical}
 
 /* Sidebar logo */
 .sb-logo {
-  font-family: 'Cormorant Garamond', serif !important;
+  font-family: 'Fraunces', serif !important;
   font-size: 17px !important;
   font-weight: 500 !important;
   letter-spacing: 2px !important;
@@ -291,7 +291,7 @@ textarea.fi{min-height:80px;resize:vertical}
 
 /* Portal logo */
 .portal-logo {
-  font-family: 'Cormorant Garamond', serif !important;
+  font-family: 'Fraunces', serif !important;
   font-size: 17px !important;
   font-weight: 500 !important;
   letter-spacing: 2px !important;
@@ -299,7 +299,7 @@ textarea.fi{min-height:80px;resize:vertical}
 
 /* Studio name no header da vitrine */
 #studio-name-header {
-  font-family: 'Cormorant Garamond', serif !important;
+  font-family: 'Fraunces', serif !important;
   font-size: 20px !important;
   font-weight: 500 !important;
   letter-spacing: 0.5px !important;
@@ -387,7 +387,7 @@ textarea.fi{min-height:80px;resize:vertical}
   justify-content: center !important;
 }
 .mode-title {
-  font-family: 'Cormorant Garamond', serif !important;
+  font-family: 'Fraunces', serif !important;
   font-size: 20px !important;
   font-weight: 400 !important;
   text-align: left !important;
@@ -416,7 +416,7 @@ textarea.fi{min-height:80px;resize:vertical}
   padding: 44px !important;
 }
 .login-logo .name {
-  font-family: 'Cormorant Garamond', serif !important;
+  font-family: 'Fraunces', serif !important;
   font-size: 22px !important;
   font-weight: 500 !important;
   letter-spacing: 2px !important;
@@ -513,7 +513,7 @@ textarea.fi{min-height:80px;resize:vertical}
   border-bottom: 1px solid var(--border2) !important;
 }
 .topbar-logo {
-  font-family: 'Cormorant Garamond', serif !important;
+  font-family: 'Fraunces', serif !important;
   font-size: 14px !important;
   font-weight: 500 !important;
   letter-spacing: 2px !important;
@@ -557,7 +557,7 @@ textarea.fi{min-height:80px;resize:vertical}
 
 /* VITRINE HERO — tipografia editorial */
 .vit-h1 {
-  font-family: 'Cormorant Garamond', serif !important;
+  font-family: 'Fraunces', serif !important;
   font-weight: 400 !important;
   letter-spacing: -0.02em !important;
 }
@@ -569,7 +569,7 @@ textarea.fi{min-height:80px;resize:vertical}
 
 /* PREÇO destaque */
 .v-price {
-  font-family: 'Cormorant Garamond', serif !important;
+  font-family: 'Fraunces', serif !important;
   font-size: 28px !important;
   font-weight: 400 !important;
 }
@@ -1192,7 +1192,7 @@ function renderIcons() {
           </div>
         </div>
         <div style="text-align:center;margin-top:10px">
-          <button class="btn btn-sm"><i data-lucide="star" style="width:13px;height:13px"></i> Avaliar atendimento</button>
+          <button class="btn btn-sm" onclick="showPosVenda()"><i data-lucide="star" style="width:13px;height:13px"></i> Avaliar atendimento</button>
         </div>
       </div>
       <div id="ptab-briefing" style="display:none">
@@ -1346,7 +1346,8 @@ function renderIcons() {
 </div>
 
 <script>
-var isDark = true;
+var isDark = (localStorage.getItem('arq_theme') || 'light') === 'dark';
+document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
 function toggleSidebar() {
   var sb = document.querySelector('.sidebar');
@@ -1368,6 +1369,7 @@ function closeSidebarMobile() {
 function toggleTheme() {
   isDark = !isDark;
   document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  localStorage.setItem('arq_theme', isDark ? 'dark' : 'light');
   var newIcon = isDark ? 'sun' : 'moon';
   ['home-theme-icon','vit-theme-icon','proj-theme-icon','app-theme-icon'].forEach(function(id) {
     var el = document.getElementById(id);
@@ -1388,9 +1390,183 @@ function showArqLogin() { hideAll(); document.getElementById('scr-arq').classLis
 function showCliChoice() { hideAll(); document.getElementById('scr-cli-choice').classList.remove('hidden'); renderIcons(); }
 function showCliLogin() { hideAll(); document.getElementById('scr-cli').classList.remove('hidden'); renderIcons(); }
 function showVitrine() { hideAll(); document.getElementById('portal-vitrine').classList.remove('hidden'); renderIcons(); }
-function showMeuProjeto() { hideAll(); document.getElementById('portal-projeto').classList.remove('hidden'); renderIcons(); }
-function showBoasVindas() { hideAll(); document.getElementById('portal-boasvindas').classList.remove('hidden'); document.getElementById('boasvindas-content').innerHTML = buildBoasVindas(); renderIcons(); }
-function showPosVenda() { hideAll(); document.getElementById('portal-posvenda').classList.remove('hidden'); document.getElementById('posvenda-content').innerHTML = buildPosVenda(); renderIcons(); }
+// ===== SESSÃO DO CLIENTE =====
+var _cliSessao = null;
+
+function showMeuProjeto() {
+  // Tenta identificar o cliente pelo e-mail ou WPP digitado no login
+  var emailEl = document.querySelector('#scr-cli input[type="email"]');
+  var emailVal = emailEl ? emailEl.value.trim().toLowerCase() : '';
+  var projs = _ld('projetos_lista', []);
+  var leads = getCRMLeads();
+  var briefings = _ld('briefings_lista', []);
+
+  // Procura projeto pelo e-mail; fallback: projeto mais recente
+  var proj = null;
+  if (emailVal) {
+    proj = projs.find(function(p) { return (p.clienteEmail||'').toLowerCase() === emailVal; });
+    if (!proj) proj = projs.find(function(p) { return (p.clienteWpp||'').replace(/\D/g,'').includes(emailVal.replace(/\D/g,'')); });
+  }
+  if (!proj && projs.length) proj = projs[0];
+
+  var briefing = proj ? briefings.find(function(b) { return b.id === proj.briefingId; }) : null;
+  var lead = proj ? leads.find(function(l) { return l.nome === proj.clienteNome || (proj.clienteEmail && l.email === proj.clienteEmail); }) : null;
+  _cliSessao = { proj: proj, briefing: briefing, lead: lead };
+
+  hideAll();
+  document.getElementById('portal-projeto').classList.remove('hidden');
+  renderIcons();
+  renderPortalCliente();
+}
+
+function renderPortalCliente() {
+  var s = _cliSessao || {};
+  var proj = s.proj, briefing = s.briefing, lead = s.lead;
+
+  // Cabeçalho do portal
+  var headerEl = document.querySelector('#portal-projeto .portal-inner > div:first-child');
+  if (headerEl) {
+    var primeiroNome = proj ? proj.clienteNome.split(' ')[0] : 'Bem-vindo';
+    var servico = proj ? (proj.servico || 'Projeto de Interiores') : '—';
+    var codigo  = proj ? (proj.codigo  || '—') : '—';
+    headerEl.innerHTML = '<div style="font-size:12px;color:var(--muted);margin-bottom:3px">Olá, ' + primeiroNome + '! 👋</div>' +
+      '<div style="font-size:20px;font-weight:700">' + servico + '</div>' +
+      '<div style="font-size:12px;color:var(--muted);margin-top:2px">Código: ' + codigo + (proj ? ' · Iniciado em ' + proj.criadoEm : '') + '</div>';
+  }
+
+  // Timeline baseada no estágio do CRM
+  var estagios = ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA','CONTRATO','CLIENTE'];
+  var estagio = lead ? lead.estagio : (proj ? 'BRIEFING' : 'LEAD');
+  var idx = estagios.indexOf(estagio);
+  var tlEl = document.querySelector('#ptab-status .tl');
+  if (tlEl) {
+    var etapas = [
+      { label: 'Diagnóstico recebido',    sub: proj ? proj.criadoEm : '—' },
+      { label: 'Briefing analisado',       sub: briefing ? (briefing.criadoEm || '—') : 'Aguardando preenchimento' },
+      { label: 'Proposta enviada',          sub: idx >= 3 ? 'Proposta gerada pelo escritório' : 'Aguardando aprovação do briefing' },
+      { label: 'Contrato assinado',         sub: idx >= 4 ? 'Contrato em vigor' : 'Após aprovação da proposta' },
+      { label: 'Projeto em andamento',      sub: idx >= 5 ? 'Acompanhe abaixo' : 'Após assinatura do contrato' },
+    ];
+    tlEl.innerHTML = etapas.map(function(e, i) {
+      var done = i < idx, now = i === idx;
+      return '<div class="tli"><div class="tld' + (done?' done':now?' now':'') + '"></div>' +
+        '<div><div class="tlt"' + (i > idx ? ' style="color:var(--muted)"' : '') + '>' + e.label + '</div>' +
+        '<div class="tls">' + e.sub + '</div></div></div>';
+    }).join('');
+  }
+
+  // Pré-preenche briefing se cliente já enviou antes
+  var respostas = briefing && briefing.clienteRespostas ? briefing.clienteRespostas : null;
+  if (respostas) {
+    var map = { 'cli-brief-amb': respostas.ambientes, 'cli-brief-dor': respostas.dor,
+                'cli-brief-obj': respostas.objetivo,  'cli-brief-ref': respostas.referencias,
+                'cli-brief-rest': respostas.restricoes };
+    Object.keys(map).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && map[id]) el.value = map[id];
+    });
+    var btnEnv = document.querySelector('#ptab-briefing button');
+    if (btnEnv) { btnEnv.textContent = '✅ Briefing já enviado — atualizar'; }
+  }
+
+  // Pagamentos
+  var pgtoEl = document.getElementById('ptab-pgto');
+  if (pgtoEl && (proj || lead)) {
+    var inv = lead ? (lead.investimento || '') : '';
+    var valorNum = parseFloat(inv.replace(/[^\d,]/g,'').replace(',','.')) || 0;
+    var metade = valorNum ? 'R$ ' + (valorNum/2).toLocaleString('pt-BR',{minimumFractionDigits:2}) : '—';
+    var total  = valorNum ? 'R$ ' + valorNum.toLocaleString('pt-BR',{minimumFractionDigits:2}) : inv || '—';
+    var pgto   = lead ? (lead.pgto || lead.obs || '') : '';
+    pgtoEl.innerHTML = '<div class="card"><div class="card-title"><i data-lucide="receipt" style="width:15px;height:15px"></i> Pagamentos</div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg2);border-radius:8px">' +
+          '<div><div style="font-size:12px;font-weight:600">Entrada (50%)</div><div style="font-size:11px;color:var(--muted)">Na assinatura do contrato</div></div>' +
+          '<div style="text-align:right"><div style="font-size:13px;font-weight:700">' + metade + '</div>' +
+          '<span class="pill ' + (idx>=4?'p-green':'p-amber') + '">' + (idx>=4?'Pago':'Pendente') + '</span></div></div>' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg2);border-radius:8px">' +
+          '<div><div style="font-size:12px;font-weight:600">Final (50%)</div><div style="font-size:11px;color:var(--muted)">Na entrega do projeto</div></div>' +
+          '<div style="text-align:right"><div style="font-size:13px;font-weight:700">' + metade + '</div>' +
+          '<span class="pill p-amber">Pendente</span></div></div>' +
+      '</div><div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center">' +
+        '<span style="font-size:12px;color:var(--muted)">Total do contrato</span>' +
+        '<span style="font-size:15px;font-weight:700">' + total + '</span></div>' +
+      '<div style="margin-top:12px"><button class="btn btn-accent" style="width:100%;justify-content:center" onclick="showCheckout()">' +
+        '<i data-lucide="credit-card" style="width:14px;height:14px"></i> Ver formas de pagamento</button></div></div>';
+    renderIcons();
+  }
+}
+
+function salvarBriefingCliente() {
+  var dados = {
+    ambientes:   (document.getElementById('cli-brief-amb') ||{value:''}).value,
+    dor:         (document.getElementById('cli-brief-dor') ||{value:''}).value,
+    objetivo:    (document.getElementById('cli-brief-obj') ||{value:''}).value,
+    referencias: (document.getElementById('cli-brief-ref') ||{value:''}).value,
+    restricoes:  (document.getElementById('cli-brief-rest')||{value:''}).value
+  };
+  // Vincula ao briefing do arquiteto se existir
+  if (_cliSessao && _cliSessao.briefing) {
+    var briefings = _ld('briefings_lista', []);
+    var idx = briefings.findIndex(function(b) { return b.id === _cliSessao.briefing.id; });
+    if (idx >= 0) {
+      briefings[idx].clienteRespostas = dados;
+      briefings[idx].status = 'Concluído';
+      _sd('briefings_lista', briefings);
+      _cliSessao.briefing = briefings[idx];
+    }
+  }
+  // Salva também na chave genérica para compatibilidade
+  _sd('briefing_cliente', dados);
+  mostrarFeedback('✅ Briefing enviado com sucesso!');
+  var btnEnv = document.querySelector('#ptab-briefing button');
+  if (btnEnv) btnEnv.textContent = '✅ Briefing já enviado — atualizar';
+}
+
+function showBoasVindas() {
+  hideAll();
+  document.getElementById('portal-boasvindas').classList.remove('hidden');
+  document.getElementById('boasvindas-content').innerHTML = buildBoasVindas();
+  renderIcons();
+}
+
+function showPosVenda() {
+  hideAll();
+  document.getElementById('portal-posvenda').classList.remove('hidden');
+  document.getElementById('posvenda-content').innerHTML = buildPosVenda();
+  renderIcons();
+}
+
+function showCheckout() {
+  hideAll();
+  document.getElementById('portal-checkout').classList.remove('hidden');
+  var s = _cliSessao || {};
+  var proj = s.proj, lead = s.lead;
+  var inv = lead ? (lead.investimento || '') : '';
+  var total = inv || 'A combinar';
+  var nome  = proj ? proj.clienteNome : 'Cliente';
+  var serv  = proj ? (proj.servico || 'Projeto de Interiores') : 'Projeto de Interiores';
+  document.getElementById('checkout-content').innerHTML =
+    '<div class="card"><div class="card-title"><i data-lucide="file-text" style="width:15px;height:15px"></i> Resumo do serviço</div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--muted)">Cliente</span><span style="font-weight:500">' + nome + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:var(--muted)">Serviço</span><span style="font-weight:500">' + serv + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px;padding-top:10px;border-top:1px solid var(--border2)"><span style="font-weight:600">Total</span><span style="font-size:15px;font-weight:700;color:var(--accent)">' + total + '</span></div>' +
+      '</div></div>' +
+    '<div class="card"><div class="card-title"><i data-lucide="credit-card" style="width:15px;height:15px"></i> Forma de pagamento</div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px">' +
+        '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:12px">' +
+          '<div style="font-size:12px;font-weight:600;margin-bottom:2px">50% na assinatura do contrato</div>' +
+          '<div style="font-size:11px;color:var(--muted)">Via PIX, transferência ou boleto</div></div>' +
+        '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:12px">' +
+          '<div style="font-size:12px;font-weight:600;margin-bottom:2px">50% na entrega final</div>' +
+          '<div style="font-size:11px;color:var(--muted)">Após aprovação do projeto executivo</div></div>' +
+      '</div>' +
+      '<div style="margin-top:14px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:10px;padding:14px;display:flex;gap:10px;align-items:center">' +
+        '<i data-lucide="whatsapp" style="width:20px;height:20px;color:var(--green)"></i>' +
+        '<div><div style="font-size:13px;font-weight:600;color:var(--green)">Finalizar via WhatsApp</div>' +
+          '<div style="font-size:11px;color:var(--muted);margin-top:2px">Envie uma mensagem para confirmar os dados e receber as instruções de pagamento.</div></div></div></div>';
+  renderIcons();
+}
 function showDash() {
   hideAll();
   document.getElementById('app').classList.remove('hidden');
@@ -1925,6 +2101,8 @@ function gerarProposta() {
   var prompt = 'Você é um arquiteto de interiores profissional do escritório "' + cfg.nome + '". Redija uma proposta comercial completa e profissional em português brasileiro com as seções:\n\nAPRESENTAÇÃO DO ESCRITÓRIO\nESCOPO DO PROJETO\nMETODOLOGIA\nCRONOGRAMA\nINVESTIMENTO\nCONDIÇÕES DE PAGAMENTO\nPRÓXIMOS PASSOS\n\nDados:\nCliente: ' + cliente + '\nServiço: ' + servico + '\nAmbientes: ' + ambientes + '\nÁrea: ' + area + ' m²\nValor: R$ ' + valor + '\nPrazo: ' + prazo + '\n' + (obs ? 'Obs: ' + obs : '') + '\n\nTom: profissional, caloroso e que transmite confiança. Máximo 600 palavras.';
   _arqIACall(prompt, 'arqia-proposta-result', 'Proposta Gerada', function(t) {
     var secoes = ['APRESENTAÇÃO DO ESCRITÓRIO','ESCOPO DO PROJETO','METODOLOGIA','CRONOGRAMA','INVESTIMENTO','CONDIÇÕES DE PAGAMENTO','PRÓXIMOS PASSOS'];
+    _avancarEstagioCRM(cliente, 'PROPOSTA');
+    mostrarFeedback('✅ Proposta gerada — lead avançado para PROPOSTA no CRM');
     return _arqIAParseSecoes(t, secoes);
   });
 }
@@ -1957,6 +2135,8 @@ function gerarContrato() {
   var prompt = 'Você é advogado especializado em contratos para escritórios de arquitetura e design de interiores. Redija um contrato de prestação de serviços completo em português brasileiro com as cláusulas:\n\nDAS PARTES\nDO OBJETO\nDO ESCOPO\nDO PRAZO\nDO VALOR E PAGAMENTO\nDAS REVISÕES\nDA PROPRIEDADE INTELECTUAL\nDAS RESPONSABILIDADES\nDA RESCISÃO\nDAS DISPOSIÇÕES GERAIS\n\nDados:\nEscritório contratado: ' + cfg.nome + (cfg.cau ? ' — ' + cfg.cau : '') + '\nCliente: ' + cliente + (cpf ? ' — CPF/CNPJ: ' + cpf : '') + '\nImóvel: ' + end + '\nServiço: ' + servico + '\nValor: R$ ' + valor + '\nPagamento: ' + pgto + '\nPrazo: ' + prazo + '\nInclui: ' + inclui + (clausulas ? '\nCláusulas especiais: ' + clausulas : '') + '\n\nUse linguagem jurídica clara, sem rebuscamentos desnecessários. Máximo 700 palavras.';
   _arqIACall(prompt, 'arqia-contrato-result', 'Contrato Gerado', function(t) {
     var secoes = ['DAS PARTES','DO OBJETO','DO ESCOPO','DO PRAZO','DO VALOR E PAGAMENTO','DAS REVISÕES','DA PROPRIEDADE INTELECTUAL','DAS RESPONSABILIDADES','DA RESCISÃO','DAS DISPOSIÇÕES GERAIS'];
+    _avancarEstagioCRM(cliente, 'CONTRATO');
+    mostrarFeedback('✅ Contrato gerado — lead avançado para CONTRATO no CRM');
     return _arqIAParseSecoes(t, secoes);
   });
 }
@@ -1970,17 +2150,86 @@ function buildConfig() {
     '<div class="fg"><label class="fl">Cor de acento</label><div style="display:flex;align-items:center;gap:12px"><input type="color" id="cfg-acento" value="' + (cfg.acento||'#B8865A') + '" style="width:48px;height:36px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:none;padding:2px"><span style="font-size:12px;color:var(--muted)" id="cfg-acento-val">' + (cfg.acento||'#B8865A') + '</span></div></div>' +
     '<div style="margin-top:6px;padding:14px;background:var(--bg2);border-radius:8px;border:1px solid var(--border2)">' +
       '<div style="font-size:9px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Pré-visualização</div>' +
-      '<div style="font-family:\'Cormorant Garamond\',serif;font-size:22px;font-weight:400;color:var(--text)" id="cfg-prev-nome">' + (cfg.nome||'Seu Escritório') + '</div>' +
+      '<div style="font-family:\'Fraunces\',serif;font-size:22px;font-weight:400;color:var(--text)" id="cfg-prev-nome">' + (cfg.nome||'Seu Escritório') + '</div>' +
       '<div style="font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:1px" id="cfg-prev-tagline">' + (cfg.tagline||'Arquitetura & Design de Interiores') + '</div>' +
       '<div style="font-size:12px;color:var(--muted2);margin-top:4px;font-style:italic" id="cfg-prev-slogan">' + (cfg.slogan||'') + '</div>' +
     '</div>' +
     '<div style="margin-top:14px"><button class="btn btn-accent" onclick="salvarStudioConfig()">' + ic('save',14) + ' Salvar e aplicar em todo o sistema</button></div>';
 }
+function selecionarNPS(btn, val) {
+  document.querySelectorAll('[data-nps]').forEach(function(b) { b.style.background='var(--bg2)'; b.style.borderColor='var(--border)'; b.style.color='var(--text)'; });
+  btn.style.background = val >= 9 ? 'var(--green)' : val >= 7 ? 'var(--amber)' : 'var(--red)';
+  btn.style.borderColor = btn.style.background;
+  btn.style.color = '#fff';
+  var el = document.getElementById('pv-nps'); if (el) el.value = val;
+}
+function selecionarVoltaria(btn, val) {
+  btn.parentElement.querySelectorAll('button').forEach(function(b) { b.style.background='var(--bg2)'; b.style.borderColor='var(--border)'; });
+  btn.style.background = 'var(--accent)'; btn.style.borderColor = 'var(--accent)';
+  var el = document.getElementById('pv-voltaria'); if (el) el.value = val;
+}
+function salvarPosvenda() {
+  var nps      = (document.getElementById('pv-nps')      ||{value:''}).value;
+  var positivo = (document.getElementById('pv-positivo') ||{value:''}).value.trim();
+  var melhoria = (document.getElementById('pv-melhoria') ||{value:''}).value.trim();
+  var voltaria = (document.getElementById('pv-voltaria') ||{value:''}).value;
+  if (!nps) { mostrarFeedback('⚠️ Selecione uma nota antes de enviar.'); return; }
+  var s = _cliSessao || {};
+  var lista = _ld('posvenda_lista', []);
+  lista.push({ id: gerarId(), projId: s.proj ? s.proj.id : null, clienteNome: s.proj ? s.proj.clienteNome : '—',
+    nps: nps, positivo: positivo, melhoria: melhoria, voltaria: voltaria,
+    criadoEm: new Date().toLocaleDateString('pt-BR') });
+  _sd('posvenda_lista', lista);
+  var suc = document.getElementById('pv-sucesso'); if (suc) suc.style.display = 'block';
+  var btn = document.querySelector('#posvenda-content button.btn-accent'); if (btn) btn.style.display = 'none';
+}
+
+function _avancarEstagioCRM(nomeCliente, novoEstagio) {
+  if (!nomeCliente) return;
+  var leads = getCRMLeads();
+  var ordem = ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA','CONTRATO','CLIENTE'];
+  var novoIdx = ordem.indexOf(novoEstagio);
+  var nome = nomeCliente.trim().toLowerCase();
+  var changed = false;
+  leads.forEach(function(l) {
+    if (l.nome.trim().toLowerCase().includes(nome) || nome.includes(l.nome.trim().toLowerCase().split(' ')[0])) {
+      var atualIdx = ordem.indexOf(l.estagio);
+      if (novoIdx > atualIdx) { l.estagio = novoEstagio; changed = true; }
+    }
+  });
+  if (changed) salvarCRMLeads(leads);
+}
+
 function buildBoasVindas() {
   return '<div style="background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;gap:10px"><div style="color:var(--green)">' + ic('check-circle',22) + '</div><div><div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:4px">Pagamento confirmado!</div><div style="font-size:13px;color:var(--muted)">Um e-mail de boas-vindas foi enviado com seu acesso ao portal.</div></div></div>';
 }
 function buildPosVenda() {
-  return '<div class="card"><div class="card-title">' + ic('star',15) + ' Pesquisa de Satisfação</div><div style="font-size:13px;color:var(--muted)">Enviada automaticamente após a entrega.</div></div>';
+  var s = _cliSessao || {};
+  var nome = s.proj ? s.proj.clienteNome.split(' ')[0] : 'você';
+  return '<div class="card"><div class="card-title">' + ic('star',15) + ' Pesquisa de Satisfação</div>' +
+    '<div style="font-size:13px;color:var(--muted);margin-bottom:18px">Sua opinião é muito importante para nós, ' + nome + '. Leva menos de 2 minutos.</div>' +
+    '<div class="fg"><label class="fl">De 0 a 10, o quanto você indicaria nosso escritório a um amigo?</label>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">' +
+        [0,1,2,3,4,5,6,7,8,9,10].map(function(n) {
+          return '<button onclick="selecionarNPS(this,' + n + ')" data-nps="' + n + '" style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s">' + n + '</button>';
+        }).join('') +
+      '</div>' +
+      '<input type="hidden" id="pv-nps" value="">' +
+    '</div>' +
+    '<div class="fg"><label class="fl">O que você mais gostou no atendimento?</label>' +
+      '<textarea class="fi" id="pv-positivo" style="min-height:70px" placeholder="Ex: Atenção aos detalhes, comunicação clara, pontualidade..."></textarea></div>' +
+    '<div class="fg"><label class="fl">O que poderíamos ter feito melhor?</label>' +
+      '<textarea class="fi" id="pv-melhoria" style="min-height:70px" placeholder="Qualquer feedback é bem-vindo..."></textarea></div>' +
+    '<div class="fg"><label class="fl">Você voltaria a contratar nossos serviços?</label>' +
+      '<div style="display:flex;gap:8px;margin-bottom:12px">' +
+        '<button onclick="selecionarVoltaria(this,\'Sim\')" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;cursor:pointer;transition:all .15s">✅ Sim</button>' +
+        '<button onclick="selecionarVoltaria(this,\'Talvez\')" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;cursor:pointer;transition:all .15s">🤔 Talvez</button>' +
+        '<button onclick="selecionarVoltaria(this,\'Não\')" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;cursor:pointer;transition:all .15s">❌ Não</button>' +
+      '</div>' +
+      '<input type="hidden" id="pv-voltaria" value="">' +
+    '</div>' +
+    '<button class="btn btn-accent" onclick="salvarPosvenda()" style="width:100%;justify-content:center">' + ic('send',14) + ' Enviar avaliação</button>' +
+    '<div id="pv-sucesso" style="display:none;margin-top:14px;background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.2);border-radius:10px;padding:14px;text-align:center;font-size:13px;color:var(--green)">✅ Obrigada! Seu feedback foi enviado com sucesso.</div></div>';
 }
 </script>
 
@@ -2444,6 +2693,12 @@ function concluirDiagnosticoExpress() {
 // ===== INIT =====
 window.addEventListener('load', function() {
   applyStudioBrand();
+  // Sincroniza ícone do tema com a preferência salva
+  var themeIcon = isDark ? 'sun' : 'moon';
+  ['home-theme-icon','vit-theme-icon','proj-theme-icon','app-theme-icon'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.setAttribute('data-lucide', themeIcon);
+  });
   var destino = localStorage.getItem('arq_portal_destino');
   localStorage.removeItem('arq_portal_destino');
   if (destino === 'cliente') {
