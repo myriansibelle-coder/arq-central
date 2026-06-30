@@ -622,7 +622,36 @@ button, [onclick], .mode-card, .kb-card, .port-card,
 .cli-sb-client strong { display:block; color:rgba(245,237,224,0.85); font-weight:500; }
 .cli-main { flex:1; overflow-y:auto; }
 /* Welcome section */
-.cli-welcome { display:grid; grid-template-columns:1fr 1fr; min-height:100vh; }
+.cli-welcome { display:grid; grid-template-columns:1fr 1fr; min-height:68vh; }
+/* Project timeline */
+.cli-tl-wrap { background:var(--bg); border-top:1px solid var(--border2); padding:40px 48px 48px; }
+.cli-tl-label { font-size:10px; font-weight:600; color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:28px; }
+.cli-tl { display:flex; align-items:flex-start; }
+.cli-tl-step { flex:1; display:flex; flex-direction:column; align-items:center; position:relative; }
+.cli-tl-step:not(:last-child)::after { content:''; position:absolute; top:13px; left:50%; width:100%; height:2px; background:var(--border2); z-index:0; transition:background .4s; }
+.cli-tl-step.tl-done:not(:last-child)::after { background:var(--green); }
+.cli-tl-dot { width:28px; height:28px; border-radius:50%; border:2px solid var(--border); background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--muted2); position:relative; z-index:1; flex-shrink:0; transition:all .3s; }
+.cli-tl-step.tl-done .cli-tl-dot { background:var(--green); border-color:var(--green); color:#fff; }
+.cli-tl-step.tl-active .cli-tl-dot { background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 0 0 5px rgba(184,134,90,0.18); }
+.cli-tl-info { text-align:center; padding-top:10px; }
+.cli-tl-name { font-size:11px; font-weight:600; color:var(--text2); white-space:nowrap; }
+.cli-tl-step.tl-active .cli-tl-name { color:var(--accent); }
+.cli-tl-step.tl-done .cli-tl-name { color:var(--green); }
+.cli-tl-sub { font-size:10px; color:var(--muted2); margin-top:2px; white-space:nowrap; }
+/* Fases sub-timeline */
+.cli-tl-fases { margin-top:28px; border-top:1px solid var(--border2); padding-top:22px; }
+.cli-tl-fases-label { font-size:10px; font-weight:600; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px; }
+.cli-tl-fase { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:8px; margin-bottom:6px; border:1px solid var(--border2); background:var(--bg2); }
+.cli-tl-fase.fase-validada { border-color:rgba(74,222,128,0.3); background:rgba(74,222,128,0.06); }
+.cli-tl-fase.fase-entregue { border-color:rgba(184,134,90,0.25); background:rgba(184,134,90,0.07); }
+@media(max-width:768px) {
+  .cli-tl-wrap { padding:28px 20px; }
+  .cli-tl { flex-direction:column; gap:0; }
+  .cli-tl-step { flex-direction:row; align-items:center; flex:none; width:100%; gap:12px; padding-bottom:12px; }
+  .cli-tl-step:not(:last-child)::after { top:auto; left:13px; width:2px; height:100%; }
+  .cli-tl-info { text-align:left; padding-top:0; }
+  .cli-tl-name,.cli-tl-sub { white-space:normal; }
+}
 .cli-welcome-left { padding:60px 48px; display:flex; flex-direction:column; justify-content:space-between; background:var(--bg); }
 .cli-welcome-right { background:linear-gradient(160deg,#2C1810,#1A140E); position:relative; overflow:hidden; }
 .cli-welcome-right img { width:100%; height:100%; object-fit:cover; opacity:.6; }
@@ -1544,32 +1573,96 @@ function buildCliWelcome() {
   var proj = s.proj, lead = s.lead;
   var nome = proj ? proj.clienteNome.split(' ')[0] : (lead ? lead.nome.split(' ')[0] : '');
   var cfg = getStudioConfig();
-  return '<div class="cli-welcome">' +
-    '<div class="cli-welcome-left">' +
-      '<div>' +
-        '<div class="cli-welcome-eyebrow">Portal do cliente</div>' +
-        (nome
-          ? '<h1 class="cli-welcome-title">Bem-vindo,<br><em>' + nome + '</em>.</h1>'
-          : '<h1 class="cli-welcome-title"><em>Bem-vindo</em><br>ao seu portal.</h1>') +
-        '<p class="cli-welcome-sub">Vamos criar algo incrível juntos.<br>Use o menu à esquerda para navegar pelas etapas do seu projeto.</p>' +
-        '<button class="btn btn-accent" style="padding:12px 28px;font-size:14px" onclick="renderCliSection(\'sobre\')">Vamos começar →</button>' +
+
+  // ── Linha do tempo ──────────────────────────────────────────────
+  var ordemCRM = ['LEAD','DIAGNÓSTICO','BRIEFING','PROPOSTA','CONTRATO','CLIENTE'];
+  var estagio  = lead ? lead.estagio : (proj ? 'CLIENTE' : 'BRIEFING');
+  var idxCRM   = ordemCRM.indexOf(estagio);
+
+  // Fases do projeto (definidas pelo arquiteto)
+  var fases = (proj && proj.fases) || [];
+  var todasValidadas = fases.length && fases.every(function(f){ return f.status === 'validada'; });
+
+  var etapas = [
+    { label:'Diagnóstico',     sub:'Perfil inicial',          minIdx:1 },
+    { label:'Briefing',        sub:'Detalhes do projeto',     minIdx:2 },
+    { label:'Proposta',        sub:'Proposta personalizada',  minIdx:3 },
+    { label:'Contrato',        sub:'Acordo assinado',         minIdx:4 },
+    { label:'Desenvolvimento', sub:'Projeto em andamento',    minIdx:5 },
+    { label:'Entrega final',   sub:'Projeto concluído',       minIdx:6 },
+  ];
+
+  var tlHtml = '<div class="cli-tl">' + etapas.map(function(e, i) {
+    var done   = idxCRM > e.minIdx || (i === 5 && todasValidadas);
+    var active = !done && idxCRM === e.minIdx;
+    var cls    = done ? 'tl-done' : active ? 'tl-active' : '';
+    var dot    = done
+      ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'
+      : (i + 1).toString();
+    return '<div class="cli-tl-step ' + cls + '">' +
+      '<div class="cli-tl-dot">' + dot + '</div>' +
+      '<div class="cli-tl-info"><div class="cli-tl-name">' + e.label + '</div><div class="cli-tl-sub">' + e.sub + '</div></div>' +
+    '</div>';
+  }).join('') + '</div>';
+
+  // Sub-linha com fases do projeto (se houver)
+  var fasesHtml = '';
+  if (fases.length && idxCRM >= 5) {
+    fasesHtml = '<div class="cli-tl-fases">' +
+      '<div class="cli-tl-fases-label">Etapas de entrega</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">' +
+      fases.map(function(f) {
+        var validada = f.status === 'validada';
+        var entregue = f.status === 'entregue';
+        var cls = validada ? 'fase-validada' : entregue ? 'fase-entregue' : '';
+        var icon = validada ? 'check-circle-2' : entregue ? 'package' : 'clock';
+        var cor  = validada ? 'var(--green)' : entregue ? 'var(--accent)' : 'var(--muted2)';
+        var badge = validada ? 'Validada' : entregue ? 'Entregue' : 'Aguardando';
+        return '<div class="cli-tl-fase ' + cls + '">' +
+          '<i data-lucide="' + icon + '" style="width:16px;height:16px;color:' + cor + ';flex-shrink:0"></i>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-size:12px;font-weight:500;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + f.titulo + '</div>' +
+            '<div style="font-size:10px;color:' + cor + ';margin-top:1px">' + badge + (f.prazo ? ' · ' + f.prazo : '') + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('') +
+      '</div></div>';
+  }
+
+  // ── HTML final ───────────────────────────────────────────────────
+  return '<div>' +
+    '<div class="cli-welcome">' +
+      '<div class="cli-welcome-left">' +
+        '<div>' +
+          '<div class="cli-welcome-eyebrow">Portal do cliente</div>' +
+          (nome
+            ? '<h1 class="cli-welcome-title">Bem-vindo,<br><em>' + nome + '</em>.</h1>'
+            : '<h1 class="cli-welcome-title"><em>Bem-vindo</em><br>ao seu portal.</h1>') +
+          '<p class="cli-welcome-sub">Vamos criar algo incrível juntos.<br>Use o menu à esquerda para navegar pelas etapas do seu projeto.</p>' +
+          '<button class="btn btn-accent" style="padding:12px 28px;font-size:14px" onclick="renderCliSection(\'sobre\')">Vamos começar →</button>' +
+        '</div>' +
+        '<div class="cli-welcome-trust">' +
+          '<div class="cli-trust-item"><i data-lucide="user-check" style="width:20px;height:20px;color:var(--accent)"></i><span>Experiência<br>personalizada</span></div>' +
+          '<div class="cli-trust-item"><i data-lucide="shield-check" style="width:20px;height:20px;color:var(--accent)"></i><span>Processo claro<br>e seguro</span></div>' +
+          '<div class="cli-trust-item"><i data-lucide="lock" style="width:20px;height:20px;color:var(--accent)"></i><span>Seus dados<br>protegidos</span></div>' +
+        '</div>' +
       '</div>' +
-      '<div class="cli-welcome-trust">' +
-        '<div class="cli-trust-item"><i data-lucide="user-check" style="width:20px;height:20px;color:var(--accent)"></i><span>Experiência<br>personalizada</span></div>' +
-        '<div class="cli-trust-item"><i data-lucide="shield-check" style="width:20px;height:20px;color:var(--accent)"></i><span>Processo claro<br>e seguro</span></div>' +
-        '<div class="cli-trust-item"><i data-lucide="lock" style="width:20px;height:20px;color:var(--accent)"></i><span>Seus dados<br>protegidos</span></div>' +
+      '<div class="cli-welcome-right" style="position:relative;overflow:hidden;background:#1A140E">' +
+        (function(){
+          var imgs = _getWelcomeImgs();
+          return imgs.map(function(src, i){
+            return '<div class="cli-gallery-slide" style="position:absolute;inset:0;background:url(\''+src+'\') center/cover no-repeat;opacity:'+(i===0?'0.85':'0')+';transition:opacity 1.2s ease;"></div>';
+          }).join('');
+        })() +
+        '<div style="position:absolute;inset:0;background:linear-gradient(160deg,rgba(26,20,14,0.08) 0%,rgba(26,20,14,0.5) 100%);pointer-events:none;z-index:10;display:flex;align-items:flex-end;padding:32px">' +
+          '<div style="color:rgba(245,237,224,0.75);font-family:\'Noto Serif Display\',serif;font-size:11px;font-weight:400;letter-spacing:3px;text-transform:uppercase">'+(cfg.nome||cfg.iniciais||'ARQ|CENTRAL')+'</div>' +
+        '</div>' +
       '</div>' +
     '</div>' +
-    '<div class="cli-welcome-right" style="position:relative;overflow:hidden;background:#1A140E">' +
-      (function(){
-        var imgs = _getWelcomeImgs();
-        return imgs.map(function(src, i){
-          return '<div class="cli-gallery-slide" style="position:absolute;inset:0;background:url(\''+src+'\') center/cover no-repeat;opacity:'+(i===0?'0.85':'0')+';transition:opacity 1.2s ease;"></div>';
-        }).join('');
-      })() +
-      '<div style="position:absolute;inset:0;background:linear-gradient(160deg,rgba(26,20,14,0.08) 0%,rgba(26,20,14,0.5) 100%);pointer-events:none;z-index:10;display:flex;align-items:flex-end;padding:32px">' +
-        '<div style="color:rgba(245,237,224,0.75);font-family:\'Noto Serif Display\',serif;font-size:11px;font-weight:400;letter-spacing:3px;text-transform:uppercase">'+(cfg.nome||cfg.iniciais||'ARQ|CENTRAL')+'</div>' +
-      '</div>' +
+    '<div class="cli-tl-wrap">' +
+      '<div class="cli-tl-label">Andamento do projeto</div>' +
+      tlHtml +
+      fasesHtml +
     '</div>' +
   '</div>';
 }
