@@ -642,6 +642,8 @@ button, [onclick], .mode-card, .kb-card, .port-card,
   .cli-tl { gap:8px; }
   .cli-tl-name,.cli-tl-sub { white-space:normal; }
 }
+/* Config — upload hover icon */
+.cfg-img-upload:hover .cfg-upload-icon { opacity:1 !important; }
 .cli-welcome-left { padding:60px 48px; display:flex; flex-direction:column; justify-content:space-between; background:var(--bg); }
 .cli-welcome-right { background:linear-gradient(160deg,#2C1810,#1A140E); position:relative; overflow:hidden; }
 .cli-welcome-right img { width:100%; height:100%; object-fit:cover; opacity:.6; }
@@ -1745,15 +1747,17 @@ function buildCliSeuProjeto() {
 
 function buildCliPreferencias() {
   var r = (_cliSessao && _cliSessao.briefing && _cliSessao.briefing.clienteRespostas) || {};
+  var _styleImgs = (getStudioConfig().styleImgs || {});
+  var _matImgs   = (getStudioConfig().matImgs   || {});
   var estilos = [
-    { id:'minimalista',   label:'Minimalista',    desc:'Menos é mais',        img:'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80&auto=format&fit=crop' },
-    { id:'contemporaneo', label:'Contemporâneo',  desc:'Limpo e funcional',   img:'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400&q=80&auto=format&fit=crop' },
-    { id:'classico',      label:'Clássico',       desc:'Elegância atemporal', img:'https://images.unsplash.com/photo-1615529328331-f8917597711f?w=400&q=80&auto=format&fit=crop' },
-    { id:'industrial',    label:'Industrial',     desc:'Bruto e autêntico',   img:'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=400&q=80&auto=format&fit=crop' },
-    { id:'escandinavo',   label:'Escandinavo',    desc:'Aconchego nórdico',   img:'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=400&q=80&auto=format&fit=crop' },
-    { id:'boho',          label:'Boho',           desc:'Livre e texturas',    img:'https://images.unsplash.com/photo-1615874694520-474822394e73?w=400&q=80&auto=format&fit=crop' },
-    { id:'japandi',       label:'Japandi',        desc:'Harmonia zen',        img:'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400&q=80&auto=format&fit=crop' },
-    { id:'biofilico',     label:'Biofílico',      desc:'Natureza em casa',    img:'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&q=80&auto=format&fit=crop' },
+    { id:'minimalista',   label:'Minimalista',    desc:'Menos é mais',        img: _styleImgs['minimalista']   || 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80&auto=format&fit=crop' },
+    { id:'contemporaneo', label:'Contemporâneo',  desc:'Limpo e funcional',   img: _styleImgs['contemporaneo'] || 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400&q=80&auto=format&fit=crop' },
+    { id:'classico',      label:'Clássico',       desc:'Elegância atemporal', img: _styleImgs['classico']      || 'https://images.unsplash.com/photo-1615529328331-f8917597711f?w=400&q=80&auto=format&fit=crop' },
+    { id:'industrial',    label:'Industrial',     desc:'Bruto e autêntico',   img: _styleImgs['industrial']    || 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=400&q=80&auto=format&fit=crop' },
+    { id:'escandinavo',   label:'Escandinavo',    desc:'Aconchego nórdico',   img: _styleImgs['escandinavo']   || 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=400&q=80&auto=format&fit=crop' },
+    { id:'boho',          label:'Boho',           desc:'Livre e texturas',    img: _styleImgs['boho']          || 'https://images.unsplash.com/photo-1615874694520-474822394e73?w=400&q=80&auto=format&fit=crop' },
+    { id:'japandi',       label:'Japandi',        desc:'Harmonia zen',        img: _styleImgs['japandi']       || 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400&q=80&auto=format&fit=crop' },
+    { id:'biofilico',     label:'Biofílico',      desc:'Natureza em casa',    img: _styleImgs['biofilico']     || 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&q=80&auto=format&fit=crop' },
   ];
   var paletas = [
     { val:'neutros-quentes', label:'Neutros quentes', swatches:['#F5EDE0','#D4B896','#A07850','#6A4830'] },
@@ -1764,16 +1768,16 @@ function buildCliPreferencias() {
     { val:'pb',              label:'P&B + accent',    swatches:['#F5F5F5','#C0C0C0','#404040','#101010'] },
   ];
   var materiais = [
-    { label:'Madeira clara', img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=60&q=70&fit=crop' },
-    { label:'Madeira escura',img:'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=60&q=70&fit=crop' },
-    { label:'Mármore',       img:'https://images.unsplash.com/photo-1545105085-a4e6f77082c3?w=60&q=70&fit=crop' },
-    { label:'Cimento',       img:'https://images.unsplash.com/photo-1604431696980-a7ebda39ca46?w=60&q=70&fit=crop' },
-    { label:'Couro',         img:'https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=60&q=70&fit=crop' },
-    { label:'Veludo',        img:'https://images.unsplash.com/photo-1617993671561-1d9b57ac7c3c?w=60&q=70&fit=crop' },
-    { label:'Rattan',        img:'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=60&q=70&fit=crop' },
-    { label:'Metal',         img:'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=60&q=70&fit=crop' },
-    { label:'Pedra natural', img:'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=60&q=70&fit=crop' },
-    { label:'Vidro',         img:'https://images.unsplash.com/photo-1508615070457-7baaea4003ab?w=60&q=70&fit=crop' },
+    { label:'Madeira clara', img: _matImgs['Madeira clara']  || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80&fit=crop' },
+    { label:'Madeira escura',img: _matImgs['Madeira escura'] || 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&q=80&fit=crop' },
+    { label:'Mármore',       img: _matImgs['Mármore']        || 'https://images.unsplash.com/photo-1545105085-a4e6f77082c3?w=200&q=80&fit=crop' },
+    { label:'Cimento',       img: _matImgs['Cimento']        || 'https://images.unsplash.com/photo-1604431696980-a7ebda39ca46?w=200&q=80&fit=crop' },
+    { label:'Couro',         img: _matImgs['Couro']          || 'https://images.unsplash.com/photo-1600948836101-f9ffda59d250?w=200&q=80&fit=crop' },
+    { label:'Veludo',        img: _matImgs['Veludo']         || 'https://images.unsplash.com/photo-1617993671561-1d9b57ac7c3c?w=200&q=80&fit=crop' },
+    { label:'Rattan',        img: _matImgs['Rattan']         || 'https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=200&q=80&fit=crop' },
+    { label:'Metal',         img: _matImgs['Metal']          || 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=200&q=80&fit=crop' },
+    { label:'Pedra natural', img: _matImgs['Pedra natural']  || 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=200&q=80&fit=crop' },
+    { label:'Vidro',         img: _matImgs['Vidro']          || 'https://images.unsplash.com/photo-1508615070457-7baaea4003ab?w=200&q=80&fit=crop' },
   ];
   return '<div class="cli-section">' +
     '<div class="cli-section-eyebrow">Etapa 3 de 4</div>' +
@@ -3053,6 +3057,62 @@ function buildConfig() {
         })() +
       '</div>' +
     '</div>' +
+    '<div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border2)">' +
+      '<div style="font-size:12px;font-weight:600;margin-bottom:4px">Imagens dos estilos de projeto</div>' +
+      '<div style="font-size:11px;color:var(--muted2);margin-bottom:12px">Substitua as fotos padrão por imagens que representem exatamente cada estilo do seu portfólio</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px">' +
+        (function(){
+          var styleImgs = cfg.styleImgs || {};
+          var estilos = [
+            {id:'minimalista',label:'Minimalista'},{id:'contemporaneo',label:'Contemporâneo'},
+            {id:'classico',label:'Clássico'},{id:'industrial',label:'Industrial'},
+            {id:'escandinavo',label:'Escandinavo'},{id:'boho',label:'Boho'},
+            {id:'japandi',label:'Japandi'},{id:'biofilico',label:'Biofílico'},
+          ];
+          return estilos.map(function(e){
+            var hasCfg = !!styleImgs[e.id];
+            var thumb  = hasCfg ? styleImgs[e.id] : '';
+            return '<div style="display:flex;flex-direction:column;gap:6px">' +
+              '<div style="position:relative;height:80px;border-radius:8px;overflow:hidden;border:1px solid var(--border2);background:var(--bg2)">' +
+                (hasCfg ? '<img src="'+thumb+'" style="width:100%;height:100%;object-fit:cover">' : '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted2)">padrão</div>') +
+                '<label class="cfg-img-upload" style="position:absolute;inset:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:.2s" onmouseover="this.style.background=\'rgba(0,0,0,0.45)\'" onmouseout="this.style.background=\'rgba(0,0,0,0)\'">' +
+                  '<input type="file" accept="image/*" style="display:none" onchange="uploadStyleImg(this,\''+e.id+'\')">' +
+                  '<span style="color:#fff;font-size:18px;opacity:0;transition:.2s" class="cfg-upload-icon">＋</span>' +
+                '</label>' +
+                (hasCfg ? '<button onclick="removeStyleImg(\''+e.id+'\')" style="position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.65);border:none;color:#fff;font-size:10px;cursor:pointer;line-height:1">✕</button>' : '') +
+              '</div>' +
+              '<div style="font-size:10px;text-align:center;color:var(--text2);font-weight:500">'+e.label+'</div>' +
+            '</div>';
+          }).join('');
+        })() +
+      '</div>' +
+    '</div>' +
+    '<div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border2)">' +
+      '<div style="font-size:12px;font-weight:600;margin-bottom:4px">Imagens dos materiais</div>' +
+      '<div style="font-size:11px;color:var(--muted2);margin-bottom:12px">Substitua pelas texturas reais que você trabalha nos seus projetos</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px">' +
+        (function(){
+          var matImgs = cfg.matImgs || {};
+          var mats = ['Madeira clara','Madeira escura','Mármore','Cimento','Couro','Veludo','Rattan','Metal','Pedra natural','Vidro'];
+          return mats.map(function(m){
+            var hasCfg = !!matImgs[m];
+            var thumb  = hasCfg ? matImgs[m] : '';
+            var key    = encodeURIComponent(m);
+            return '<div style="display:flex;flex-direction:column;gap:6px">' +
+              '<div style="position:relative;height:72px;border-radius:8px;overflow:hidden;border:1px solid var(--border2);background:var(--bg2)">' +
+                (hasCfg ? '<img src="'+thumb+'" style="width:100%;height:100%;object-fit:cover">' : '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted2)">padrão</div>') +
+                '<label style="position:absolute;inset:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0);transition:.2s" onmouseover="this.style.background=\'rgba(0,0,0,0.45)\'" onmouseout="this.style.background=\'rgba(0,0,0,0)\'">' +
+                  '<input type="file" accept="image/*" style="display:none" onchange="uploadMatImg(this,\''+m+'\')">' +
+                  '<span style="color:#fff;font-size:18px;opacity:0;transition:.2s" class="cfg-upload-icon">＋</span>' +
+                '</label>' +
+                (hasCfg ? '<button onclick="removeMatImg(\''+m+'\')" style="position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.65);border:none;color:#fff;font-size:10px;cursor:pointer;line-height:1">✕</button>' : '') +
+              '</div>' +
+              '<div style="font-size:10px;text-align:center;color:var(--text2);font-weight:500">'+m+'</div>' +
+            '</div>';
+          }).join('');
+        })() +
+      '</div>' +
+    '</div>' +
     '<div style="margin-top:14px"><button class="btn btn-accent" onclick="salvarStudioConfig()">' + ic('save',14) + ' Salvar e aplicar em todo o sistema</button></div>';
 }
 function selecionarNPS(btn, val) {
@@ -3246,6 +3306,38 @@ function removeGalleryImg(idx) {
   cfg.galleryImgs.splice(idx, 1);
   saveStudioConfig(cfg);
   renderPage('configuracoes');
+}
+function uploadStyleImg(input, styleId) {
+  var file = input.files[0];
+  if (!file) return;
+  _resizeImgToDataURL(file, 800, 0.85, function(dataUrl) {
+    var cfg = getStudioConfig();
+    cfg.styleImgs = cfg.styleImgs || {};
+    cfg.styleImgs[styleId] = dataUrl;
+    saveStudioConfig(cfg);
+    mostrarFeedback('✅ Imagem do estilo atualizada!');
+    renderPage('configuracoes');
+  });
+}
+function removeStyleImg(styleId) {
+  var cfg = getStudioConfig();
+  if (cfg.styleImgs) { delete cfg.styleImgs[styleId]; saveStudioConfig(cfg); renderPage('configuracoes'); }
+}
+function uploadMatImg(input, matLabel) {
+  var file = input.files[0];
+  if (!file) return;
+  _resizeImgToDataURL(file, 400, 0.85, function(dataUrl) {
+    var cfg = getStudioConfig();
+    cfg.matImgs = cfg.matImgs || {};
+    cfg.matImgs[matLabel] = dataUrl;
+    saveStudioConfig(cfg);
+    mostrarFeedback('✅ Imagem do material atualizada!');
+    renderPage('configuracoes');
+  });
+}
+function removeMatImg(matLabel) {
+  var cfg = getStudioConfig();
+  if (cfg.matImgs) { delete cfg.matImgs[matLabel]; saveStudioConfig(cfg); renderPage('configuracoes'); }
 }
 function getDiagnosticos() { return _ld('diagnosticos_lista', []); }
 function salvarDiagnosticos(lista) { _sd('diagnosticos_lista', lista); }
