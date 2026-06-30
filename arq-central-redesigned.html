@@ -622,34 +622,24 @@ button, [onclick], .mode-card, .kb-card, .port-card,
 .cli-sb-client strong { display:block; color:rgba(245,237,224,0.85); font-weight:500; }
 .cli-main { flex:1; overflow-y:auto; }
 /* Welcome section */
-.cli-welcome { display:grid; grid-template-columns:1fr 1fr; min-height:68vh; }
-/* Project timeline */
-.cli-tl-wrap { background:var(--bg); border-top:1px solid var(--border2); padding:40px 48px 48px; }
-.cli-tl-label { font-size:10px; font-weight:600; color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:28px; }
-.cli-tl { display:flex; align-items:flex-start; }
-.cli-tl-step { flex:1; display:flex; flex-direction:column; align-items:center; position:relative; }
-.cli-tl-step:not(:last-child)::after { content:''; position:absolute; top:13px; left:50%; width:100%; height:2px; background:var(--border2); z-index:0; transition:background .4s; }
-.cli-tl-step.tl-done:not(:last-child)::after { background:var(--green); }
-.cli-tl-dot { width:28px; height:28px; border-radius:50%; border:2px solid var(--border); background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--muted2); position:relative; z-index:1; flex-shrink:0; transition:all .3s; }
+.cli-welcome { display:grid; grid-template-columns:1fr 1fr; min-height:100vh; }
+/* Project timeline — non-linear cluster of cards, confined to the left column */
+.cli-tl-wrap { margin-bottom:32px; }
+.cli-tl-label { font-size:10px; font-weight:600; color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; }
+.cli-tl { display:flex; flex-wrap:wrap; gap:10px; }
+.cli-tl-step { display:flex; align-items:center; gap:10px; padding:10px 14px 10px 10px; border-radius:30px; border:1px solid var(--border2); background:var(--bg2); transition:all .3s; }
+.cli-tl-step.tl-done { border-color:rgba(74,222,128,0.3); background:rgba(74,222,128,0.07); }
+.cli-tl-step.tl-active { border-color:var(--accent); background:rgba(184,134,90,0.09); box-shadow:0 0 0 3px rgba(184,134,90,0.12); }
+.cli-tl-dot { width:24px; height:24px; border-radius:50%; border:2px solid var(--border); background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--muted2); flex-shrink:0; transition:all .3s; }
 .cli-tl-step.tl-done .cli-tl-dot { background:var(--green); border-color:var(--green); color:#fff; }
-.cli-tl-step.tl-active .cli-tl-dot { background:var(--accent); border-color:var(--accent); color:#fff; box-shadow:0 0 0 5px rgba(184,134,90,0.18); }
-.cli-tl-info { text-align:center; padding-top:10px; }
+.cli-tl-step.tl-active .cli-tl-dot { background:var(--accent); border-color:var(--accent); color:#fff; }
+.cli-tl-info { text-align:left; }
 .cli-tl-name { font-size:11px; font-weight:600; color:var(--text2); white-space:nowrap; }
 .cli-tl-step.tl-active .cli-tl-name { color:var(--accent); }
 .cli-tl-step.tl-done .cli-tl-name { color:var(--green); }
-.cli-tl-sub { font-size:10px; color:var(--muted2); margin-top:2px; white-space:nowrap; }
-/* Fases sub-timeline */
-.cli-tl-fases { margin-top:28px; border-top:1px solid var(--border2); padding-top:22px; }
-.cli-tl-fases-label { font-size:10px; font-weight:600; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px; }
-.cli-tl-fase { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:8px; margin-bottom:6px; border:1px solid var(--border2); background:var(--bg2); }
-.cli-tl-fase.fase-validada { border-color:rgba(74,222,128,0.3); background:rgba(74,222,128,0.06); }
-.cli-tl-fase.fase-entregue { border-color:rgba(184,134,90,0.25); background:rgba(184,134,90,0.07); }
+.cli-tl-sub { font-size:9px; color:var(--muted2); margin-top:1px; white-space:nowrap; }
 @media(max-width:768px) {
-  .cli-tl-wrap { padding:28px 20px; }
-  .cli-tl { flex-direction:column; gap:0; }
-  .cli-tl-step { flex-direction:row; align-items:center; flex:none; width:100%; gap:12px; padding-bottom:12px; }
-  .cli-tl-step:not(:last-child)::after { top:auto; left:13px; width:2px; height:100%; }
-  .cli-tl-info { text-align:left; padding-top:0; }
+  .cli-tl { gap:8px; }
   .cli-tl-name,.cli-tl-sub { white-space:normal; }
 }
 .cli-welcome-left { padding:60px 48px; display:flex; flex-direction:column; justify-content:space-between; background:var(--bg); }
@@ -1628,10 +1618,6 @@ function buildCliWelcome() {
 
   // ── HTML final ───────────────────────────────────────────────────
   return '<div>' +
-    '<div class="cli-tl-wrap" style="border-top:none;border-bottom:1px solid var(--border2)">' +
-      '<div class="cli-tl-label">' + (fases.length ? 'Etapas do seu projeto' : 'Andamento do projeto') + '</div>' +
-      tlHtml +
-    '</div>' +
     '<div class="cli-welcome">' +
       '<div class="cli-welcome-left">' +
         '<div>' +
@@ -1640,6 +1626,10 @@ function buildCliWelcome() {
             ? '<h1 class="cli-welcome-title">Bem-vindo,<br><em>' + nome + '</em>.</h1>'
             : '<h1 class="cli-welcome-title"><em>Bem-vindo</em><br>ao seu portal.</h1>') +
           '<p class="cli-welcome-sub">Vamos criar algo incrível juntos.<br>Use o menu à esquerda para navegar pelas etapas do seu projeto.</p>' +
+          '<div class="cli-tl-wrap">' +
+            '<div class="cli-tl-label">' + (fases.length ? 'Etapas do seu projeto' : 'Andamento do projeto') + '</div>' +
+            tlHtml +
+          '</div>' +
           '<button class="btn btn-accent" style="padding:12px 28px;font-size:14px" onclick="renderCliSection(\'sobre\')">Vamos começar →</button>' +
         '</div>' +
         '<div class="cli-welcome-trust">' +
