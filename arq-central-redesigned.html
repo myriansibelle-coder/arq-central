@@ -1583,54 +1583,55 @@ function buildCliWelcome() {
   var fases = (proj && proj.fases) || [];
   var todasValidadas = fases.length && fases.every(function(f){ return f.status === 'validada'; });
 
-  var etapas = [
-    { label:'Diagnóstico',     sub:'Perfil inicial',          minIdx:1 },
-    { label:'Briefing',        sub:'Detalhes do projeto',     minIdx:2 },
-    { label:'Proposta',        sub:'Proposta personalizada',  minIdx:3 },
-    { label:'Contrato',        sub:'Acordo assinado',         minIdx:4 },
-    { label:'Desenvolvimento', sub:'Projeto em andamento',    minIdx:5 },
-    { label:'Entrega final',   sub:'Projeto concluído',       minIdx:6 },
-  ];
+  // ── Timeline: fases definidas pelo arquiteto ─────────────────────
+  var tlHtml = '';
+  if (fases.length) {
+    // Encontra a primeira fase não-validada (etapa ativa)
+    var primeiraAtiva = -1;
+    fases.forEach(function(f, i){ if (primeiraAtiva < 0 && f.status !== 'validada') primeiraAtiva = i; });
 
-  var tlHtml = '<div class="cli-tl">' + etapas.map(function(e, i) {
-    var done   = idxCRM > e.minIdx || (i === 5 && todasValidadas);
-    var active = !done && idxCRM === e.minIdx;
-    var cls    = done ? 'tl-done' : active ? 'tl-active' : '';
-    var dot    = done
-      ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'
-      : (i + 1).toString();
-    return '<div class="cli-tl-step ' + cls + '">' +
-      '<div class="cli-tl-dot">' + dot + '</div>' +
-      '<div class="cli-tl-info"><div class="cli-tl-name">' + e.label + '</div><div class="cli-tl-sub">' + e.sub + '</div></div>' +
-    '</div>';
-  }).join('') + '</div>';
-
-  // Sub-linha com fases do projeto (se houver)
-  var fasesHtml = '';
-  if (fases.length && idxCRM >= 5) {
-    fasesHtml = '<div class="cli-tl-fases">' +
-      '<div class="cli-tl-fases-label">Etapas de entrega</div>' +
-      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">' +
-      fases.map(function(f) {
-        var validada = f.status === 'validada';
-        var entregue = f.status === 'entregue';
-        var cls = validada ? 'fase-validada' : entregue ? 'fase-entregue' : '';
-        var icon = validada ? 'check-circle-2' : entregue ? 'package' : 'clock';
-        var cor  = validada ? 'var(--green)' : entregue ? 'var(--accent)' : 'var(--muted2)';
-        var badge = validada ? 'Validada' : entregue ? 'Entregue' : 'Aguardando';
-        return '<div class="cli-tl-fase ' + cls + '">' +
-          '<i data-lucide="' + icon + '" style="width:16px;height:16px;color:' + cor + ';flex-shrink:0"></i>' +
-          '<div style="flex:1;min-width:0">' +
-            '<div style="font-size:12px;font-weight:500;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + f.titulo + '</div>' +
-            '<div style="font-size:10px;color:' + cor + ';margin-top:1px">' + badge + (f.prazo ? ' · ' + f.prazo : '') + '</div>' +
-          '</div>' +
-        '</div>';
-      }).join('') +
-      '</div></div>';
+    tlHtml = '<div class="cli-tl">' + fases.map(function(f, i) {
+      var validada = f.status === 'validada';
+      var entregue = f.status === 'entregue';
+      var active   = !validada && i === primeiraAtiva;
+      var cls      = validada ? 'tl-done' : active ? 'tl-active' : entregue ? 'tl-active' : '';
+      var dot      = validada
+        ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'
+        : (i + 1).toString();
+      var sub = validada ? 'Concluída' : entregue ? 'Aguardando sua validação' : (f.prazo ? 'Previsão: ' + f.prazo : 'A realizar');
+      return '<div class="cli-tl-step ' + cls + '">' +
+        '<div class="cli-tl-dot">' + dot + '</div>' +
+        '<div class="cli-tl-info">' +
+          '<div class="cli-tl-name">' + f.titulo + '</div>' +
+          '<div class="cli-tl-sub">' + sub + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('') + '</div>';
+  } else {
+    // Sem fases: linha de progresso CRM simplificada
+    var crmEtapas = ['Diagnóstico','Briefing','Proposta','Contrato','Em desenvolvimento','Concluído'];
+    var crmMap    = {'LEAD':0,'DIAGNÓSTICO':1,'BRIEFING':2,'PROPOSTA':3,'CONTRATO':4,'CLIENTE':5};
+    var crmAtual  = crmMap[estagio] || 0;
+    tlHtml = '<div class="cli-tl">' + crmEtapas.map(function(e, i) {
+      var done   = i < crmAtual;
+      var active = i === crmAtual;
+      var cls    = done ? 'tl-done' : active ? 'tl-active' : '';
+      var dot    = done
+        ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>'
+        : (i + 1).toString();
+      return '<div class="cli-tl-step ' + cls + '">' +
+        '<div class="cli-tl-dot">' + dot + '</div>' +
+        '<div class="cli-tl-info"><div class="cli-tl-name">' + e + '</div></div>' +
+      '</div>';
+    }).join('') + '</div>';
   }
 
   // ── HTML final ───────────────────────────────────────────────────
   return '<div>' +
+    '<div class="cli-tl-wrap" style="border-top:none;border-bottom:1px solid var(--border2)">' +
+      '<div class="cli-tl-label">' + (fases.length ? 'Etapas do seu projeto' : 'Andamento do projeto') + '</div>' +
+      tlHtml +
+    '</div>' +
     '<div class="cli-welcome">' +
       '<div class="cli-welcome-left">' +
         '<div>' +
@@ -1658,11 +1659,6 @@ function buildCliWelcome() {
           '<div style="color:rgba(245,237,224,0.75);font-family:\'Noto Serif Display\',serif;font-size:11px;font-weight:400;letter-spacing:3px;text-transform:uppercase">'+(cfg.nome||cfg.iniciais||'ARQ|CENTRAL')+'</div>' +
         '</div>' +
       '</div>' +
-    '</div>' +
-    '<div class="cli-tl-wrap">' +
-      '<div class="cli-tl-label">Andamento do projeto</div>' +
-      tlHtml +
-      fasesHtml +
     '</div>' +
   '</div>';
 }
